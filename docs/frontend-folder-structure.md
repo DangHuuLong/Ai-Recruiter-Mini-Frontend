@@ -248,3 +248,186 @@ Examples:
 - `app.config.ts`
 - `navigation.config.ts`
 - `env.config.ts`
+
+## 9. Routing Structure
+
+The frontend uses Next.js App Router, so each route is defined by a folder in `src/app` and a `page.tsx` file.
+
+Current route structure:
+
+```txt
+src/app/
+  page.tsx
+  (dashboard)/
+    layout.tsx
+    dashboard/
+      page.tsx
+    candidates/
+      page.tsx
+      new/
+        page.tsx
+      [id]/
+        page.tsx
+    resumes/
+      page.tsx
+      [id]/
+        page.tsx
+    job-descriptions/
+      page.tsx
+      new/
+        page.tsx
+      [id]/
+        page.tsx
+    applications/
+      page.tsx
+      new/
+        page.tsx
+      [id]/
+        page.tsx
+    evaluations/
+      page.tsx
+      [id]/
+        page.tsx
+```
+
+### 9.1. Root Route
+
+File:
+
+```
+src/app/page.tsx
+```
+
+is used to handle the root route:
+
+```
+/
+```
+
+This route redirects users to:
+
+```
+/dashboard
+```
+
+This ensures that when users access the main domain, they are taken directly to the dashboard screen instead of seeing an empty page or a temporary landing page.
+
+### 9.2. Dashboard Route Group
+
+The directory:
+
+```
+src/app/(dashboard)
+```
+
+is a route group in Next.js.
+
+The name `(dashboard)` does not appear in the URL. It is only used to organize routes that belong to the dashboard area.
+
+Example:
+
+```
+src/app/(dashboard)/candidates/page.tsx
+```
+
+corresponds to the URL:
+
+```
+/candidates
+```
+
+not:
+
+```
+/dashboard/candidates
+```
+
+### 9.3. Dashboard Layout
+
+The file:
+
+```
+src/app/(dashboard)/layout.tsx
+```
+
+serves as a common layout for all screens within the dashboard group.
+
+Screens that use this layout include:
+
+- `/dashboard`
+- `/candidates`
+- `/resumes`
+- `/job-descriptions`
+- `/applications`
+- `/evaluations`
+
+At the current stage, the layout may only render `children`. In the future, this layout will be the place to add the sidebar, topbar, main content container, and shared navigation components.
+
+### 9.4. Static Routes
+
+Static routes are fixed routes that do not require dynamic parameters.
+
+Current static routes:
+
+- `/dashboard`
+- `/candidates`
+- `/candidates/new`
+- `/resumes`
+- `/job-descriptions`
+- `/job-descriptions/new`
+- `/applications`
+- `/applications/new`
+- `/evaluations`
+
+These routes serve list screens, create new screens, or dashboard overview screens.
+
+### 9.5. Dynamic Routes
+
+Dynamic routes use folders in the format:
+
+```
+[id]
+```
+
+Current dynamic routes:
+
+- `/candidates/[id]`
+- `/resumes/[id]`
+- `/job-descriptions/[id]`
+- `/applications/[id]`
+- `/evaluations/[id]`
+
+When a user accesses a URL like:
+
+```
+/candidates/cand_123
+```
+
+Next.js will pass the value `cand_123` to the `params.id` of the corresponding page.
+
+Dynamic routes are used for detail screens such as candidate detail, resume detail, job description detail, application detail, and evaluation detail.
+
+### 9.6. Route File Naming Convention
+
+Each route must have a file:
+
+```
+page.tsx
+```
+
+for Next.js to recognize it as a valid page.
+
+Each route group or nested route can have a file:
+
+```
+layout.tsx
+```
+
+to share layout with child pages.
+
+Current naming convention:
+
+```
+page.tsx    used for the main content of a route
+layout.tsx  used for the layout wrapping a group of routes
+```
