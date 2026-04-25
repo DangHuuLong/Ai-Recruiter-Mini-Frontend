@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
+
+import { ToastProvider } from '@/providers/toast-provider';
+
 import './globals.css';
 
 const geistSans = Geist({
@@ -21,6 +24,7 @@ export default function RootLayout({
     <html lang="vi">
       <body className={geistSans.variable} suppressHydrationWarning>
         {children}
+        <ToastProvider />
       </body>
     </html>
   );
