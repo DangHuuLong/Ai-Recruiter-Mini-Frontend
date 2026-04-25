@@ -359,3 +359,107 @@ DetailSkeleton
 - ✅ Loading state should be handled by pages, feature hooks, or the future data-fetching layer
 - ✅ Skeleton components should be used for tables, cards, and detail pages when layout stability is useful
 
+---
+
+## 5. Form Validation Configuration
+
+### Purpose
+
+This section defines the shared form validation setup used across the frontend.
+
+The goal is to keep validation rules consistent and avoid writing validation logic directly inside pages or components.
+
+Form validation is used for screens such as:
+
+- Create candidate
+- Upload resume
+- Create job description
+- Create application
+- Update application status
+
+---
+
+### Packages
+
+The frontend uses the following packages for form validation:
+
+```
+react-hook-form
+zod
+@hookform/resolvers
+```
+
+| Package | Purpose |
+|---|---|
+| `react-hook-form` | Manages form state and submission |
+| `zod` | Defines validation schemas |
+| `@hookform/resolvers` | Connects Zod schemas with React Hook Form |
+
+---
+
+### Files
+
+```
+src/lib/validations/common.validation.ts
+src/lib/validations/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/lib/validations/common.validation.ts` | Stores shared validation rules |
+| `src/lib/validations/index.ts` | Re-exports validation utilities for cleaner imports |
+
+---
+
+### Validation Structure
+
+Shared validation rules are placed in:
+
+```
+src/lib/validations
+```
+
+Feature-specific validation schemas should be placed inside each feature.
+
+Example:
+
+```
+src/features/candidates/validations/candidate.validation.ts
+src/features/job-descriptions/validations/job-description.validation.ts
+src/features/applications/validations/application.validation.ts
+```
+
+This keeps common validation reusable while keeping business-specific rules close to the feature that owns them.
+
+---
+
+### Shared Validation Rules
+
+The shared validation configuration includes common rules such as:
+
+```
+requiredString
+optionalString
+emailSchema
+optionalEmailSchema
+positiveNumberSchema
+```
+
+These rules are intended for common form fields such as:
+
+- Required text fields
+- Optional text fields
+- Email fields
+- Positive number fields
+
+---
+
+### Key Decisions
+
+- ✅ Validation logic should not be written directly inside page components
+- ✅ Common validation rules should be placed in `src/lib/validations`
+- ✅ Feature-specific schemas should stay inside their own feature folder
+- ✅ Form types should be inferred from Zod schemas when possible
+- ✅ Frontend validation should match backend expectations, but backend remains the source of truth
+- ✅ Validation messages should be clear and consistent across forms
+- ✅ HTML form values may need coercion, especially for number inputs
