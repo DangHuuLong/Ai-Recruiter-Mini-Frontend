@@ -296,3 +296,66 @@ The upload endpoint should be configured under the file resource:
 - ✅ Endpoint constants should **not** include the `/api` prefix
 - ✅ Upload requests should be handled by the shared API client
 - ✅ API response types should stay aligned with the backend API contract
+
+---
+
+## 4. Shared Loading State Configuration
+
+### Purpose
+
+This section defines shared loading UI components used across the frontend.
+
+The goal is to keep loading states consistent across all pages and features instead of creating separate loading UI in each module.
+
+Shared loading states are used when:
+
+- A page is loading data
+- A table is waiting for API results
+- A detail screen is fetching information
+- A card or section is temporarily unavailable while data is being loaded
+
+---
+
+### Files
+
+```
+src/components/feedback/loading-state.tsx
+src/components/feedback/skeleton.tsx
+src/components/feedback/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/feedback/loading-state.tsx` | Provides a general loading state component |
+| `src/components/feedback/skeleton.tsx` | Provides skeleton placeholders for common UI layouts |
+| `src/components/feedback/index.ts` | Re-exports feedback components for cleaner imports |
+
+---
+
+### Loading Components
+
+The shared loading configuration includes:
+
+```
+LoadingState
+Skeleton
+TableSkeleton
+CardSkeleton
+DetailSkeleton
+```
+
+`LoadingState` is used for general loading sections or pages.
+
+`Skeleton` components are used when the UI layout should remain visible while data is loading.
+
+---
+
+### Key Decisions
+
+- ✅ Loading UI should be placed in `src/components/feedback`
+- ✅ Pages and feature components should reuse shared loading components
+- ✅ Loading UI should not be recreated separately in every feature
+- ✅ API client should not manage loading state directly
+- ✅ Loading state should be handled by pages, feature hooks, or the future data-fetching layer
+- ✅ Skeleton components should be used for tables, cards, and detail pages when layout stability is useful
+
