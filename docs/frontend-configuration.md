@@ -661,3 +661,82 @@ The shared table should not know business-specific fields such as candidate name
 - ✅ Pagination, filtering, sorting, and row actions should be handled by feature-level components or added as separate shared components later
 - ✅ Empty list display should be consistent across list screens
 
+---
+
+## 8. Shared Detail Page Layout Configuration
+
+### Purpose
+
+This section defines the shared layout used by detail pages in the dashboard.
+
+The goal is to keep detail screens consistent across all main modules and avoid rewriting the same page structure multiple times.
+
+Shared detail layouts are used for routes such as:
+
+- `/candidates/[id]`
+- `/resumes/[id]`
+- `/job-descriptions/[id]`
+- `/applications/[id]`
+- `/evaluations/[id]`
+
+---
+
+### Files
+
+```
+src/components/common/detail-page-layout.tsx
+src/components/common/detail-section.tsx
+src/components/common/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/common/detail-page-layout.tsx` | Provides the shared wrapper for detail pages |
+| `src/components/common/detail-section.tsx` | Provides reusable sections inside detail pages |
+| `src/components/common/index.ts` | Re-exports common components for cleaner imports |
+
+---
+
+### Layout Structure
+
+```txt
+DetailPageLayout
+  Page Header
+    Back Link
+    Title
+    Description
+    Actions
+  Detail Content
+    DetailSection
+    DetailSection
+    DetailSection
+```
+
+`DetailPageLayout` defines the overall structure of a detail page.
+
+`DetailSection` defines reusable content blocks inside the detail page.
+
+---
+
+### Component Responsibility
+
+`DetailPageLayout` is responsible for the common page-level layout, including:
+
+- Back navigation
+- Page title
+- Page description
+- Page actions
+- Main content wrapper
+
+`DetailSection` is responsible for grouping related detail content into clear sections.
+
+---
+
+### Key Decisions
+
+- ✅ Detail page layout should be placed in `src/components/common`
+- ✅ Detail pages should reuse `DetailPageLayout` and `DetailSection`
+- ✅ Detail layout components should not contain business logic
+- ✅ Detail layout components should not call APIs directly
+- ✅ Feature-specific data rendering should stay inside each feature module
+- ✅ Loading, error, and empty states should be handled separately by shared feedback components or feature-level logic
