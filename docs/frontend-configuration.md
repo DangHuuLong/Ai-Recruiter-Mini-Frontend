@@ -1010,3 +1010,147 @@ Confirm dialogs should be used only for actions that require user confirmation.
 - ✅ Destructive actions should use the danger variant
 - ✅ State-changing but non-delete actions can use the warning variant
 - ✅ Loading state should be supported while the confirm action is being processed
+
+---
+
+## 12. Feature Module Folder Structure
+
+### Purpose
+
+This section defines the folder structure for frontend feature modules.
+
+The goal is to organize business logic by domain so each module can grow independently while keeping the project structure predictable.
+
+Feature modules are placed under:
+
+```
+src/features
+```
+
+---
+
+### Modules
+
+The frontend contains the following feature modules:
+
+```
+src/features/
+  files/
+  candidates/
+  resumes/
+  job-descriptions/
+  applications/
+  evaluations/
+```
+
+| Module | Purpose |
+|---|---|
+| `files` | Handles shared file-related logic such as upload metadata and file API calls |
+| `candidates` | Handles candidate-related UI, API calls, hooks, types, and validation |
+| `resumes` | Handles resume/CV-related UI, API calls, hooks, types, and validation |
+| `job-descriptions` | Handles job description-related UI, API calls, hooks, types, and validation |
+| `applications` | Handles application-related UI, API calls, hooks, types, and validation |
+| `evaluations` | Handles evaluation-related UI, API calls, hooks, and types |
+
+---
+
+### Standard Module Structure
+
+Each feature module should follow this structure:
+
+```
+module-name/
+  api/
+  components/
+  hooks/
+  types/
+```
+
+For modules that contain forms, add:
+
+```
+validations/
+```
+
+Example:
+
+```
+src/features/candidates/
+  api/
+  components/
+  hooks/
+  types/
+  validations/
+```
+
+---
+
+### Folder Responsibilities
+
+| Folder | Purpose |
+|---|---|
+| `api` | Stores API functions for the module |
+| `components` | Stores UI components used only by that module |
+| `hooks` | Stores custom hooks for module-specific logic |
+| `types` | Stores TypeScript types for the module |
+| `validations` | Stores validation schemas for module forms |
+
+---
+
+### Current Structure
+
+```
+src/features/
+  applications/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  candidates/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  evaluations/
+    api/
+    components/
+    hooks/
+    types/
+
+  files/
+    api/
+    components/
+    hooks/
+    types/
+
+  job-descriptions/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  resumes/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+```
+
+---
+
+### Key Decisions
+
+- ✅ Business logic should be grouped by feature module
+- ✅ Shared UI components should not be placed inside feature modules
+- ✅ Feature-specific components should stay inside their owning module
+- ✅ API functions should be placed in the module's `api` folder
+- ✅ Feature-specific hooks should be placed in the module's `hooks` folder
+- ✅ Feature-specific types should be placed in the module's `types` folder
+- ✅ Form validation schemas should be placed in the module's `validations` folder
+- ✅ Empty folders may use `.gitkeep` until real files are added
