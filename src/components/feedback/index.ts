@@ -6,3 +6,4 @@ export {
 } from './skeleton';
 
 export { LoadingState } from './loading-state';
+export { showToast } from './toast';
