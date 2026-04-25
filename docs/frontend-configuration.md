@@ -463,3 +463,121 @@ These rules are intended for common form fields such as:
 - ✅ Frontend validation should match backend expectations, but backend remains the source of truth
 - ✅ Validation messages should be clear and consistent across forms
 - ✅ HTML form values may need coercion, especially for number inputs
+
+--- 
+
+## 6. File Upload Component Configuration
+
+### Purpose
+
+This section defines the shared file upload component used across the frontend.
+
+The goal is to provide a consistent upload UI for features that need file selection, especially resume/CV upload.
+
+The upload component is responsible for:
+
+- Displaying a reusable file upload input
+- Supporting click-to-upload
+- Supporting drag and drop
+- Validating accepted file types
+- Validating maximum file size
+- Showing selected file information
+- Showing basic upload input errors
+
+The component only handles file selection and basic frontend validation. It does not call the upload API directly.
+
+---
+
+### Files
+
+```
+src/components/forms/file-upload-input.tsx
+src/components/forms/index.ts
+src/lib/constants/file.constants.ts
+src/lib/utils/format-file-size.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/forms/file-upload-input.tsx` | Provides the shared file upload input component |
+| `src/components/forms/index.ts` | Re-exports form components for cleaner imports |
+| `src/lib/constants/file.constants.ts` | Stores shared file upload constants |
+| `src/lib/utils/format-file-size.ts` | Formats file size into a readable display value |
+
+---
+
+### Upload Rules
+
+The default upload configuration supports resume/CV files.
+
+Accepted file formats:
+
+```
+PDF
+DOCX
+```
+
+Default maximum file size:
+
+```
+5 MB
+```
+
+These rules are stored outside the component so they can be reused by upload forms, frontend validation, and future file-related features.
+
+---
+
+### Component Responsibility
+
+`FileUploadInput` is responsible for the upload UI only.
+
+#### Should handle:
+
+- File selection from the input
+- File selection from drag and drop
+- Basic file type validation
+- Basic file size validation
+- Displaying the selected file
+- Removing the selected file
+
+#### Should NOT handle:
+
+- Calling the upload API
+- Creating resume records
+- Linking files to candidates
+- Handling backend upload response
+- Managing feature-specific business logic
+
+Those responsibilities should stay inside feature-level API functions, hooks, or forms.
+
+---
+
+### Usage Location
+
+The shared file upload component should be placed in:
+
+```
+src/components/forms
+```
+
+Feature-specific upload logic should be placed in the relevant feature folder.
+
+Example:
+
+```
+src/features/resumes/api
+src/features/resumes/components
+src/features/files/api
+```
+
+---
+
+### Key Decisions
+
+- ✅ File upload UI should be reusable across features
+- ✅ Upload constants should be stored in `src/lib/constants`
+- ✅ File size formatting should be stored in `src/lib/utils`
+- ✅ The upload component should not call APIs directly
+- ✅ File upload requests should use the shared API client
+- ✅ The backend upload endpoint should remain configured in `api-endpoints.ts`
+- ✅ Resume upload should follow the backend file upload contract using `multipart/form-data`
