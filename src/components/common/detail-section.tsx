@@ -20,7 +20,7 @@ export function DetailSection({
   return (
     <section
       className={cn(
-        'rounded-lg border border-border bg-bg-card p-4',
+        'rounded-lg border border-border-default bg-bg-card p-4',
         className,
       )}
     >

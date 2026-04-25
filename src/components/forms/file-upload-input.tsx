@@ -114,9 +114,9 @@ export function FileUploadInput({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         className={cn(
-          'flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border bg-bg-card p-6 text-center transition hover:bg-bg-muted',
+          'flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border-default bg-bg-card p-6 text-center transition hover:bg-bg-muted',
           disabled && 'cursor-not-allowed opacity-60',
-          currentError && 'border-danger',
+          currentError && 'border-error',
         )}
       >
         <input
@@ -140,7 +140,7 @@ export function FileUploadInput({
       </label>
 
       {value ? (
-        <div className="flex items-center justify-between rounded-md border border-border bg-bg-card px-3 py-2">
+        <div className="flex items-center justify-between rounded-md border border-border-default bg-bg-card px-3 py-2">
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-text-primary">
               {value.name}
@@ -155,7 +155,7 @@ export function FileUploadInput({
             type="button"
             disabled={disabled}
             onClick={() => handleFileChange(null)}
-            className="text-sm font-medium text-danger disabled:cursor-not-allowed disabled:opacity-60"
+            className="text-sm font-medium text-error disabled:cursor-not-allowed disabled:opacity-60"
           >
             Remove
           </button>
@@ -163,7 +163,7 @@ export function FileUploadInput({
       ) : null}
 
       {currentError ? (
-        <p className="text-sm text-danger">{currentError}</p>
+        <p className="text-sm text-error">{currentError}</p>
       ) : null}
     </div>
   );
