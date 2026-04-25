@@ -849,3 +849,80 @@ Those cases should use form errors, loading components, or error state component
 - ✅ Toast should be used for short, temporary feedback
 - ✅ Form validation errors should be displayed near the relevant form fields
 - ✅ Page-level errors should use shared error state components instead of toast only
+
+---
+
+## 10. Empty State Configuration
+
+### Purpose
+
+This section defines the shared empty state component used across the frontend.
+
+The goal is to keep empty data displays consistent across pages, tables, detail sections, and search results.
+
+Empty states are used when:
+
+- A list has no records
+- A table has no rows
+- A detail section has no related data
+- A search or filter returns no result
+- A feature has no data created yet
+
+---
+
+### Files
+
+```
+src/components/feedback/empty-state.tsx
+src/components/feedback/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/feedback/empty-state.tsx` | Provides the shared empty state component |
+| `src/components/feedback/index.ts` | Re-exports feedback components for cleaner imports |
+
+---
+
+### Component Responsibility
+
+`EmptyState` is responsible for displaying a consistent UI when there is no data to show.
+
+It supports:
+
+- Empty state title
+- Optional description
+- Optional action area
+
+The action area can be used for buttons such as:
+
+- Create candidate
+- Upload resume
+- Add job description
+- Clear filters
+
+---
+
+### Usage Locations
+
+The shared empty state can be used in:
+
+```
+src/app/(dashboard)/*
+src/features/*/components
+src/components/common/data-table.tsx
+src/components/common/detail-section.tsx
+```
+
+`DataTable` should use `EmptyState` when the provided data array is empty.
+
+---
+
+### Key Decisions
+
+- ✅ Empty state UI should be placed in `src/components/feedback`
+- ✅ Empty state should be reused instead of writing custom empty messages in each feature
+- ✅ Empty state should not call APIs directly
+- ✅ Empty state should not contain business logic
+- ✅ Feature-specific actions should be passed into the component from the page or feature component
+- ✅ Empty state should be separate from loading and error states
