@@ -29,7 +29,7 @@ export function TableSkeleton() {
 
 export function CardSkeleton() {
   return (
-    <div className="rounded-lg border border-border bg-bg-card p-4">
+    <div className="rounded-lg border border-border-default bg-bg-card p-4">
       <div className="space-y-3">
         <Skeleton className="h-5 w-1/3" />
         <Skeleton className="h-4 w-full" />

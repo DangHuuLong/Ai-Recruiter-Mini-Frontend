@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { EmptyState } from '@/components/feedback';
 import { cn } from '@/lib/utils/cn';
 
 export type DataTableColumn<T> = {
@@ -25,17 +26,13 @@ export function DataTable<T>({
   className,
 }: DataTableProps<T>) {
   if (data.length === 0) {
-    return (
-      <div className="rounded-lg border border-border bg-bg-card p-6 text-center">
-        <p className="text-sm text-text-muted">{emptyMessage}</p>
-      </div>
-    );
+    return <EmptyState title={emptyMessage} />;
   }
 
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-border bg-bg-card',
+        'overflow-hidden rounded-lg border border-border-default bg-bg-card',
         className,
       )}
     >
@@ -58,7 +55,7 @@ export function DataTable<T>({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-border-default">
             {data.map((item) => (
               <tr key={getRowKey(item)} className="hover:bg-bg-muted/60">
                 {columns.map((column) => (

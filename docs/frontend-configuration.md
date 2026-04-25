@@ -849,3 +849,308 @@ Those cases should use form errors, loading components, or error state component
 - ✅ Toast should be used for short, temporary feedback
 - ✅ Form validation errors should be displayed near the relevant form fields
 - ✅ Page-level errors should use shared error state components instead of toast only
+
+---
+
+## 10. Empty State Configuration
+
+### Purpose
+
+This section defines the shared empty state component used across the frontend.
+
+The goal is to keep empty data displays consistent across pages, tables, detail sections, and search results.
+
+Empty states are used when:
+
+- A list has no records
+- A table has no rows
+- A detail section has no related data
+- A search or filter returns no result
+- A feature has no data created yet
+
+---
+
+### Files
+
+```
+src/components/feedback/empty-state.tsx
+src/components/feedback/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/feedback/empty-state.tsx` | Provides the shared empty state component |
+| `src/components/feedback/index.ts` | Re-exports feedback components for cleaner imports |
+
+---
+
+### Component Responsibility
+
+`EmptyState` is responsible for displaying a consistent UI when there is no data to show.
+
+It supports:
+
+- Empty state title
+- Optional description
+- Optional action area
+
+The action area can be used for buttons such as:
+
+- Create candidate
+- Upload resume
+- Add job description
+- Clear filters
+
+---
+
+### Usage Locations
+
+The shared empty state can be used in:
+
+```
+src/app/(dashboard)/*
+src/features/*/components
+src/components/common/data-table.tsx
+src/components/common/detail-section.tsx
+```
+
+`DataTable` should use `EmptyState` when the provided data array is empty.
+
+---
+
+### Key Decisions
+
+- ✅ Empty state UI should be placed in `src/components/feedback`
+- ✅ Empty state should be reused instead of writing custom empty messages in each feature
+- ✅ Empty state should not call APIs directly
+- ✅ Empty state should not contain business logic
+- ✅ Feature-specific actions should be passed into the component from the page or feature component
+- ✅ Empty state should be separate from loading and error states
+
+---
+
+  ## 11. Confirm Dialog Configuration
+
+### Purpose
+
+This section defines the shared confirm dialog used for actions that may change or remove important data.
+
+The goal is to provide a consistent confirmation UI before users perform risky actions such as delete, deactivate, reject, or remove.
+
+Confirm dialogs are used for actions such as:
+
+- Delete candidate
+- Delete resume
+- Delete job description
+- Delete application
+- Delete evaluation
+- Deactivate job description
+- Reject application
+
+---
+
+### Files
+
+```
+src/components/common/confirm-dialog.tsx
+src/components/common/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/common/confirm-dialog.tsx` | Provides the shared confirmation dialog component |
+| `src/components/common/index.ts` | Re-exports common components for cleaner imports |
+
+---
+
+### Component Responsibility
+
+`ConfirmDialog` is responsible for displaying a confirmation modal before executing a risky action.
+
+It supports:
+
+- Dialog title
+- Dialog description
+- Confirm button
+- Cancel button
+- Loading state while the action is processing
+- Danger or warning visual variants
+- Optional custom content inside the dialog
+
+---
+
+### Usage Rule
+
+Confirm dialogs should be used only for actions that require user confirmation.
+
+#### Good use cases:
+
+- Delete a resource
+- Deactivate a resource
+- Reject an application
+- Remove an uploaded file
+- Trigger an action that cannot be easily undone
+
+#### Avoid using confirm dialogs for:
+
+- Navigation
+- Search
+- Filtering
+- Opening detail pages
+- Simple UI interactions
+
+---
+
+### Key Decisions
+
+- ✅ Confirm dialog should be placed in `src/components/common`
+- ✅ The dialog should not call APIs directly
+- ✅ The dialog should not contain feature-specific business logic
+- ✅ Feature components are responsible for opening the dialog and handling confirm actions
+- ✅ Destructive actions should use the danger variant
+- ✅ State-changing but non-delete actions can use the warning variant
+- ✅ Loading state should be supported while the confirm action is being processed
+
+---
+
+## 12. Feature Module Folder Structure
+
+### Purpose
+
+This section defines the folder structure for frontend feature modules.
+
+The goal is to organize business logic by domain so each module can grow independently while keeping the project structure predictable.
+
+Feature modules are placed under:
+
+```
+src/features
+```
+
+---
+
+### Modules
+
+The frontend contains the following feature modules:
+
+```
+src/features/
+  files/
+  candidates/
+  resumes/
+  job-descriptions/
+  applications/
+  evaluations/
+```
+
+| Module | Purpose |
+|---|---|
+| `files` | Handles shared file-related logic such as upload metadata and file API calls |
+| `candidates` | Handles candidate-related UI, API calls, hooks, types, and validation |
+| `resumes` | Handles resume/CV-related UI, API calls, hooks, types, and validation |
+| `job-descriptions` | Handles job description-related UI, API calls, hooks, types, and validation |
+| `applications` | Handles application-related UI, API calls, hooks, types, and validation |
+| `evaluations` | Handles evaluation-related UI, API calls, hooks, and types |
+
+---
+
+### Standard Module Structure
+
+Each feature module should follow this structure:
+
+```
+module-name/
+  api/
+  components/
+  hooks/
+  types/
+```
+
+For modules that contain forms, add:
+
+```
+validations/
+```
+
+Example:
+
+```
+src/features/candidates/
+  api/
+  components/
+  hooks/
+  types/
+  validations/
+```
+
+---
+
+### Folder Responsibilities
+
+| Folder | Purpose |
+|---|---|
+| `api` | Stores API functions for the module |
+| `components` | Stores UI components used only by that module |
+| `hooks` | Stores custom hooks for module-specific logic |
+| `types` | Stores TypeScript types for the module |
+| `validations` | Stores validation schemas for module forms |
+
+---
+
+### Current Structure
+
+```
+src/features/
+  applications/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  candidates/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  evaluations/
+    api/
+    components/
+    hooks/
+    types/
+
+  files/
+    api/
+    components/
+    hooks/
+    types/
+
+  job-descriptions/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+
+  resumes/
+    api/
+    components/
+    hooks/
+    types/
+    validations/
+```
+
+---
+
+### Key Decisions
+
+- ✅ Business logic should be grouped by feature module
+- ✅ Shared UI components should not be placed inside feature modules
+- ✅ Feature-specific components should stay inside their owning module
+- ✅ API functions should be placed in the module's `api` folder
+- ✅ Feature-specific hooks should be placed in the module's `hooks` folder
+- ✅ Feature-specific types should be placed in the module's `types` folder
+- ✅ Form validation schemas should be placed in the module's `validations` folder
+- ✅ Empty folders may use `.gitkeep` until real files are added
