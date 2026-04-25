@@ -581,3 +581,83 @@ src/features/files/api
 - ✅ File upload requests should use the shared API client
 - ✅ The backend upload endpoint should remain configured in `api-endpoints.ts`
 - ✅ Resume upload should follow the backend file upload contract using `multipart/form-data`
+
+---
+
+## 7. Shared Table/List Component Configuration
+
+### Purpose
+
+This section defines the shared table component used across list-based screens in the frontend.
+
+The goal is to keep list presentation consistent across dashboard modules and avoid rewriting table markup in each feature.
+
+Shared table components are used for screens such as:
+
+- Candidates list
+- Resumes list
+- Job descriptions list
+- Applications list
+- Evaluations list
+
+---
+
+### Files
+
+```
+src/components/common/data-table.tsx
+src/components/common/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/common/data-table.tsx` | Provides a reusable table component for displaying list data |
+| `src/components/common/index.ts` | Re-exports common components for cleaner imports |
+
+---
+
+### Component Responsibility
+
+`DataTable` is responsible for rendering list data in a consistent table layout.
+
+#### Handles:
+
+- Table container
+- Table header
+- Table rows
+- Table cells
+- Empty state message when there is no data
+- Basic horizontal overflow for wide tables
+
+The table receives data and column definitions from the feature that uses it.
+
+---
+
+### Usage Pattern
+
+Feature components should define their own columns and pass data into the shared table.
+
+Example feature locations:
+
+```
+src/features/candidates/components
+src/features/resumes/components
+src/features/job-descriptions/components
+src/features/applications/components
+src/features/evaluations/components
+```
+
+The shared table should not know business-specific fields such as candidate name, application status, or evaluation score. Those details should stay inside the feature component.
+
+---
+
+### Key Decisions
+
+- ✅ Table UI should be placed in `src/components/common`
+- ✅ Feature modules should reuse `DataTable` instead of creating separate table markup
+- ✅ Column definitions should be owned by each feature
+- ✅ `DataTable` should not call APIs directly
+- ✅ `DataTable` should not contain business logic
+- ✅ Pagination, filtering, sorting, and row actions should be handled by feature-level components or added as separate shared components later
+- ✅ Empty list display should be consistent across list screens
+
