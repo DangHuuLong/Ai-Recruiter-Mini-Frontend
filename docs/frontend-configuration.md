@@ -740,3 +740,112 @@ DetailPageLayout
 - ✅ Detail layout components should not call APIs directly
 - ✅ Feature-specific data rendering should stay inside each feature module
 - ✅ Loading, error, and empty states should be handled separately by shared feedback components or feature-level logic
+
+---
+
+## 9. Toast and Notification Configuration
+
+### Purpose
+
+This section defines the shared toast and notification setup used across the frontend.
+
+The goal is to provide a consistent way to show short user feedback after actions such as create, update, delete, upload, or failed API requests.
+
+Toast notifications are used for quick feedback messages such as:
+
+- Candidate created successfully
+- Resume uploaded successfully
+- Job description saved successfully
+- Application status updated successfully
+- Request failed
+
+---
+
+### Package
+
+The frontend uses `sonner` for toast notifications.
+
+```
+sonner
+```
+
+---
+
+### Files
+
+```
+src/components/feedback/toast.tsx
+src/providers/toast-provider.tsx
+src/components/feedback/index.ts
+src/app/layout.tsx
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/feedback/toast.tsx` | Provides shared toast helper functions |
+| `src/providers/toast-provider.tsx` | Registers the toast renderer for the app |
+| `src/components/feedback/index.ts` | Re-exports toast utilities for cleaner imports |
+| `src/app/layout.tsx` | Mounts the toast provider at the root layout |
+
+---
+
+### Toast Provider
+
+The toast provider is mounted once in the root layout.
+
+```txt
+RootLayout
+  body
+    children
+    ToastProvider
+```
+
+This allows toast notifications to be triggered from any page or component in the application.
+
+---
+
+### Toast Types
+
+The shared toast configuration supports common notification types:
+
+```
+success
+error
+info
+warning
+```
+
+These types should be used based on the result of user actions or API requests.
+
+---
+
+### Usage Rule
+
+Toast notifications should be used for short feedback messages.
+
+#### Good use cases:
+
+- Successful create/update/delete actions
+- Successful file upload
+- Failed API requests
+- Short system feedback after user actions
+
+#### Avoid using toast for:
+
+- Long error explanations
+- Form field validation errors
+- Loading states
+- Page-level error states
+
+Those cases should use form errors, loading components, or error state components instead.
+
+---
+
+### Key Decisions
+
+- ✅ Toast UI should be handled through a shared provider
+- ✅ Toast helpers should be placed in `src/components/feedback`
+- ✅ The toast provider should be mounted in `src/app/layout.tsx`
+- ✅ Toast should be used for short, temporary feedback
+- ✅ Form validation errors should be displayed near the relevant form fields
+- ✅ Page-level errors should use shared error state components instead of toast only
