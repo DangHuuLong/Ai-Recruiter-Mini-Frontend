@@ -926,3 +926,87 @@ src/components/common/detail-section.tsx
 - ✅ Empty state should not contain business logic
 - ✅ Feature-specific actions should be passed into the component from the page or feature component
 - ✅ Empty state should be separate from loading and error states
+
+---
+
+  ## 11. Confirm Dialog Configuration
+
+### Purpose
+
+This section defines the shared confirm dialog used for actions that may change or remove important data.
+
+The goal is to provide a consistent confirmation UI before users perform risky actions such as delete, deactivate, reject, or remove.
+
+Confirm dialogs are used for actions such as:
+
+- Delete candidate
+- Delete resume
+- Delete job description
+- Delete application
+- Delete evaluation
+- Deactivate job description
+- Reject application
+
+---
+
+### Files
+
+```
+src/components/common/confirm-dialog.tsx
+src/components/common/index.ts
+```
+
+| File | Purpose |
+|---|---|
+| `src/components/common/confirm-dialog.tsx` | Provides the shared confirmation dialog component |
+| `src/components/common/index.ts` | Re-exports common components for cleaner imports |
+
+---
+
+### Component Responsibility
+
+`ConfirmDialog` is responsible for displaying a confirmation modal before executing a risky action.
+
+It supports:
+
+- Dialog title
+- Dialog description
+- Confirm button
+- Cancel button
+- Loading state while the action is processing
+- Danger or warning visual variants
+- Optional custom content inside the dialog
+
+---
+
+### Usage Rule
+
+Confirm dialogs should be used only for actions that require user confirmation.
+
+#### Good use cases:
+
+- Delete a resource
+- Deactivate a resource
+- Reject an application
+- Remove an uploaded file
+- Trigger an action that cannot be easily undone
+
+#### Avoid using confirm dialogs for:
+
+- Navigation
+- Search
+- Filtering
+- Opening detail pages
+- Simple UI interactions
+
+---
+
+### Key Decisions
+
+- ✅ Confirm dialog should be placed in `src/components/common`
+- ✅ The dialog should not call APIs directly
+- ✅ The dialog should not contain feature-specific business logic
+- ✅ Feature components are responsible for opening the dialog and handling confirm actions
+- ✅ Destructive actions should use the danger variant
+- ✅ State-changing but non-delete actions can use the warning variant
+- ✅ Loading state should be supported while the confirm action is being processed
