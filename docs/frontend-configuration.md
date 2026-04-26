@@ -1461,3 +1461,319 @@ No visual noise
 No low-contrast text
 No over-designed gradients
 ```
+
+---
+
+## 15. Resume Upload Page Implementation
+
+### Purpose
+
+This section documents the first UI implementation task for the resume feature: creating the basic CV upload page.
+
+The purpose of this task is to provide an MVP screen where recruiters can select a candidate CV file, validate it on the frontend, and prepare the flow for creating a Resume record linked to an existing Candidate.
+
+This implementation focuses on the basic upload page and form interaction only. Advanced upload progress UI, candidate detail integration, resume list display, resume detail display, parsing status polling, and drag-and-drop enhancements will be handled in later tasks.
+
+---
+
+### Implemented Route
+
+```txt
+src/app/(dashboard)/resumes/page.tsx
+
+This route renders the resume upload page at:
+
+/resumes
+
+The page contains:
+
+Page section label
+Page title
+Short page description
+ResumeUploadForm
+```
+
+### Implemented Files
+
+```
+src/features/resumes/
+├── components/
+│   └── resume-upload-form.tsx
+└── validations/
+    └── resume.validation.ts
+
+src/lib/constants/
+└── file.constants.ts
+
+src/lib/utils/
+├── format-file-size.ts
+└── resume-file.util.ts
+
+src/components/feedback/
+└── toast.tsx
+
+src/app/(dashboard)/resumes/
+└── page.tsx
+```
+
+| File | Purpose |
+| --- | --- |
+| src/app/(dashboard)/resumes/page.tsx | Displays the resume upload page |
+| src/features/resumes/components/resume-upload-form.tsx | Renders and handles the resume upload form interaction |
+| src/features/resumes/validations/resume.validation.ts | Defines basic validation rules for the upload form when form schema validation is used |
+| src/lib/constants/file.constants.ts | Stores accepted resume file types, extensions, and max file size |
+| src/lib/utils/format-file-size.ts | Formats file size into readable text |
+| src/lib/utils/resume-file.util.ts | Provides resume file validation helpers |
+| src/components/feedback/toast.tsx | Provides shared toast feedback helpers |
+
+### Current UI Flow
+
+The current upload form flow is:
+
+User enters Candidate ID
+↓
+User selects a PDF or DOCX file
+↓
+Frontend validates Candidate ID and file
+↓
+Frontend shows toast feedback
+↓
+User clicks Upload CV
+↓
+Form enters submitting state
+↓
+Upload action completes
+↓
+Frontend shows success or error toast
+
+The current form is designed so the mock submit logic can later be replaced with the real upload API flow.
+
+### Current Form Fields
+
+| Field | Type | Required | Notes |
+| --- | --- | --- | --- |
+| candidateId | string | Yes | Temporary manual input |
+| file | File | Yes | PDF or DOCX CV file |
+
+The candidateId input is temporary. It is used only for testing the upload flow before the candidate detail page is implemented.
+
+Later, when upload is moved into:
+
+/candidates/[id]
+
+the candidateId should come from the route parameter instead of manual input.
+
+### File Validation Rules
+
+The upload form validates:
+
+| Rule | Source | Feedback |
+| --- | --- | --- |
+| Missing Candidate ID | Form state | Toast error |
+| Missing CV file | Form state | Toast error |
+| Invalid file type | isAcceptedResumeFile() | Toast error |
+| File larger than max size | isValidResumeFileSize() | Toast error |
+
+Resume file rules must not be hardcoded inside the component.
+
+Accepted file types and extensions come from:
+
+src/lib/constants/file.constants.ts
+
+Current constants:
+
+ACCEPTED_RESUME_FILE_TYPES
+ACCEPTED_RESUME_FILE_EXTENSIONS
+DEFAULT_MAX_FILE_SIZE
+
+File size text should be displayed using:
+
+src/lib/utils/format-file-size.ts
+
+Resume-specific file validation should be handled by:
+
+src/lib/utils/resume-file.util.ts
+
+Expected helpers:
+
+isAcceptedResumeFile(file)
+isValidResumeFileSize(file)
+getAcceptedResumeFileInputValue()
+
+### Toast Feedback
+
+The project uses sonner through a shared toast helper.
+
+Provider location:
+
+src/app/layout.tsx
+<ToastProvider />
+
+Toast helper:
+
+src/components/feedback/toast.tsx
+
+Use toast feedback for user interactions such as:
+
+File selected
+Missing Candidate ID
+Missing CV file
+Invalid file format
+File too large
+Upload success
+Upload failure
+
+Example:
+
+```typescript
+showToast.success('CV uploaded successfully', {
+  description: 'The resume has been linked to the selected candidate.',
+});
+```
+
+Rule
+
+Do not call toast directly in feature components. Use showToast from the shared feedback layer.
+
+### UI Behavior
+
+The page shows a clean business dashboard upload panel with:
+
+Candidate ID input
+Styled CV file upload area
+Selected file name
+Upload button
+Disabled state while submitting
+Toast feedback for success and failure
+
+When upload is running, the submit button displays:
+
+Uploading...
+
+When upload succeeds, the form shows a success toast and clears the selected file and Candidate ID.
+
+### Future Backend Endpoints
+
+The final upload flow will use two backend endpoints:
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| POST | /files/upload | Uploads the CV file and creates a FileAsset record |
+| POST | /resumes | Creates a Resume record using candidateId and fileAssetId |
+
+The frontend API client already contains the /api prefix through NEXT_PUBLIC_API_BASE_URL, so feature API files must call:
+
+/files/upload
+/resumes
+
+not:
+
+/api/files/upload
+/api/resumes
+
+### Future Backend Upload Flow
+
+The future API-backed upload flow should be:
+
+User enters or resolves Candidate ID
+↓
+User selects a PDF or DOCX file
+↓
+Frontend validates candidateId and file
+↓
+POST /files/upload
+↓
+Backend returns FileAsset
+↓
+Frontend takes FileAsset.id
+↓
+POST /resumes with candidateId and fileAssetId
+↓
+Backend creates Resume with parseStatus = PENDING
+↓
+Frontend shows success toast
+
+### Future Request Flow Details
+
+#### Step 1: Upload File
+
+The frontend creates FormData and appends the selected file:
+
+```typescript
+const formData = new FormData();
+formData.append('file', file);
+```
+
+Then it calls:
+
+```typescript
+apiClient.upload<ApiResponse<FileAsset>>('/files/upload', formData);
+```
+
+The upload API returns a FileAsset.
+
+The most important field for the next step is:
+
+FileAsset.id
+
+#### Step 2: Create Resume
+
+After file upload succeeds, the frontend creates a resume using:
+
+```typescript
+{
+  candidateId: string;
+  fileAssetId: string;
+}
+```
+
+The resume API calls:
+
+```typescript
+apiClient.post<ApiResponse<Resume>>('/resumes', payload);
+```
+
+The backend creates a Resume record with:
+
+parseStatus = PENDING
+
+### Future API Files
+
+When the real backend integration is added, the following files should be used or created:
+
+```
+src/features/files/
+├── api/
+│   └── file.api.ts
+└── types/
+    └── file.type.ts
+
+src/features/resumes/
+├── api/
+│   └── resume.api.ts
+├── types/
+│   └── resume.type.ts
+└── hooks/
+    └── use-upload-resume.ts
+```
+
+| File | Purpose |
+| --- | --- |
+| src/features/files/api/file.api.ts | Calls the backend file upload endpoint |
+| src/features/files/types/file.type.ts | Defines FileAsset-related frontend types |
+| src/features/resumes/api/resume.api.ts | Calls the backend resume creation endpoint |
+| src/features/resumes/types/resume.type.ts | Defines Resume and create resume payload types |
+| src/features/resumes/hooks/use-upload-resume.ts | Coordinates file upload and resume creation flow |
+
+The form component should not call raw fetch directly. API calls should stay inside feature API functions or feature hooks.
+
+### Key Decisions
+
+The /resumes page is the temporary MVP entry point for CV upload.
+candidateId is manually entered only until candidate detail upload is implemented.
+File type and file size rules must come from shared constants and utilities.
+Upload feedback should use showToast.
+The component should not hardcode accepted MIME types, extensions, or max file size.
+The component should not call raw fetch.
+The real API-backed flow should upload the file first, then create the Resume record using fileAssetId.
+Resume creation should start with parseStatus = PENDING on the backend.
