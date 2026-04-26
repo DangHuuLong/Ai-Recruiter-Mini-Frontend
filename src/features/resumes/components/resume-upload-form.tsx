@@ -1,139 +1,201 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 
-import { uploadFile } from '@/features/files/api/file.api';
-import { createResume } from '@/features/resumes/api/resume.api';
-import type { Resume } from '@/features/resumes/types/resume.type';
-import { resumeUploadSchema } from '@/features/resumes/validations/resume.validation';
-
-type UploadState = 'idle' | 'uploading' | 'success' | 'error';
+import { showToast } from '@/components/feedback/toast';
+import { DEFAULT_MAX_FILE_SIZE } from '@/lib/constants/file.constants';
+import { formatFileSize } from '@/lib/utils/format-file-size';
+import {
+  getAcceptedResumeFileInputValue,
+  isAcceptedResumeFile,
+  isValidResumeFileSize,
+} from '@/lib/utils/resume-file.util';
 
 export function ResumeUploadForm() {
   const [candidateId, setCandidateId] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [state, setState] = useState<UploadState>('idle');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [createdResume, setCreatedResume] = useState<Resume | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isSubmitting = state === 'uploading';
+  const maxFileSizeLabel = formatFileSize(DEFAULT_MAX_FILE_SIZE);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFileChange = (file?: File) => {
+    if (!file) {
+      setSelectedFile(null);
+      return;
+    }
+
+    if (!isAcceptedResumeFile(file)) {
+      setSelectedFile(null);
+
+      showToast.error('Invalid file format', {
+        description: 'Please upload a PDF or DOCX resume file.',
+      });
+
+      return;
+    }
+
+    if (!isValidResumeFileSize(file)) {
+      setSelectedFile(null);
+
+      showToast.error('File is too large', {
+        description: `Please upload a file smaller than ${maxFileSizeLabel}.`,
+      });
+
+      return;
+    }
+
+    setSelectedFile(file);
+
+    showToast.info('CV file selected', {
+      description: file.name,
+    });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setErrorMessage(null);
-    setCreatedResume(null);
+    const normalizedCandidateId = candidateId.trim();
 
-    const validation = resumeUploadSchema.safeParse({
-      candidateId,
-      file,
-    });
+    if (!normalizedCandidateId) {
+      showToast.error('Candidate ID is required', {
+        description: 'Please enter the candidate ID before uploading a CV.',
+      });
 
-    if (!validation.success) {
-      setState('error');
-      setErrorMessage(validation.error.issues[0]?.message ?? 'Invalid upload data');
+      return;
+    }
+
+    if (!selectedFile) {
+      showToast.error('CV file is required', {
+        description: 'Please choose a PDF or DOCX file to upload.',
+      });
+
+      return;
+    }
+
+    if (!isAcceptedResumeFile(selectedFile)) {
+      showToast.error('Invalid file format', {
+        description: 'Please upload a PDF or DOCX resume file.',
+      });
+
+      return;
+    }
+
+    if (!isValidResumeFileSize(selectedFile)) {
+      showToast.error('File is too large', {
+        description: `Please upload a file smaller than ${maxFileSizeLabel}.`,
+      });
+
       return;
     }
 
     try {
-      setState('uploading');
+      setIsSubmitting(true);
 
-      const uploadedFile = await uploadFile(validation.data.file);
+      /**
+       * TODO:
+       * Replace this mock delay with the real upload API later.
+       */
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const resume = await createResume({
-        candidateId: validation.data.candidateId,
-        fileAssetId: uploadedFile.id,
+      showToast.success('CV uploaded successfully', {
+        description: `${selectedFile.name} has been linked to candidate ${normalizedCandidateId}.`,
       });
 
-      setCreatedResume(resume);
-      setState('success');
-      setFile(null);
-    } catch (error) {
-      setState('error');
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Failed to upload resume',
-      );
+      setCandidateId('');
+      setSelectedFile(null);
+    } catch {
+      showToast.error('Failed to upload CV', {
+        description:
+          'Something went wrong while uploading the resume. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-card border border-border-default bg-bg-card p-6"
-    >
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-text-primary">Upload CV</h2>
-        <p className="mt-1 text-sm text-text-secondary">
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
+      <div className="border-b border-slate-200 px-6 py-5">
+        <h2 className="text-lg font-semibold text-slate-950">Upload CV</h2>
+
+        <p className="mt-1 text-sm text-slate-500">
           Upload a PDF or DOCX file and link it to an existing candidate.
         </p>
       </div>
 
-      <div className="grid gap-4">
-        <div>
-          <label
-            htmlFor="candidateId"
-            className="mb-1 block text-sm font-medium text-text-primary"
-          >
-            Candidate ID
-          </label>
-          <input
-            id="candidateId"
-            value={candidateId}
-            onChange={(event) => setCandidateId(event.target.value)}
-            placeholder="candidate_123"
-            disabled={isSubmitting}
-            className="w-full rounded-input border border-border-default bg-bg-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-border-focus"
-          />
-          <p className="mt-1 text-xs text-text-muted">
-            This temporary field will be replaced by candidate detail upload later.
-          </p>
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-6 px-6 py-6">
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
+          <div className="space-y-2">
+            <label
+              htmlFor="candidateId"
+              className="block text-sm font-medium text-slate-800"
+            >
+              Candidate ID
+            </label>
 
-        <div>
-          <label
-            htmlFor="resumeFile"
-            className="mb-1 block text-sm font-medium text-text-primary"
-          >
-            CV file
-          </label>
-          <input
-            id="resumeFile"
-            type="file"
-            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            disabled={isSubmitting}
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-            className="w-full rounded-input border border-border-default bg-bg-card px-3 py-2 text-sm text-text-primary file:mr-4 file:rounded-button file:border-0 file:bg-bg-muted file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-text-primary"
-          />
+            <input
+              id="candidateId"
+              name="candidateId"
+              type="text"
+              value={candidateId}
+              onChange={(event) => setCandidateId(event.target.value)}
+              placeholder="candidate_123"
+              disabled={isSubmitting}
+              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+            />
 
-          {file ? (
-            <p className="mt-2 text-xs text-text-secondary">
-              Selected file: <span className="font-medium">{file.name}</span>
+            <p className="text-xs leading-5 text-slate-500">
+              This temporary field will be replaced by candidate detail upload
+              later.
             </p>
-          ) : null}
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-800">
+              CV file
+            </label>
+
+            <label className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-center transition hover:border-blue-500 hover:bg-blue-50">
+              <input
+                type="file"
+                accept={getAcceptedResumeFileInputValue()}
+                disabled={isSubmitting}
+                className="sr-only"
+                onChange={(event) => {
+                  handleFileChange(event.target.files?.[0]);
+                  event.target.value = '';
+                }}
+              />
+
+              <div className="flex size-12 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+                <span className="text-lg font-semibold text-blue-600">↑</span>
+              </div>
+
+              <p className="mt-4 text-sm font-medium text-slate-900">
+                {selectedFile?.name || 'Choose a CV file'}
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                PDF or DOCX files up to {maxFileSizeLabel} are supported.
+              </p>
+            </label>
+          </div>
         </div>
 
-        {errorMessage ? (
-          <div className="rounded-card border border-error/30 bg-error/5 px-4 py-3 text-sm text-error">
-            {errorMessage}
-          </div>
-        ) : null}
+        <div className="flex items-center justify-between border-t border-slate-200 pt-5">
+          <p className="text-xs text-slate-500">
+            The uploaded file will be stored and prepared for resume parsing.
+          </p>
 
-        {createdResume ? (
-          <div className="rounded-card border border-success/30 bg-success/5 px-4 py-3 text-sm text-success">
-            Resume created successfully. Status: {createdResume.parseStatus}
-          </div>
-        ) : null}
-
-        <div className="flex justify-end">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-button bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-blue-300"
           >
             {isSubmitting ? 'Uploading...' : 'Upload CV'}
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </section>
   );
 }

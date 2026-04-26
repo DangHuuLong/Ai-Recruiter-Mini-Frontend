@@ -32,20 +32,20 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-border-default bg-bg-card',
+        'overflow-hidden rounded-card border border-border-default bg-bg-card shadow-card',
         className,
       )}
     >
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
-          <thead className="bg-bg-muted">
-            <tr>
+          <thead className="bg-slate-50">
+            <tr className="border-b border-divider">
               {columns.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
                   className={cn(
-                    'px-4 py-3 text-left font-medium text-text-muted',
+                    'px-5 py-4 text-left text-xs font-bold uppercase tracking-[0.08em] text-text-muted',
                     column.className,
                   )}
                 >
@@ -55,14 +55,17 @@ export function DataTable<T>({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border-default">
+          <tbody className="divide-y divide-divider bg-white">
             {data.map((item) => (
-              <tr key={getRowKey(item)} className="hover:bg-bg-muted/60">
+              <tr
+                key={getRowKey(item)}
+                className="transition-colors hover:bg-primary-soft"
+              >
                 {columns.map((column) => (
                   <td
                     key={column.key}
                     className={cn(
-                      'px-4 py-3 align-middle text-text-primary',
+                      'px-5 py-4 align-middle text-text-primary',
                       column.className,
                     )}
                   >

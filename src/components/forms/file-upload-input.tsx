@@ -34,6 +34,7 @@ export function FileUploadInput({
 }: FileUploadInputProps) {
   const inputId = useId();
   const [internalError, setInternalError] = useState<string | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const acceptedFileTypes = accept.join(',');
 
@@ -78,6 +79,7 @@ export function FileUploadInput({
 
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
+    setIsDragActive(false);
 
     if (disabled) {
       return;
@@ -90,22 +92,27 @@ export function FileUploadInput({
 
   const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragActive(false);
   };
 
   const currentError = error || internalError;
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={cn('space-y-3', className)}>
       <div className="space-y-1">
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-text-primary"
+          className="text-sm font-bold text-text-primary"
         >
           {label}
         </label>
 
         {description ? (
-          <p className="text-sm text-text-muted">{description}</p>
+          <p className="text-sm leading-6 text-text-muted">{description}</p>
         ) : null}
       </div>
 
@@ -113,10 +120,13 @@ export function FileUploadInput({
         htmlFor={inputId}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         className={cn(
-          'flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border-default bg-bg-card p-6 text-center transition hover:bg-bg-muted',
+          'group flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-card border-2 border-dashed bg-white/80 p-6 text-center shadow-card backdrop-blur transition-all duration-200',
+          isDragActive && 'scale-[1.01] border-primary bg-primary-soft',
+          !isDragActive && 'border-border-default hover:border-primary hover:bg-primary-soft/70',
           disabled && 'cursor-not-allowed opacity-60',
-          currentError && 'border-error',
+          currentError && 'border-error bg-red-50/70',
         )}
       >
         <input
@@ -128,21 +138,27 @@ export function FileUploadInput({
           onChange={handleInputChange}
         />
 
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-text-primary">
-            Click to upload or drag and drop
-          </p>
+        <div className="space-y-3">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white shadow-sm transition group-hover:scale-105">
+            <span className="text-xl font-bold">↑</span>
+          </div>
 
-          <p className="text-sm text-text-muted">
-            PDF or DOCX, up to {formatFileSize(maxSize)}
-          </p>
+          <div className="space-y-1">
+            <p className="text-sm font-bold text-text-primary">
+              Click to upload or drag and drop
+            </p>
+
+            <p className="text-xs font-medium text-text-muted">
+              PDF or DOCX, up to {formatFileSize(maxSize)}
+            </p>
+          </div>
         </div>
       </label>
 
       {value ? (
-        <div className="flex items-center justify-between rounded-md border border-border-default bg-bg-card px-3 py-2">
+        <div className="flex items-center justify-between rounded-card border border-border-default bg-white px-4 py-3 shadow-card">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-text-primary">
+            <p className="truncate text-sm font-semibold text-text-primary">
               {value.name}
             </p>
 
@@ -155,7 +171,7 @@ export function FileUploadInput({
             type="button"
             disabled={disabled}
             onClick={() => handleFileChange(null)}
-            className="text-sm font-medium text-error disabled:cursor-not-allowed disabled:opacity-60"
+            className="ml-3 rounded-button px-3 py-1.5 text-sm font-semibold text-error transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Remove
           </button>
@@ -163,7 +179,7 @@ export function FileUploadInput({
       ) : null}
 
       {currentError ? (
-        <p className="text-sm text-error">{currentError}</p>
+        <p className="text-sm font-semibold text-error">{currentError}</p>
       ) : null}
     </div>
   );
