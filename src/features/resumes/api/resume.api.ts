@@ -7,3 +7,9 @@ export async function createResume(payload: CreateResumePayload): Promise<Resume
 
   return response.data;
 }
+
+export async function getResumeById(id: string): Promise<Resume> {
+  const response = await apiClient.get<ApiResponse<Resume>>(`/resumes/${id}`);
+
+  return response.data;
+}
