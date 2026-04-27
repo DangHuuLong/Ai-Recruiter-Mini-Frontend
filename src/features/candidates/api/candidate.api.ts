@@ -16,3 +16,9 @@ export async function createCandidate(
 
   return response.data;
 }
+
+export async function getCandidates(): Promise<Candidate[]> {
+  const response = await apiClient.get<ApiResponse<Candidate[]>>('/candidates');
+
+  return response.data;
+}

@@ -97,7 +97,7 @@ export function ResumeUploadForm() {
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-      <div className="border-b border-slate-200 py-5">
+      <div className="border-b border-slate-200 py-5 px-6">
         <h2 className="text-lg font-semibold text-slate-950">Upload CV</h2>
 
         <p className="mt-1 text-sm text-slate-500">

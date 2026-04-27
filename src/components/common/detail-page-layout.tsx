@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils/cn';
@@ -24,12 +24,12 @@ export function DetailPageLayout({
 }: DetailPageLayoutProps) {
   return (
     <div className={cn('space-y-6', className)}>
-      <div className="rounded-card border border-border-default bg-white/80 p-5 shadow-card backdrop-blur sm:p-6">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
         <div className="space-y-4">
           {backHref ? (
             <Link
               href={backHref}
-              className="inline-flex items-center text-sm font-semibold text-primary transition hover:text-primary-hover"
+              className="inline-flex items-center text-sm font-semibold text-blue-600 transition hover:text-blue-700"
             >
               ← {backLabel}
             </Link>
@@ -37,12 +37,14 @@ export function DetailPageLayout({
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-3xl space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
                 {title}
               </h1>
 
               {description ? (
-                <p className="text-base leading-7 text-text-muted">{description}</p>
+                <p className="text-sm leading-6 text-slate-600">
+                  {description}
+                </p>
               ) : null}
             </div>
 
