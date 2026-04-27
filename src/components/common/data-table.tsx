@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { EmptyState } from '@/components/feedback';
 import { cn } from '@/lib/utils/cn';
@@ -32,20 +32,20 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-border-default bg-bg-card',
+        'overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card',
         className,
       )}
     >
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
-          <thead className="bg-bg-muted">
-            <tr>
+          <thead className="bg-slate-50">
+            <tr className="border-b border-slate-200">
               {columns.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
                   className={cn(
-                    'px-4 py-3 text-left font-medium text-text-muted',
+                    'px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500',
                     column.className,
                   )}
                 >
@@ -55,14 +55,17 @@ export function DataTable<T>({
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border-default">
+          <tbody className="divide-y divide-slate-200 bg-white">
             {data.map((item) => (
-              <tr key={getRowKey(item)} className="hover:bg-bg-muted/60">
+              <tr
+                key={getRowKey(item)}
+                className="transition-colors hover:bg-slate-50"
+              >
                 {columns.map((column) => (
                   <td
                     key={column.key}
                     className={cn(
-                      'px-4 py-3 align-middle text-text-primary',
+                      'px-5 py-4 align-middle text-slate-900',
                       column.className,
                     )}
                   >

@@ -4,10 +4,8 @@ type MainContentProps = {
 
 export function MainContent({ children }: MainContentProps) {
   return (
-    <main className="flex-1 overflow-y-auto">
-      <div className="mx-auto w-full max-w-content px-6 py-6">
-        {children}
-      </div>
+    <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl">{children}</div>
     </main>
   );
 }

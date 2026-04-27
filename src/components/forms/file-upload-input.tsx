@@ -1,6 +1,7 @@
 'use client';
 
-import { ChangeEvent, DragEvent, useId, useState } from 'react';
+import type { ChangeEvent, DragEvent } from 'react';
+import { useId, useState } from 'react';
 
 import {
   ACCEPTED_RESUME_FILE_TYPES,
@@ -34,6 +35,7 @@ export function FileUploadInput({
 }: FileUploadInputProps) {
   const inputId = useId();
   const [internalError, setInternalError] = useState<string | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const acceptedFileTypes = accept.join(',');
 
@@ -78,6 +80,7 @@ export function FileUploadInput({
 
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
+    setIsDragActive(false);
 
     if (disabled) {
       return;
@@ -90,22 +93,30 @@ export function FileUploadInput({
 
   const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
+
+    if (!disabled) {
+      setIsDragActive(true);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setIsDragActive(false);
   };
 
   const currentError = error || internalError;
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={cn('space-y-3', className)}>
       <div className="space-y-1">
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-text-primary"
+          className="block text-sm font-medium text-slate-800"
         >
           {label}
         </label>
 
         {description ? (
-          <p className="text-sm text-text-muted">{description}</p>
+          <p className="text-sm leading-6 text-slate-500">{description}</p>
         ) : null}
       </div>
 
@@ -113,10 +124,13 @@ export function FileUploadInput({
         htmlFor={inputId}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         className={cn(
-          'flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border-default bg-bg-card p-6 text-center transition hover:bg-bg-muted',
+          'group flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center transition',
+          'hover:border-blue-500 hover:bg-blue-50',
+          isDragActive && 'border-blue-500 bg-blue-50',
           disabled && 'cursor-not-allowed opacity-60',
-          currentError && 'border-error',
+          currentError && 'border-red-300 bg-red-50',
         )}
       >
         <input
@@ -128,25 +142,31 @@ export function FileUploadInput({
           onChange={handleInputChange}
         />
 
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-text-primary">
-            Click to upload or drag and drop
-          </p>
+        <div className="space-y-3">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-white text-blue-600 shadow-sm ring-1 ring-slate-200 transition group-hover:scale-105">
+            <span className="text-xl font-semibold">↑</span>
+          </div>
 
-          <p className="text-sm text-text-muted">
-            PDF or DOCX, up to {formatFileSize(maxSize)}
-          </p>
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-slate-950">
+              Click to upload or drag and drop
+            </p>
+
+            <p className="text-xs font-medium text-slate-500">
+              PDF or DOCX, up to {formatFileSize(maxSize)}
+            </p>
+          </div>
         </div>
       </label>
 
       {value ? (
-        <div className="flex items-center justify-between rounded-md border border-border-default bg-bg-card px-3 py-2">
+        <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-card">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-text-primary">
+            <p className="truncate text-sm font-semibold text-slate-950">
               {value.name}
             </p>
 
-            <p className="text-xs text-text-muted">
+            <p className="text-xs text-slate-500">
               {formatFileSize(value.size)}
             </p>
           </div>
@@ -155,7 +175,7 @@ export function FileUploadInput({
             type="button"
             disabled={disabled}
             onClick={() => handleFileChange(null)}
-            className="text-sm font-medium text-error disabled:cursor-not-allowed disabled:opacity-60"
+            className="ml-3 rounded-xl px-3 py-1.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Remove
           </button>
@@ -163,7 +183,7 @@ export function FileUploadInput({
       ) : null}
 
       {currentError ? (
-        <p className="text-sm text-error">{currentError}</p>
+        <p className="text-sm font-semibold text-red-600">{currentError}</p>
       ) : null}
     </div>
   );

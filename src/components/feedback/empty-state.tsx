@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -18,23 +18,23 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex min-h-40 flex-col items-center justify-center rounded-lg border border-border-default bg-bg-card p-6 text-center',
+        'flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-card',
         className,
       )}
     >
-      <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-bg-muted">
-        <span className="text-lg text-text-muted">—</span>
+      <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100">
+        <span className="text-2xl font-semibold text-blue-600">○</span>
       </div>
 
-      <div className="space-y-1">
-        <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
+      <div className="max-w-md space-y-2">
+        <h3 className="text-base font-semibold text-slate-950">{title}</h3>
 
         {description ? (
-          <p className="text-sm text-text-muted">{description}</p>
+          <p className="text-sm leading-6 text-slate-600">{description}</p>
         ) : null}
       </div>
 
-      {action ? <div className="mt-4">{action}</div> : null}
+      {action ? <div className="mt-5">{action}</div> : null}
     </div>
   );
 }
