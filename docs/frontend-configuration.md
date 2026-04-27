@@ -1521,3 +1521,61 @@ A successful upload displays:
 ```
 Resume created successfully. Status: PENDING
 ```
+
+---
+
+## 16. Candidate Creation Form Implementation
+
+### Purpose
+
+Implemented the candidate creation page and connected it with the candidate API.
+
+This task allows users to create a candidate profile from the dashboard before linking resumes, applications, and evaluations.
+
+---
+
+### Implemented Scope
+
+- Created the `/candidates/new` page.
+- Added the candidate creation form UI.
+- Added input fields for candidate profile information.
+- Added frontend validation for candidate form data.
+- Integrated candidate creation with the backend candidate endpoint.
+- Added create loading state.
+- Added success and error feedback using the shared toast helper.
+- Refactored candidate creation logic into a feature hook.
+- Moved candidate form types into a separate type file.
+- Updated dashboard content layout so candidate and resume pages align consistently.
+
+---
+
+### Updated Files
+
+```txt
+src/app/(dashboard)/candidates/new/page.tsx
+src/app/(dashboard)/resumes/page.tsx
+
+src/components/layout/app-shell.tsx
+src/components/layout/main-content.tsx
+
+src/features/candidates/api/candidate.api.ts
+src/features/candidates/components/candidate-form.tsx
+src/features/candidates/hooks/use-create-candidate.ts
+src/features/candidates/types/candidate-form.type.ts
+src/features/candidates/types/candidate.type.ts
+src/features/candidates/types/create-candidate.type.ts
+src/features/candidates/validations/candidate.validation.ts
+
+src/features/resumes/components/resume-upload-form.tsx
+```
+
+### Backend Endpoint Used
+
+```
+POST /candidates
+```
+
+### Result
+
+The `/candidates/new` page can now create a candidate profile through the backend API.
+A successful create action displays toast feedback and resets the form.
