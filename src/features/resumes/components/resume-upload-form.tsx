@@ -18,11 +18,30 @@ export function ResumeUploadForm() {
   const [candidateId, setCandidateId] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { isUploading, uploadResume } = useUploadResume();
+  const {
+    isUploading,
+    uploadProgress,
+    uploadStep,
+    uploadResume,
+    resetUploadProgress,
+  } = useUploadResume();
 
   const maxFileSizeLabel = formatFileSize(DEFAULT_MAX_FILE_SIZE);
 
+  const shouldShowProgress = uploadStep !== 'idle';
+
+  const uploadProgressLabel =
+    uploadStep === 'processing'
+      ? 'Processing uploaded file...'
+      : uploadStep === 'success'
+        ? 'Upload completed'
+        : uploadStep === 'error'
+          ? 'Upload failed'
+          : 'Uploading file...';
+
   const handleFileChange = (file?: File) => {
+    resetUploadProgress();
+
     if (!file) {
       setSelectedFile(null);
       return;
@@ -174,6 +193,27 @@ export function ResumeUploadForm() {
             </label>
           </div>
         </div>
+
+        {shouldShowProgress ? (
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-medium text-slate-700">
+                {uploadProgressLabel}
+              </p>
+
+              <p className="text-sm font-semibold text-slate-900">
+                {uploadProgress}%
+              </p>
+            </div>
+
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-blue-600 transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+          </div>
+        ) : null}
 
         <div className="flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-slate-500">

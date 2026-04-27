@@ -2008,3 +2008,152 @@ The detail component does not create its own page layout or one-off loading and 
 The `/resumes/[id]` page can now display resume record details from the backend.
 
 The page supports cached detail data, loading state, error retry, not found state, toast feedback, back navigation, linked candidate navigation, and parsed data display.
+
+---
+
+## 21. Resume Upload Progress Implementation
+
+### Purpose
+
+Implemented upload progress display for the resume upload flow.
+
+This task allows users to see file upload progress while uploading a CV from the `/resumes` page.
+
+---
+
+### Implemented Scope
+
+- Added upload progress support to the shared API client.
+- Added XMLHttpRequest-based upload handling for requests that need upload progress.
+- Kept the existing `fetch`-based request flow for normal API requests.
+- Added upload progress type definitions.
+- Updated file upload API to accept an upload progress callback.
+- Updated resume upload hook to expose upload progress state.
+- Added upload step state for upload lifecycle display.
+- Added progress bar UI to the resume upload form.
+- Added progress labels for upload, processing, success, and error states.
+- Kept upload orchestration inside the resume feature hook instead of moving API logic into the UI component.
+
+---
+
+### Updated Files
+
+```txt
+src/lib/api/api-client.ts
+src/lib/api/api-types.ts
+src/lib/api/index.ts
+
+src/features/files/api/file.api.ts
+
+src/features/resumes/hooks/use-upload-resume.ts
+src/features/resumes/types/upload-resume.type.ts
+src/features/resumes/components/resume-upload-form.tsx
+```
+
+### Upload Flow
+
+```
+ResumeUploadForm
+  ↓
+useUploadResume
+  ↓
+uploadFile
+  ↓
+apiClient.upload
+  ↓
+XMLHttpRequest upload with progress
+  ↓
+createResume
+```
+
+### Upload Progress Behavior
+
+The upload progress is split into two phases:
+
+```
+0% - 95%    File upload progress
+95% - 100%  Resume record creation and final completion
+```
+
+The progress is capped at `95%` during the file upload because the frontend still needs to create the resume record after the file upload response is returned.
+
+This prevents the UI from showing `100%` while the system is still processing the uploaded file and creating the related resume record.
+
+### Upload Steps
+
+The resume upload hook now tracks the upload lifecycle with:
+
+```
+idle
+uploading
+processing
+success
+error
+```
+
+These states are used by the UI to display the correct progress label:
+
+```
+Uploading file...
+Processing uploaded file...
+Upload completed
+Upload failed
+```
+
+### API Client Update
+
+The shared API client still uses `fetch` for normal requests.
+
+For upload requests with `onUploadProgress`, the API client uses `XMLHttpRequest` because browser `fetch` does not expose upload progress events.
+
+```
+apiClient.get       fetch
+apiClient.post      fetch
+apiClient.patch     fetch
+apiClient.delete    fetch
+apiClient.upload    fetch or XMLHttpRequest
+```
+
+`apiClient.upload` only switches to `XMLHttpRequest` when an upload progress callback is provided.
+
+### Important Notes
+
+- Upload progress is only visible while the browser is sending the file to the backend.
+- Small files or fast local uploads may complete too quickly to visually observe progress.
+- Use browser Network throttling to test the progress UI reliably.
+- The progress value represents upload progress from browser to backend, not backend processing progress.
+- Backend processing such as storing the file and creating related records may continue briefly after upload reaches `95%`.
+- Upload logic must stay in `useUploadResume`.
+- The UI component should only render upload state and call the hook.
+- Do not move file upload API calls directly into `ResumeUploadForm`.
+
+### How to Test
+
+Use a larger PDF/DOCX file or enable browser network throttling.
+
+Recommended manual test:
+
+```
+1. Open Chrome DevTools.
+2. Go to the Network tab.
+3. Set throttling to Slow 3G or a custom slow profile.
+4. Select a valid PDF or DOCX file.
+5. Submit the resume upload form.
+6. Confirm that the progress bar appears and updates.
+7. Confirm that the label changes to Processing uploaded file...
+8. Confirm that success toast appears after completion.
+```
+
+Expected UI behavior:
+
+```
+Uploading file... 0-95%
+Processing uploaded file... 95%
+Upload completed 100%
+```
+
+### Result
+
+The `/resumes` page now displays upload progress when uploading a CV.
+
+Users can see upload progress, processing state, success state, and error state during the resume upload.
