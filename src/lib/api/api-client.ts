@@ -46,6 +46,20 @@ const createFallbackErrorResponse = (
   };
 };
 
+const createXhrFallbackErrorResponse = (
+  xhr: XMLHttpRequest,
+  path: string,
+): ApiErrorResponse => {
+  return {
+    success: false,
+    statusCode: xhr.status,
+    message: xhr.statusText || 'Request failed',
+    errors: [],
+    timestamp: new Date().toISOString(),
+    path,
+  };
+};
+
 const parseJsonResponse = async (response: Response): Promise<unknown> => {
   const contentType = response.headers.get('content-type');
   const isJson = contentType?.includes('application/json');
@@ -74,6 +88,23 @@ const parseResponse = async <T>(
   return data as T;
 };
 
+const parseXhrResponse = <T>(xhr: XMLHttpRequest, path: string): T => {
+  const contentType = xhr.getResponseHeader('content-type');
+  const isJson = contentType?.includes('application/json');
+
+  const data = isJson && xhr.responseText ? JSON.parse(xhr.responseText) : null;
+
+  if (xhr.status < 200 || xhr.status >= 300) {
+    if (data && typeof data === 'object' && 'success' in data) {
+      throw new ApiError(data as ApiErrorResponse, xhr.status);
+    }
+
+    throw new ApiError(createXhrFallbackErrorResponse(xhr, path), xhr.status);
+  }
+
+  return data as T;
+};
+
 const request = async <T>(
   method: string,
   path: string,
@@ -95,6 +126,63 @@ const request = async <T>(
   });
 
   return parseResponse<T>(response, normalizePath(path));
+};
+
+const uploadWithProgress = async <T>(
+  path: string,
+  formData: FormData,
+  options: RequestOptions = {},
+): Promise<T> => {
+  const { params, headers, onUploadProgress } = options;
+  const url = buildUrl(path, params);
+  const normalizedPath = normalizePath(path);
+
+  return new Promise<T>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', url);
+
+    if (headers) {
+      Object.entries(headers).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          xhr.setRequestHeader(key, value);
+        }
+      });
+    }
+
+    xhr.upload.onprogress = (event) => {
+      if (!event.lengthComputable || !onUploadProgress) {
+        return;
+      }
+
+      const percent = Math.round((event.loaded / event.total) * 100);
+
+      onUploadProgress({
+        loaded: event.loaded,
+        total: event.total,
+        percent,
+      });
+    };
+
+    xhr.onload = () => {
+      try {
+        resolve(parseXhrResponse<T>(xhr, normalizedPath));
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(
+        new ApiError(
+          createXhrFallbackErrorResponse(xhr, normalizedPath),
+          xhr.status || 500,
+        ),
+      );
+    };
+
+    xhr.send(formData);
+  });
 };
 
 export const apiClient = {
@@ -128,6 +216,10 @@ export const apiClient = {
   },
 
   upload: <T>(path: string, formData: FormData, options?: RequestOptions) => {
+    if (options?.onUploadProgress) {
+      return uploadWithProgress<T>(path, formData, options);
+    }
+
     return request<T>('POST', path, {
       ...options,
       body: formData,

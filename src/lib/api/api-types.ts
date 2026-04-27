@@ -37,7 +37,14 @@ export type QueryParams = Record<
   string | number | boolean | null | undefined
 >;
 
+export type UploadProgress = {
+  loaded: number;
+  total: number;
+  percent: number;
+};
+
 export type RequestOptions = Omit<RequestInit, 'body'> & {
   params?: QueryParams;
   body?: unknown;
+  onUploadProgress?: (progress: UploadProgress) => void;
 };

@@ -1,8 +1,16 @@
 import { apiClient } from '@/lib/api';
-import type { ApiResponse } from '@/lib/api';
+import type { ApiResponse, UploadProgress } from '@/lib/api/api-types';
+
 import type { FileAsset } from '../types/file.type';
 
-export async function uploadFile(file: File): Promise<FileAsset> {
+type UploadFileOptions = {
+  onUploadProgress?: (progress: UploadProgress) => void;
+};
+
+export async function uploadFile(
+  file: File,
+  options?: UploadFileOptions,
+): Promise<FileAsset> {
   const formData = new FormData();
 
   formData.append('file', file);
@@ -10,6 +18,9 @@ export async function uploadFile(file: File): Promise<FileAsset> {
   const response = await apiClient.upload<ApiResponse<FileAsset>>(
     '/files/upload',
     formData,
+    {
+      onUploadProgress: options?.onUploadProgress,
+    },
   );
 
   return response.data;
