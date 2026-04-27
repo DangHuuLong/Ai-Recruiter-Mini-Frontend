@@ -2,7 +2,7 @@ import { ResumeUploadForm } from '@/features/resumes/components/resume-upload-fo
 
 export default function ResumesPage() {
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="max-w-6xl space-y-6">
       <div className="flex items-start justify-between gap-6">
         <div>
           <p className="text-sm font-medium text-blue-600">
