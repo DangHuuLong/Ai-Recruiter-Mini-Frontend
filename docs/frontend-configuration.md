@@ -1579,3 +1579,134 @@ POST /candidates
 
 The `/candidates/new` page can now create a candidate profile through the backend API.
 A successful create action displays toast feedback and resets the form.
+
+---
+
+## 17. Candidate List Page Implementation
+
+### Purpose
+
+Implemented the candidate list page for the candidate feature.
+
+This task allows users to view created candidate profiles from the dashboard and navigate to candidate creation or candidate detail pages.
+
+---
+
+### Implemented Scope
+
+- Created the `/candidates` page.
+- Added candidate list display.
+- Added `Create Candidate` action linking to `/candidates/new`.
+- Added candidate table columns for candidate name, email, phone, location, and action.
+- Integrated candidate list fetching with the backend candidate endpoint.
+- Added loading state for candidate list fetching.
+- Added empty state when there are no candidates.
+- Added error state with retry action.
+- Added toast feedback when candidate list loading fails.
+- Added Zustand store for candidate list caching.
+- Reset candidate list cache after creating a new candidate.
+- Refactored shared UI components to use current Tailwind classes and existing theme extensions.
+- Reused global components from `src/components` for table, loading, empty, confirm dialog, detail layout, detail section, skeleton, and file upload UI.
+
+---
+
+### Updated Files
+
+```txt
+package.json
+package-lock.json
+
+src/app/(dashboard)/candidates/page.tsx
+
+src/components/common/confirm-dialog.tsx
+src/components/common/data-table.tsx
+src/components/common/detail-page-layout.tsx
+src/components/common/detail-section.tsx
+
+src/components/feedback/empty-state.tsx
+src/components/feedback/loading-state.tsx
+src/components/feedback/skeleton.tsx
+
+src/components/forms/file-upload-input.tsx
+
+src/features/candidates/api/candidate.api.ts
+src/features/candidates/components/candidate-form.tsx
+src/features/candidates/components/candidate-list.tsx
+src/features/candidates/hooks/use-candidates.ts
+src/features/candidates/stores/candidate-list.store.ts
+src/features/candidates/types/candidate-list-store.type.ts
+src/features/candidates/types/candidate-list.type.ts
+src/features/candidates/types/candidate-query.type.ts
+
+src/features/resumes/components/resume-upload-form.tsx
+src/lib/utils/candidate-contact.util.ts
+```
+
+### Backend Endpoint Used
+
+```
+GET /candidates
+```
+
+### State Management
+
+Candidate list data is cached with Zustand in:
+
+```
+src/features/candidates/stores/candidate-list.store.ts
+```
+
+The store keeps:
+
+```
+candidates
+hasLoaded
+isLoading
+errorMessage
+```
+
+The list page uses the cache to avoid showing loading repeatedly when users return to `/candidates`.
+
+After a candidate is created successfully, the candidate list cache is reset so the next list load fetches fresh data from the backend.
+
+### Shared Component Usage
+
+The candidate list page uses shared UI components instead of recreating one-off UI inside the feature component:
+
+```
+src/components/common/data-table.tsx
+src/components/feedback/empty-state.tsx
+src/components/feedback/loading-state.tsx
+src/components/feedback/toast.tsx
+```
+
+Shared component styling was also adjusted to use stable Tailwind classes such as:
+
+```
+bg-white
+border-slate-200
+text-slate-950
+text-slate-600
+text-slate-500
+bg-blue-600
+hover:bg-blue-700
+rounded-xl
+rounded-2xl
+shadow-card
+shadow-panel
+```
+
+### Important Notes
+
+- Candidate list fetching must stay in `features/candidates/api/candidate.api.ts`.
+- Candidate list cache must stay inside the candidate feature module, not in `src/lib`.
+- Feature components should reuse shared components from `src/components` before creating new UI.
+- `CandidateList` should not define API calls, reusable utility functions, or store types inline.
+- `DataTable` remains business-agnostic; candidate-specific columns stay inside `CandidateList`.
+- Phone is displayed in a separate table column instead of being merged into the contact column.
+
+### Result
+
+The `/candidates` page can now display candidate profiles from the backend.
+
+The page supports loading, empty, error, retry, cached list data, and navigation to create or view candidate records.

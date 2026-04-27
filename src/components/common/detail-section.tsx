@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -20,18 +20,18 @@ export function DetailSection({
   return (
     <section
       className={cn(
-        'rounded-card border border-border-default bg-bg-card p-5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-elevated sm:p-6',
+        'rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6',
         className,
       )}
     >
-      <div className="mb-5 flex flex-col gap-3 border-b border-divider pb-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-5 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h2 className="text-lg font-bold tracking-tight text-text-primary">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-950">
             {title}
           </h2>
 
           {description ? (
-            <p className="text-sm leading-6 text-text-muted">{description}</p>
+            <p className="text-sm leading-6 text-slate-600">{description}</p>
           ) : null}
         </div>
 
