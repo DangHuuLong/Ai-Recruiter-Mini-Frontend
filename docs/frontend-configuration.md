@@ -1909,3 +1909,102 @@ const resumes = useCandidateResumeListStore(
 The `/candidates/[id]` page can now display resumes linked to the selected candidate.
 
 The section supports cached resume data, loading state, empty state, error retry, toast feedback, and navigation to resume detail pages.
+
+---
+
+## 20. Resume Detail Page Implementation
+
+### Purpose
+
+Implemented the resume detail page for the resume feature.
+
+This task allows users to open a resume record from related screens, such as the candidate detail page, and view resume information in a dedicated detail screen.
+
+---
+
+### Implemented Scope
+
+- Created the `/resumes/[id]` detail page.
+- Added resume detail UI.
+- Added resume detail API integration.
+- Added resume detail hook.
+- Added Zustand store for resume detail caching.
+- Added store types and hook return types in separate type files.
+- Added loading state while resume detail is being fetched.
+- Added error state with retry action.
+- Added empty/not found state when resume data is unavailable.
+- Added toast feedback when resume detail loading fails.
+- Reused shared detail layout components.
+- Rendered linked candidate navigation from the resume detail page.
+- Displayed parsed resume data when available.
+
+---
+
+### Updated Files
+
+```txt
+src/app/(dashboard)/resumes/[id]/page.tsx
+
+src/features/resumes/api/resume.api.ts
+src/features/resumes/components/resume-detail.tsx
+src/features/resumes/hooks/use-resume-detail.ts
+src/features/resumes/stores/resume-detail.store.ts
+src/features/resumes/types/resume-detail-store.type.ts
+src/features/resumes/types/resume-detail-ui.type.ts
+src/features/resumes/types/resume-detail.type.ts
+```
+
+### Backend Endpoint Used
+
+```
+GET /resumes/:id
+```
+
+### State Management
+
+Resume detail data is cached with Zustand in:
+
+```
+src/features/resumes/stores/resume-detail.store.ts
+```
+
+The store keeps resume detail state by resume ID:
+
+```
+resumeById
+loadingById
+errorById
+```
+
+This allows resume detail data to be reused when users revisit the same resume detail page without unnecessary repeated loading.
+
+### Shared Component Usage
+
+The resume detail page reuses shared UI components:
+
+```
+src/components/common/detail-page-layout.tsx
+src/components/common/detail-section.tsx
+src/components/feedback/loading-state.tsx
+src/components/feedback/empty-state.tsx
+src/components/feedback/toast.tsx
+```
+
+The detail component does not create its own page layout or one-off loading and error UI.
+
+### Important Notes
+
+- Resume detail fetching must stay in `features/resumes/api/resume.api.ts`.
+- Resume detail state must stay inside the resume feature module.
+- Store types must stay in `features/resumes/types`, not inside the store file.
+- UI prop types for resume detail must stay in `resume-detail-ui.type.ts`.
+- `ResumeDetail` should not call `fetch` directly.
+- Page file should only read the route param and render the feature component.
+- Linked candidate navigation should point to `/candidates/[id]`.
+- Parsed resume data should only be displayed when available.
+
+### Result
+
+The `/resumes/[id]` page can now display resume record details from the backend.
+
+The page supports cached detail data, loading state, error retry, not found state, toast feedback, back navigation, linked candidate navigation, and parsed data display.
