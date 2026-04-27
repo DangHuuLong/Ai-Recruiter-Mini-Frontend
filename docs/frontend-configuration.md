@@ -1710,3 +1710,105 @@ shadow-panel
 The `/candidates` page can now display candidate profiles from the backend.
 
 The page supports loading, empty, error, retry, cached list data, and navigation to create or view candidate records.
+
+---
+
+## 18. Candidate Detail Page Implementation
+
+### Purpose
+
+Implemented the candidate detail page for the candidate feature.
+
+This task allows users to open a candidate from the candidate list and view full profile information in a dedicated detail screen.
+
+---
+
+### Implemented Scope
+
+- Created the `/candidates/[id]` detail page.
+- Added candidate detail UI.
+- Added candidate detail API integration.
+- Added candidate detail hook.
+- Added Zustand store for candidate detail caching.
+- Added loading state while candidate detail is being fetched.
+- Added error state with retry action.
+- Added empty/not found state when candidate data is unavailable.
+- Added toast feedback when candidate detail loading fails.
+- Reused shared detail layout components.
+- Split candidate detail UI props into a separate type file.
+- Split candidate detail store types into a separate type file.
+- Added shared display value utility for fallback text.
+- Rendered online profile URLs as clickable links.
+
+---
+
+### Updated Files
+
+```txt
+src/app/(dashboard)/candidates/[id]/page.tsx
+
+src/features/candidates/api/candidate.api.ts
+src/features/candidates/components/candidate-detail.tsx
+src/features/candidates/hooks/use-candidate-detail.ts
+src/features/candidates/stores/candidate-detail.store.ts
+src/features/candidates/types/candidate-detail-store.type.ts
+src/features/candidates/types/candidate-detail-ui.type.ts
+src/features/candidates/types/candidate-detail.type.ts
+
+src/lib/utils/display-value.util.ts
+```
+
+### Backend Endpoint Used
+
+```
+GET /candidates/:id
+```
+
+### State Management
+
+Candidate detail data is cached with Zustand in:
+
+```
+src/features/candidates/stores/candidate-detail.store.ts
+```
+
+The store keeps candidate detail state by candidate ID:
+
+```
+candidateById
+loadingById
+errorById
+```
+
+This allows detail data to be reused when users revisit a candidate detail page without unnecessary repeated loading.
+
+### Shared Component Usage
+
+The candidate detail page reuses shared UI components:
+
+```
+src/components/common/detail-page-layout.tsx
+src/components/common/detail-section.tsx
+src/components/feedback/loading-state.tsx
+src/components/feedback/empty-state.tsx
+src/components/feedback/toast.tsx
+```
+
+The detail component does not create its own page layout or one-off loading and error UI.
+
+### Important Notes
+
+- Candidate detail fetching must stay in `features/candidates/api/candidate.api.ts`.
+- Candidate detail state must stay inside the candidate feature module.
+- Store types must stay in `features/candidates/types`, not inside the store file.
+- UI prop types for candidate detail must stay in `candidate-detail-ui.type.ts`.
+- Shared fallback display logic should use `src/lib/utils/display-value.util.ts`.
+- Online profile fields should render clickable links when values are available.
+- `CandidateDetail` should not call `fetch` directly.
+- Page file should only read the route param and render the feature component.
+
+### Result
+
+The `/candidates/[id]` page can now display candidate profile details from the backend.
+
+The page supports cached detail data, loading state, error retry, not found state, toast feedback, back navigation, and clickable online profile links.

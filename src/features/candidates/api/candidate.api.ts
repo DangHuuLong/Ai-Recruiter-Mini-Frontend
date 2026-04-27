@@ -22,3 +22,11 @@ export async function getCandidates(): Promise<Candidate[]> {
 
   return response.data;
 }
+
+export async function getCandidateById(id: string): Promise<Candidate> {
+  const response = await apiClient.get<ApiResponse<Candidate>>(
+    `/candidates/${id}`,
+  );
+
+  return response.data;
+}
