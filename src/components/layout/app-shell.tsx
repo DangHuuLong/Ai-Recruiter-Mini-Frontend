@@ -1,6 +1,6 @@
-import { Header } from './header';
-import { MainContent } from './main-content';
-import { Sidebar } from './sidebar';
+import { Header } from '@/components/layout/header';
+import { MainContent } from '@/components/layout/main-content';
+import { Sidebar } from '@/components/layout/sidebar';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -8,10 +8,10 @@ type AppShellProps = {
 
 export function AppShell({ children }: AppShellProps) {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       <Sidebar />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header />
 
         <MainContent>{children}</MainContent>
