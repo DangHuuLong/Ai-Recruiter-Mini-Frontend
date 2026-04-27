@@ -173,6 +173,69 @@ Rules:
 
 ---
 
+### Shared Component Reuse Rule
+
+Before creating UI inside a feature component, always check whether a reusable component already exists in `src/components`.
+
+Shared components should be prioritized in this order:
+
+```txt
+src/components/common
+src/components/feedback
+src/components/forms
+src/components/ui
+src/components/layout
+```
+
+Use existing shared components whenever they fit the use case.
+
+| Need | Preferred component location |
+|------|-----|
+| Table/list display | `src/components/common/data-table.tsx` |
+| Empty data display | `src/components/feedback/empty-state.tsx` |
+| Loading display | `src/components/feedback/loading-state.tsx` or `skeleton.tsx` |
+| Confirm action | `src/components/common/confirm-dialog.tsx` |
+| Detail page wrapper | `src/components/common/detail-page-layout.tsx` |
+| Detail content section | `src/components/common/detail-section.tsx` |
+| File upload input | `src/components/forms/file-upload-input.tsx` |
+| Toast feedback | `src/components/feedback/toast.tsx` |
+
+Feature components should not recreate these UI patterns manually.
+
+**Correct**
+
+```javascript
+import { DataTable } from '@/components/common/data-table';
+import { EmptyState, LoadingState } from '@/components/feedback';
+```
+
+**Incorrect**
+
+```javascript
+// Creating a custom table, loading block, or empty state directly inside a feature component
+// when a shared component already exists.
+```
+
+If the existing shared component almost fits but needs a small reusable improvement, update the shared component instead of creating a one-off version inside the feature folder.
+
+If the UI pattern is reusable across more than one feature, create a new shared component under the correct `src/components` folder.
+
+Use this placement rule:
+
+| Component type | Location |
+|---|---|
+| Business-agnostic reusable UI | `src/components/common` |
+| Loading, empty, error, toast, skeleton | `src/components/feedback` |
+| Reusable form controls | `src/components/forms` |
+| Low-level UI primitives | `src/components/ui` |
+| App shell, sidebar, header, main content | `src/components/layout` |
+
+Shared components must not import from `src/features/*`.
+
+Feature-specific components may import shared components from `src/components`, but shared components must stay business-agnostic.
+
+---
+
 ### `src/components/layout`
 
 Use only for global app layout components.
@@ -743,16 +806,18 @@ This prevents shared components from becoming feature-specific.
 Before generating code, AI must check:
 
 ```txt
-1. Is there already a shared component for this UI?
-2. Is there already a constant for this value?
-3. Is there already a utility function for this logic?
-4. Is there already a toast/helper/provider for this behavior?
-5. Should this type live in a feature `types` folder?
-6. Should this validation live in a feature `validations` folder?
-7. Should this API call live in a feature `api` folder?
-8. Should this multi-step action live in a feature `hook`?
-9. Is this file mixing UI, API, validation, constants, and types?
-10. Can this component be smaller and cleaner by extracting logic?
+1. Is there already a shared component in src/components for this UI?
+2. Can an existing shared component be reused or slightly improved?
+3. Should this new UI be a global component because it can be reused later?
+4. Is there already a constant for this value?
+5. Is there already a utility function for this logic?
+6. Is there already a toast/helper/provider for this behavior?
+7. Should this type live in a feature `types` folder?
+8. Should this validation live in a feature `validations` folder?
+9. Should this API call live in a feature `api` folder?
+10. Should this multi-step action live in a feature `hook`?
+11. Is this file mixing UI, API, validation, constants, and types?
+12. Can this component be smaller and cleaner by extracting logic?
 ```
 
 If the answer shows mixed responsibilities, AI must split the code into proper files.
@@ -798,6 +863,22 @@ Use named exports unless Next.js requires a default export.
 
 Keep components focused on rendering and local user interaction only.
 If a file becomes large or mixes responsibilities, split it into smaller files following the project structure.
+
+Before creating new UI markup inside a feature component, check `src/components` first.
+
+Prioritize existing global components such as:
+
+- `DataTable`
+- `EmptyState`
+- `LoadingState`
+- `Skeleton`
+- `ConfirmDialog`
+- `DetailPageLayout`
+- `DetailSection`
+- `FileUploadInput`
+- `showToast`
+
+If a reusable UI pattern does not exist yet, create it in the correct `src/components` folder instead of duplicating it inside a feature module.
 ```
 
 ---
