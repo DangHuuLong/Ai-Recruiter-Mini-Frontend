@@ -1812,3 +1812,100 @@ The detail component does not create its own page layout or one-off loading and 
 The `/candidates/[id]` page can now display candidate profile details from the backend.
 
 The page supports cached detail data, loading state, error retry, not found state, toast feedback, back navigation, and clickable online profile links.
+
+---
+
+## 19. Candidate Resumes List Implementation
+
+### Purpose
+
+Implemented the candidate resumes list inside the candidate detail page.
+
+This task allows users to view all resume records linked to a specific candidate from `/candidates/[id]`.
+
+---
+
+### Implemented Scope
+
+- Added candidate resumes list section to the candidate detail page.
+- Integrated candidate resumes fetching with the backend candidate resumes endpoint.
+- Added feature hook for loading candidate resumes.
+- Added Zustand store for candidate resumes caching by candidate ID.
+- Added store types and hook return types in separate type files.
+- Added loading state while candidate resumes are being fetched.
+- Added empty state when the candidate has no linked resumes.
+- Added error state with retry action.
+- Added toast feedback when candidate resumes loading fails.
+- Reused the shared `DataTable`, `EmptyState`, `LoadingState`, and `showToast`.
+- Added resume table columns for resume record, parse status, candidate ID, and action.
+- Added navigation from each resume row to `/resumes/[id]`.
+
+---
+
+### Updated Files
+
+```txt
+src/features/candidates/api/candidate.api.ts
+src/features/candidates/components/candidate-detail.tsx
+src/features/candidates/components/candidate-resume-list.tsx
+src/features/candidates/hooks/use-candidate-resumes.ts
+src/features/candidates/stores/candidate-resume-list.store.ts
+src/features/candidates/types/candidate-resume-list-store.type.ts
+src/features/candidates/types/candidate-resume-list.type.ts
+```
+
+### Backend Endpoint Used
+
+```
+GET /candidates/:id/resumes
+```
+
+Backend response:
+
+```
+Candidate resumes fetched successfully
+```
+
+### State Management
+
+Candidate resumes are cached with Zustand in:
+
+```
+src/features/candidates/stores/candidate-resume-list.store.ts
+```
+
+The store keeps resume list state by candidate ID:
+
+```
+resumesByCandidateId
+loadingByCandidateId
+errorByCandidateId
+```
+
+This avoids unnecessary repeated loading when users revisit the same candidate detail page.
+
+### Important Notes
+
+- Candidate resumes fetching must stay in `features/candidates/api/candidate.api.ts`.
+- Candidate resumes state must stay inside the candidate feature module.
+- Store types must stay in `features/candidates/types`, not inside the store file.
+- `CandidateResumeList` should reuse shared UI components instead of creating one-off table, loading, or empty UI.
+- `CandidateResumeList` should not call `fetch` directly.
+- Resume-specific row rendering stays inside the candidate feature component, while `DataTable` remains business-agnostic.
+- Do not use inline empty arrays inside Zustand selectors, such as `?? []`, because it can create unstable snapshots and cause render loops. Use a stable constant fallback instead.
+
+Example:
+
+```javascript
+const EMPTY_RESUMES: Resume[] = [];
+
+const resumes = useCandidateResumeListStore(
+  (state) => state.resumesByCandidateId[candidateId] ?? EMPTY_RESUMES,
+);
+```
+
+### Result
+
+The `/candidates/[id]` page can now display resumes linked to the selected candidate.
+
+The section supports cached resume data, loading state, empty state, error retry, toast feedback, and navigation to resume detail pages.

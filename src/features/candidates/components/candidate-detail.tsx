@@ -12,6 +12,7 @@ import type {
   DetailLinkItemProps,
 } from '@/features/candidates/types/candidate-detail-ui.type';
 import { getDisplayValue } from '@/lib/utils/display-value.util';
+import { CandidateResumeList } from '@/features/candidates/components/candidate-resume-list';
 
 function DetailItem({ label, value }: DetailItemProps) {
   return (
@@ -148,6 +149,13 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
           <DetailLinkItem label="GitHub" href={candidate.githubUrl} />
           <DetailLinkItem label="Portfolio" href={candidate.portfolioUrl} />
         </div>
+      </DetailSection>
+
+      <DetailSection
+        title="Resumes"
+        description="Resume records linked to this candidate."
+      >
+        <CandidateResumeList candidateId={candidate.id} />
       </DetailSection>
     </DetailPageLayout>
   );
