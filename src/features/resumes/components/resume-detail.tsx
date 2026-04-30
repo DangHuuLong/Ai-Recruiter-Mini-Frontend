@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
+import { useParseResume } from '@/features/resumes/hooks/use-parse-resume';
 import { useResumeDetail } from '@/features/resumes/hooks/use-resume-detail';
 import type {
   DetailItemProps,
@@ -53,6 +54,16 @@ function DetailLinkItem({ label, href }: DetailLinkItemProps) {
 export function ResumeDetail({ resumeId }: ResumeDetailProps) {
   const { resume, isLoading, errorMessage, refetchResume } =
     useResumeDetail(resumeId);
+  const { isParsing, parseErrorMessage, parseResume, resetParseError } =
+    useParseResume(resumeId);
+
+  const isParseRunning = isParsing || resume?.parseStatus === 'PROCESSING';
+  const canRetryParse = resume?.parseStatus === 'FAILED';
+  const parseButtonLabel = isParseRunning
+    ? 'Parsing CV...'
+    : canRetryParse
+      ? 'Retry parse'
+      : 'Parse CV';
 
   useEffect(() => {
     if (!errorMessage) {
@@ -63,6 +74,16 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
       description: errorMessage,
     });
   }, [errorMessage]);
+
+  useEffect(() => {
+    if (!parseErrorMessage) {
+      return;
+    }
+
+    showToast.error('Failed to parse CV', {
+      description: parseErrorMessage,
+    });
+  }, [parseErrorMessage]);
 
   if (isLoading) {
     return (
@@ -116,6 +137,27 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
       description="View resume record information, parsing status, and linked candidate data."
       backHref="/resumes"
       backLabel="Back to Resumes"
+      actions={
+        <button
+          type="button"
+          disabled={isParseRunning}
+          onClick={async () => {
+            resetParseError();
+            const parsedResume = await parseResume();
+
+            if (!parsedResume) {
+              return;
+            }
+
+            showToast.success('CV parsed successfully', {
+              description: 'Parsed CV data is now available on this resume.',
+            });
+          }}
+          className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          {parseButtonLabel}
+        </button>
+      }
     >
       <DetailSection
         title="Resume information"
@@ -126,6 +168,42 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
           <DetailItem label="Candidate ID" value={resume.candidateId} />
           <DetailItem label="Parse status" value={resume.parseStatus} />
           <DetailItem label="File asset ID" value={resume.fileAssetId} />
+        </div>
+      </DetailSection>
+
+      <DetailSection
+        title="Parse status"
+        description="Track CV parsing and retry if the parsing pipeline fails."
+      >
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-950">
+                Current status: {resume.parseStatus}
+              </p>
+              <p className="mt-1 text-sm text-slate-600">
+                {isParseRunning
+                  ? 'Parsing is running. Parsed data will appear after completion.'
+                  : resume.parseStatus === 'SUCCESS'
+                    ? 'The CV has been parsed successfully.'
+                    : resume.parseStatus === 'FAILED'
+                      ? 'Parsing failed. Review the error below and retry when ready.'
+                      : 'This CV is ready to be parsed.'}
+              </p>
+            </div>
+
+            {isParseRunning ? (
+              <span className="inline-flex h-9 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 px-4 text-sm font-semibold text-blue-700">
+                Loading...
+              </span>
+            ) : null}
+          </div>
+
+          {(parseErrorMessage || resume.parsingError) && (
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {parseErrorMessage ?? resume.parsingError}
+            </div>
+          )}
         </div>
       </DetailSection>
 
@@ -145,7 +223,14 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
         title="Parsed data"
         description="Structured resume data returned by the parsing pipeline."
       >
-        {resume.parsedData ? (
+        {isParseRunning ? (
+          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <LoadingState
+              title="Parsing CV..."
+              description="Please wait while the system extracts and structures this CV."
+            />
+          </div>
+        ) : resume.parsedData ? (
           <pre className="max-h-96 overflow-auto rounded-2xl border border-slate-200 bg-slate-950 p-4 text-xs leading-6 text-slate-100">
             {JSON.stringify(resume.parsedData, null, 2)}
           </pre>
