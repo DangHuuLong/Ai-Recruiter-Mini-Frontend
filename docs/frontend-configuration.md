@@ -2157,3 +2157,366 @@ Upload completed 100%
 The `/resumes` page now displays upload progress when uploading a CV.
 
 Users can see upload progress, processing state, success state, and error state during the resume upload.
+---
+
+## 22. Resume Parse Action and Parsed Data UI Implementation
+
+### Purpose
+
+This section documents the latest frontend work for triggering resume parsing from the resume detail page and displaying structured parsed resume data returned by the Backend.
+
+The goal is to let users upload a CV, open the created resume record, trigger parsing, track parse status, and review the parsed result in readable sections instead of raw JSON.
+
+---
+
+### Related Flow
+
+```txt
+User uploads CV on /resumes
+↓
+Frontend creates FileAsset through Backend upload API
+↓
+Frontend creates Resume record through Backend resume API
+↓
+User opens /resumes/[id]
+↓
+User clicks Parse CV
+↓
+Frontend calls Backend POST /resumes/:id/parse
+↓
+Backend extracts rawText and calls AI Service
+↓
+Backend returns updated Resume
+↓
+Frontend updates resume detail cache
+↓
+Parsed data is displayed by section
+```
+
+---
+
+### Updated Files
+
+```txt
+src/features/resumes/api/resume.api.ts
+
+src/features/resumes/hooks/use-parse-resume.ts
+src/features/resumes/types/parse-resume.type.ts
+
+src/features/resumes/components/resume-detail.tsx
+src/features/resumes/components/resume-parsed-data.tsx
+
+src/features/resumes/types/resume-parsed-data.type.ts
+src/features/resumes/utils/parsed-resume-data.util.ts
+```
+
+---
+
+### Backend Endpoint Used
+
+```txt
+POST /resumes/:id/parse
+```
+
+The frontend calls this endpoint through the resume feature API layer.
+
+```ts
+parseResumeById(id: string): Promise<Resume>
+```
+
+Rules:
+
+- Do not call `fetch` directly inside the page or UI component.
+- Do not call the AI service directly from the frontend.
+- Parse requests must go through the Backend API.
+- API logic stays in `src/features/resumes/api/resume.api.ts`.
+
+---
+
+### Resume Parse Hook
+
+The resume parse action is managed by:
+
+```txt
+src/features/resumes/hooks/use-parse-resume.ts
+```
+
+The hook is responsible for:
+
+- Tracking `isParsing`
+- Tracking `parseErrorMessage`
+- Calling `parseResumeById(resumeId)`
+- Updating `useResumeDetailStore` with the returned Resume
+- Preventing duplicate parse requests while parsing is already running
+- Exposing `resetParseError()`
+
+Returned hook state:
+
+```ts
+{
+  isParsing,
+  parseErrorMessage,
+  parseResume,
+  resetParseError
+}
+```
+
+Important rule:
+
+```txt
+UI component renders state.
+Hook owns parse action behavior.
+API file owns backend request.
+```
+
+---
+
+### Resume Detail Parse UI
+
+The resume detail page now supports parsing actions.
+
+UI behavior:
+
+| State | UI Behavior |
+|---|---|
+| `PENDING` | Show `Parse CV` button |
+| `PROCESSING` | Disable button and show `Parsing CV...` |
+| `SUCCESS` | Show parsed data section |
+| `FAILED` | Show `Retry parse` button and parsing error |
+
+The parse button is rendered as a detail page action inside:
+
+```txt
+src/features/resumes/components/resume-detail.tsx
+```
+
+The detail page also includes a `Parse status` section that shows:
+
+- Current parse status
+- Running state
+- Failure message from local parse action
+- Failure message from `resume.parsingError`
+- Loading state while parsing is running
+
+---
+
+### Toast Feedback
+
+The parse action uses shared toast feedback.
+
+Success:
+
+```txt
+CV parsed successfully
+Parsed CV data is now available on this resume.
+```
+
+Failure:
+
+```txt
+Failed to parse CV
+```
+
+with the error message as description.
+
+Rules:
+
+- Use `showToast` from shared feedback components.
+- Do not import `toast` from `sonner` directly inside resume feature components.
+- Toast is only for short action feedback.
+- Parse details and errors should still be visible in the page UI.
+
+---
+
+### Parsed Resume Data Display
+
+Parsed resume data is now displayed through:
+
+```txt
+src/features/resumes/components/resume-parsed-data.tsx
+```
+
+Instead of showing only raw JSON, the UI renders structured sections:
+
+- Personal information
+- Professional summary
+- Technical skills
+- Experience
+- Education
+- Projects
+- Certifications
+- Languages
+
+Each section uses business-dashboard styling with white cards, slate borders, readable spacing, and stable Tailwind classes.
+
+---
+
+### Parsed Data Helpers
+
+Parsed data helper functions are placed in:
+
+```txt
+src/features/resumes/utils/parsed-resume-data.util.ts
+```
+
+The helpers keep unsafe or flexible JSON access out of the UI component.
+
+Expected helper responsibilities:
+
+- Check whether `parsedData` is a record
+- Read string fields safely
+- Read object lists safely
+- Read named item lists safely
+- Map skill data from API objects
+- Provide compact skill label display
+
+This keeps `ResumeParsedData` focused on rendering.
+
+---
+
+### Parsed Skill Shape
+
+The frontend now supports parsed skill objects returned by the AI service.
+
+Expected shape:
+
+```ts
+type ParsedSkill = {
+  name: string;
+  category?: string | null;
+  evidence?: string | null;
+  normalizedName?: string | null;
+};
+```
+
+Important UI rule:
+
+- Display the skill name as a readable tag.
+- Keep evidence available in data but do not show it in the main profile UI.
+- Do not assume `skills` is a plain string array.
+
+---
+
+### Parsed Education Display
+
+Education rendering was updated to show full parsed fields.
+
+Displayed fields:
+
+| Field | Description |
+|---|---|
+| `institution` | School/university name |
+| `degree` | Parsed degree |
+| `field_of_study` | Parsed major/field |
+| `start_year` | Start year |
+| `end_year` | End year |
+| `description` | Original or enriched education description |
+
+Education now uses a dedicated education card instead of the generic record card so that degree, field of study, and year range are visible.
+
+---
+
+### Parsed Project Display
+
+Projects are displayed from `parsedData.projects`.
+
+Expected project fields:
+
+```txt
+name
+description
+technologies
+url
+```
+
+Important notes:
+
+- Project URLs are expected to come from Backend raw text extraction and AI Service parsing.
+- Frontend should render project data defensively because some optional fields can be missing.
+- Project cards should not assume every project has a URL or technology list.
+
+---
+
+### Type Alignment With API Shape
+
+Parsed resume UI types were aligned with the Backend/AI response shape.
+
+Key updates:
+
+- Parsed skills may be objects, not strings.
+- Certifications and languages may be named objects.
+- Education objects use fields such as `institution`, `degree`, `field_of_study`, `start_year`, and `end_year`.
+- Optional fields may be `null`.
+- Lists may be empty arrays.
+
+Rules:
+
+- Use feature-level parsed data types in `features/resumes/types`.
+- Do not rely on `any` in UI rendering.
+- Use helper functions to safely access flexible parsed JSON.
+- Keep frontend display types aligned with Backend and AI Service contract changes.
+
+---
+
+### State Management
+
+After parsing succeeds, the returned Resume is written back into:
+
+```txt
+src/features/resumes/stores/resume-detail.store.ts
+```
+
+This keeps the resume detail page updated without requiring a full page reload.
+
+State behavior:
+
+```txt
+parseResume()
+↓
+Backend returns updated Resume
+↓
+setResumeDetail(parsedResume)
+↓
+ResumeDetail re-renders with updated parseStatus and parsedData
+```
+
+---
+
+### Manual Test Flow
+
+Recommended manual test:
+
+```txt
+1. Upload a valid PDF or DOCX CV on /resumes.
+2. Open the created resume detail page.
+3. Confirm parseStatus is PENDING.
+4. Click Parse CV.
+5. Confirm button changes to Parsing CV...
+6. Confirm parse status area shows running state.
+7. Wait for Backend parse flow to finish.
+8. Confirm success toast appears.
+9. Confirm parsed resume sections are visible.
+10. Confirm skills, education, experience, projects, certifications, and languages render without crashing.
+```
+
+Retry test:
+
+```txt
+1. Use a resume that causes parsing failure.
+2. Confirm parseStatus becomes FAILED.
+3. Confirm parsingError is displayed.
+4. Confirm button label changes to Retry parse.
+5. Retry parsing after fixing the backend/input issue.
+```
+
+---
+
+### Important Notes
+
+- Frontend parse action only triggers Backend parsing.
+- Frontend does not extract PDF/DOCX text.
+- Frontend does not call AI Service directly.
+- Backend remains responsible for creating `rawText` and `parsedData`.
+- `ResumeDetail` should render parse state and parsed data, not own raw parsing logic.
+- `ResumeParsedData` should render defensive UI because parser output can evolve.
+- When API response shape changes, update both frontend types and parsed data helper functions.

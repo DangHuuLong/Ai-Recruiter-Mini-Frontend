@@ -431,3 +431,65 @@ Current naming convention:
 page.tsx    used for the main content of a route
 layout.tsx  used for the layout wrapping a group of routes
 ```
+
+---
+
+## 10. Resume Parse UI Structure
+
+Recent updates added UI support for triggering resume parsing and displaying structured parsed resume data inside the frontend.
+
+### 10.1. Related Feature Area
+
+Resume parsing UI belongs to the `resumes` feature module:
+
+```txt
+src/features/resumes/
+  api/
+  components/
+  hooks/
+  types/
+```
+
+Expected responsibilities:
+
+| Area | Responsibility |
+| --- | --- |
+| `features/resumes/api` | Calls backend resume parse endpoints through the shared API client |
+| `features/resumes/hooks` | Coordinates parse actions and loading/error state |
+| `features/resumes/types` | Stores parsed resume response types aligned with backend API shape |
+| `features/resumes/components` | Renders parse action UI and parsed resume sections |
+
+### 10.2. Parsed Resume Display
+
+The parsed resume UI should render structured sections rather than raw JSON.
+
+Supported sections include:
+
+- Personal information
+- Summary
+- Skills
+- Education
+- Experience
+- Projects
+- Certifications
+- Achievements
+- Languages
+
+The UI must support parsed skill objects, not only string arrays. Skill evidence is currently hidden in the main profile UI to keep the display clean, while normalized names and categories remain available in data.
+
+### 10.3. API Shape Alignment
+
+Frontend parsed resume types must stay aligned with the Backend/AI Service response shape:
+
+- `skills` is an array of objects with fields such as `name`, `normalized_name`, `category`, and `evidence`.
+- `education` should render the full parsed fields when present, including institution, degree, field of study, year range, and description.
+- `projects` should display project names, URLs, technologies, and descriptions.
+- Optional fields may be `null` and list fields may be empty arrays.
+
+### 10.4. Implementation Rules
+
+- Do not call the AI service directly from the frontend.
+- Resume parse actions must go through the Backend API.
+- API calls must stay in feature API files and use the shared `apiClient`.
+- UI components should use feature hooks for parse actions instead of embedding request logic directly.
+- Parsed data presentation should remain feature-specific under `features/resumes/components` unless a UI block becomes reusable across other modules.
