@@ -13,3 +13,12 @@ export async function getResumeById(id: string): Promise<Resume> {
 
   return response.data;
 }
+
+export async function parseResumeById(id: string): Promise<Resume> {
+  const response = await apiClient.post<ApiResponse<Resume>>(
+    `/resumes/${id}/parse`,
+    {},
+  );
+
+  return response.data;
+}
