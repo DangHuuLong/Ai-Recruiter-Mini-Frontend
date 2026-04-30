@@ -85,37 +85,25 @@ function SkillList({ skills }: { skills: ParsedSkill[] }) {
   }
 
   return (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <div className="flex flex-wrap gap-2">
       {skills.map((skill) => {
         const iconSource = skill.normalizedName ?? skill.name;
 
         return (
-          <div
+          <span
             key={`${skill.name}-${skill.category ?? 'general'}`}
-            className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-3"
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700"
           >
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-white px-1 text-xs font-bold text-blue-700 shadow-sm">
-                {getSkillIconLabel(iconSource)}
+            <span className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-white px-1 text-xs font-bold text-blue-700 shadow-sm">
+              {getSkillIconLabel(iconSource)}
+            </span>
+            <span>{skill.name}</span>
+            {skill.category ? (
+              <span className="rounded-lg bg-white/80 px-2 py-0.5 text-xs font-semibold capitalize text-slate-500">
+                {skill.category}
               </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-blue-700">
-                  {skill.name}
-                </p>
-                {skill.category ? (
-                  <p className="mt-0.5 text-xs font-medium capitalize text-slate-500">
-                    {skill.category}
-                  </p>
-                ) : null}
-              </div>
-            </div>
-
-            {skill.evidence ? (
-              <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-600">
-                {skill.evidence}
-              </p>
             ) : null}
-          </div>
+          </span>
         );
       })}
     </div>
@@ -230,7 +218,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
 
       <ParsedDataSection
         title={`Technical skills (${skills.length})`}
-        description="Skills are shown as readable cards with category, evidence, and technology indicators."
+        description="Skills are shown as compact tags with category and technology indicators."
         icon="⚙"
       >
         <SkillList skills={skills} />
