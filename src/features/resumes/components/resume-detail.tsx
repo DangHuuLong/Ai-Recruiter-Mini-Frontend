@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
+import { ResumeParsedData } from '@/features/resumes/components/resume-parsed-data';
 import { useParseResume } from '@/features/resumes/hooks/use-parse-resume';
 import { useResumeDetail } from '@/features/resumes/hooks/use-resume-detail';
 import type {
@@ -220,8 +221,8 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
       </DetailSection>
 
       <DetailSection
-        title="Parsed data"
-        description="Structured resume data returned by the parsing pipeline."
+        title="Parsed CV profile"
+        description="Readable CV data grouped by profile, skills, work history, education, projects, certifications, and languages."
       >
         {isParseRunning ? (
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -231,9 +232,7 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
             />
           </div>
         ) : resume.parsedData ? (
-          <pre className="max-h-96 overflow-auto rounded-2xl border border-slate-200 bg-slate-950 p-4 text-xs leading-6 text-slate-100">
-            {JSON.stringify(resume.parsedData, null, 2)}
-          </pre>
+          <ResumeParsedData parsedData={resume.parsedData} />
         ) : (
           <p className="text-sm text-slate-600">
             No parsed data is available yet.
