@@ -2,13 +2,15 @@ import type {
   ParsedDataFieldProps,
   ParsedDataListProps,
   ParsedDataSectionProps,
+  ParsedSkill,
   ResumeParsedDataProps,
 } from '@/features/resumes/types/resume-parsed-data.type';
 import {
+  getParsedDataNamedList,
   getParsedDataRecord,
   getParsedDataRecordList,
   getParsedDataString,
-  getParsedDataStringList,
+  getParsedSkillList,
   getSkillIconLabel,
   isParsedDataRecord,
 } from '@/features/resumes/utils/parsed-resume-data.util';
@@ -64,34 +66,58 @@ function ParsedDataList({ items, emptyMessage }: ParsedDataListProps) {
     <ul className="space-y-2">
       {items.map((item) => (
         <li
-          key={item}
+          key={item.name}
           className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700"
         >
-          {item}
+          <span className="font-semibold text-slate-900">{item.name}</span>
+          {item.description ? (
+            <span className="text-slate-600"> — {item.description}</span>
+          ) : null}
         </li>
       ))}
     </ul>
   );
 }
 
-function SkillList({ skills }: { skills: string[] }) {
+function SkillList({ skills }: { skills: ParsedSkill[] }) {
   if (!skills.length) {
     return <p className="text-sm text-slate-600">No skills were extracted.</p>;
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {skills.map((skill) => (
-        <span
-          key={skill}
-          className="inline-flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700"
-        >
-          <span className="flex h-6 min-w-6 items-center justify-center rounded-lg bg-white px-1 text-xs font-bold text-blue-700 shadow-sm">
-            {getSkillIconLabel(skill)}
-          </span>
-          {skill}
-        </span>
-      ))}
+    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      {skills.map((skill) => {
+        const iconSource = skill.normalizedName ?? skill.name;
+
+        return (
+          <div
+            key={`${skill.name}-${skill.category ?? 'general'}`}
+            className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-3"
+          >
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-lg bg-white px-1 text-xs font-bold text-blue-700 shadow-sm">
+                {getSkillIconLabel(iconSource)}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-blue-700">
+                  {skill.name}
+                </p>
+                {skill.category ? (
+                  <p className="mt-0.5 text-xs font-medium capitalize text-slate-500">
+                    {skill.category}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+
+            {skill.evidence ? (
+              <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-600">
+                {skill.evidence}
+              </p>
+            ) : null}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -108,14 +134,21 @@ function RecordCard({
     getParsedDataString(record, 'name') ??
     getParsedDataString(record, 'company') ??
     getParsedDataString(record, 'school') ??
+    getParsedDataString(record, 'institution') ??
     fallbackTitle;
   const subtitle =
     getParsedDataString(record, 'company') ??
     getParsedDataString(record, 'degree') ??
+    getParsedDataString(record, 'field_of_study') ??
     getParsedDataString(record, 'duration');
   const description =
     getParsedDataString(record, 'description') ??
     getParsedDataString(record, 'summary');
+  const technologies = Array.isArray(record.technologies)
+    ? record.technologies.filter(
+        (technology): technology is string => typeof technology === 'string',
+      )
+    : [];
 
   return (
     <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -125,6 +158,18 @@ function RecordCard({
       ) : null}
       {description ? (
         <p className="mt-3 text-sm leading-6 text-slate-700">{description}</p>
+      ) : null}
+      {technologies.length ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {technologies.map((technology) => (
+            <span
+              key={technology}
+              className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+            >
+              {technology}
+            </span>
+          ))}
+        </div>
       ) : null}
     </article>
   );
@@ -141,12 +186,12 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
   }
 
   const personal = getParsedDataRecord(parsedData, 'personal');
-  const skills = getParsedDataStringList(parsedData, 'skills');
+  const skills = getParsedSkillList(parsedData);
   const education = getParsedDataRecordList(parsedData, 'education');
   const experience = getParsedDataRecordList(parsedData, 'experience');
   const projects = getParsedDataRecordList(parsedData, 'projects');
-  const certifications = getParsedDataStringList(parsedData, 'certifications');
-  const languages = getParsedDataStringList(parsedData, 'languages');
+  const certifications = getParsedDataNamedList(parsedData, 'certifications');
+  const languages = getParsedDataNamedList(parsedData, 'languages');
   const summary = getParsedDataString(parsedData, 'summary');
 
   return (
@@ -157,8 +202,19 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
         icon="👤"
       >
         <div className="grid gap-3 md:grid-cols-2">
-          <ParsedDataField label="Name" value={getParsedDataString(personal, 'name')} />
+          <ParsedDataField
+            label="Name"
+            value={
+              getParsedDataString(personal, 'name') ??
+              getParsedDataString(personal, 'full_name')
+            }
+          />
           <ParsedDataField label="Email" value={getParsedDataString(personal, 'email')} />
+          <ParsedDataField label="Phone" value={getParsedDataString(personal, 'phone')} />
+          <ParsedDataField
+            label="Location"
+            value={getParsedDataString(personal, 'location')}
+          />
         </div>
       </ParsedDataSection>
 
@@ -173,8 +229,8 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
       </ParsedDataSection>
 
       <ParsedDataSection
-        title="Technical skills"
-        description="Skills are shown as readable tags with technology indicators."
+        title={`Technical skills (${skills.length})`}
+        description="Skills are shown as readable cards with category, evidence, and technology indicators."
         icon="⚙"
       >
         <SkillList skills={skills} />
@@ -209,7 +265,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
           {education.length ? (
             education.map((item, index) => (
               <RecordCard
-                key={`${getParsedDataString(item, 'school') ?? 'education'}-${index}`}
+                key={`${getParsedDataString(item, 'institution') ?? 'education'}-${index}`}
                 record={item}
                 fallbackTitle={`Education ${index + 1}`}
               />
