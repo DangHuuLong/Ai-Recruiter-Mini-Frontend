@@ -122,12 +122,9 @@ function RecordCard({
     getParsedDataString(record, 'name') ??
     getParsedDataString(record, 'company') ??
     getParsedDataString(record, 'school') ??
-    getParsedDataString(record, 'institution') ??
     fallbackTitle;
   const subtitle =
     getParsedDataString(record, 'company') ??
-    getParsedDataString(record, 'degree') ??
-    getParsedDataString(record, 'field_of_study') ??
     getParsedDataString(record, 'duration');
   const description =
     getParsedDataString(record, 'description') ??
@@ -158,6 +155,52 @@ function RecordCard({
             </span>
           ))}
         </div>
+      ) : null}
+    </article>
+  );
+}
+
+function EducationCard({
+  education,
+  fallbackTitle,
+}: {
+  education: Record<string, unknown>;
+  fallbackTitle: string;
+}) {
+  const institution = getParsedDataString(education, 'institution') ?? fallbackTitle;
+  const degree = getParsedDataString(education, 'degree');
+  const fieldOfStudy = getParsedDataString(education, 'field_of_study');
+  const startYear = education.start_year;
+  const endYear = education.end_year;
+  const description = getParsedDataString(education, 'description');
+  const yearRange = `${getDisplayValue(startYear ? String(startYear) : null)} - ${getDisplayValue(endYear ? String(endYear) : null)}`;
+
+  return (
+    <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h4 className="text-sm font-semibold text-slate-950">{institution}</h4>
+          <p className="mt-1 text-sm font-medium text-slate-600">
+            {[degree, fieldOfStudy].filter(Boolean).join(' · ') || 'Not provided'}
+          </p>
+        </div>
+
+        <span className="inline-flex w-fit rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+          {yearRange}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <ParsedDataField label="Degree" value={degree} />
+        <ParsedDataField label="Field of study" value={fieldOfStudy} />
+        <ParsedDataField label="Start year" value={startYear} />
+        <ParsedDataField label="End year" value={endYear} />
+      </div>
+
+      {description ? (
+        <p className="mt-4 whitespace-pre-line rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+          {description}
+        </p>
       ) : null}
     </article>
   );
@@ -252,9 +295,9 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
         <div className="space-y-3">
           {education.length ? (
             education.map((item, index) => (
-              <RecordCard
+              <EducationCard
                 key={`${getParsedDataString(item, 'institution') ?? 'education'}-${index}`}
-                record={item}
+                education={item}
                 fallbackTitle={`Education ${index + 1}`}
               />
             ))
