@@ -12,10 +12,10 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
   const { id } = await params;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-8">
       <Link
         href="/applications"
-        className="text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+        className="inline-flex text-sm font-semibold text-blue-600 transition hover:text-blue-700"
       >
         ← Back to applications
       </Link>
