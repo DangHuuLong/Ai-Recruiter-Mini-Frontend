@@ -5,6 +5,7 @@ export const apiEndpoints = {
     detail: (id: string) => `/candidates/${id}`,
     update: (id: string) => `/candidates/${id}`,
     delete: (id: string) => `/candidates/${id}`,
+    applications: (id: string) => `/candidates/${id}/applications`,
   },
 
   files: {
@@ -40,6 +41,8 @@ export const apiEndpoints = {
     create: '/applications',
     detail: (id: string) => `/applications/${id}`,
     update: (id: string) => `/applications/${id}`,
+    status: (id: string) => `/applications/${id}/status`,
+    events: (id: string) => `/applications/${id}/events`,
     delete: (id: string) => `/applications/${id}`,
   },
 
