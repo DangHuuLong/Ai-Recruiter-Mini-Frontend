@@ -119,13 +119,19 @@ function RecordCard({
 }) {
   const title =
     getParsedDataString(record, 'title') ??
+    getParsedDataString(record, 'role') ??
+    getParsedDataString(record, 'position') ??
+    getParsedDataString(record, 'job_title') ??
     getParsedDataString(record, 'name') ??
     getParsedDataString(record, 'company') ??
     getParsedDataString(record, 'school') ??
     fallbackTitle;
-  const subtitle =
+
+  const rawSubtitle =
     getParsedDataString(record, 'company') ??
     getParsedDataString(record, 'duration');
+
+  const subtitle = rawSubtitle === title ? null : rawSubtitle;
   const description =
     getParsedDataString(record, 'description') ??
     getParsedDataString(record, 'summary');

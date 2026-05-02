@@ -1,14 +1,17 @@
+import { JobDescriptionDetail } from '@/features/job-descriptions/components/job-description-detail';
+
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export default function Page({ params }: PageProps) {
+export default async function JobDescriptionDetailPage({ params }: PageProps) {
+  const { id } = await params;
+
   return (
-    <main>
-      <h1>Job Description Detail</h1>
-      <p>ID: {params.id}</p>
-    </main>
+    <div className="max-w-6xl">
+      <JobDescriptionDetail id={id} />
+    </div>
   );
 }
