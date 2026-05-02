@@ -19,13 +19,20 @@ export const apiEndpoints = {
     delete: (id: string) => `/resumes/${id}`,
   },
 
-
   jobDescriptions: {
     list: '/job-descriptions',
     create: '/job-descriptions',
     detail: (id: string) => `/job-descriptions/${id}`,
     update: (id: string) => `/job-descriptions/${id}`,
     delete: (id: string) => `/job-descriptions/${id}`,
+    parse: (id: string) => `/job-descriptions/${id}/parse`,
+    parsedData: (id: string) => `/job-descriptions/${id}/parsed-data`,
+    skills: (id: string) => `/job-descriptions/${id}/skills`,
+  },
+
+  jobSkills: {
+    update: (skillId: string) => `/job-skills/${skillId}`,
+    delete: (skillId: string) => `/job-skills/${skillId}`,
   },
 
   applications: {
