@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -67,7 +68,7 @@ const Section = ({
 }: {
   title: string;
   description?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) => (
   <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
     <div className="mb-5">
