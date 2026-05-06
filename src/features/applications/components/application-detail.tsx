@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -9,6 +10,7 @@ import { ApplicationEvents } from '@/features/applications/components/applicatio
 import { ApplicationStatusBadge } from '@/features/applications/components/application-status-badge';
 import { ApplicationStatusForm } from '@/features/applications/components/application-status-form';
 import type { Application } from '@/features/applications/types/application.type';
+import { createEvaluation } from '@/features/evaluations/api/evaluation.api';
 
 const formatDate = (value?: string | null) => {
   if (!value) {
@@ -35,8 +37,10 @@ type ApplicationDetailProps = {
 };
 
 export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
+  const router = useRouter();
   const [application, setApplication] = useState<Application | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingEvaluation, setIsCreatingEvaluation] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [eventsReloadKey, setEventsReloadKey] = useState(0);
 
@@ -61,6 +65,28 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
 
     void loadApplication();
   }, [applicationId]);
+
+  const handleCreateEvaluation = async () => {
+    if (!application) {
+      return;
+    }
+
+    try {
+      setIsCreatingEvaluation(true);
+      const evaluation = await createEvaluation({ applicationId: application.id });
+      showToast.success('Evaluation created successfully');
+      setEventsReloadKey((current) => current + 1);
+      router.push(`/evaluations/${evaluation.id}`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Failed to create evaluation';
+      showToast.error('Failed to create evaluation', {
+        description: message,
+      });
+    } finally {
+      setIsCreatingEvaluation(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -98,7 +124,17 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
             </p>
           </div>
 
-          <ApplicationStatusBadge status={application.status} />
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+            <ApplicationStatusBadge status={application.status} />
+            <button
+              type="button"
+              onClick={handleCreateEvaluation}
+              disabled={isCreatingEvaluation}
+              className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isCreatingEvaluation ? 'Creating evaluation...' : 'Create evaluation'}
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
