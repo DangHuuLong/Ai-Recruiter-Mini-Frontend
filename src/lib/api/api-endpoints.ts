@@ -48,9 +48,13 @@ export const apiEndpoints = {
 
   evaluations: {
     list: '/evaluations',
+    create: '/evaluations',
     detail: (id: string) => `/evaluations/${id}`,
-    createForApplication: (applicationId: string) => {
-      return `/applications/${applicationId}/evaluations`;
-    },
+    byApplication: (applicationId: string) => `/applications/${applicationId}/evaluations`,
+    breakdown: (id: string) => `/evaluations/${id}/breakdown`,
+    skills: (id: string) => `/evaluations/${id}/skills`,
+    interviewQuestions: (id: string) => `/evaluations/${id}/interview-questions`,
+    evidence: (id: string) => `/evaluations/${id}/evidence`,
+    retry: (id: string) => `/evaluations/${id}/retry`,
   },
 } as const;
