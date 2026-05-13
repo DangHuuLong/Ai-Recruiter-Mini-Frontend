@@ -13,6 +13,14 @@ export interface Candidate {
   updatedAt: string;
 }
 
+export interface CandidateQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: 'createdAt' | 'updatedAt' | 'fullName';
+  sortOrder?: 'asc' | 'desc';
+}
+
 export interface CreateCandidatePayload {
   fullName: string;
   primaryEmail?: string;
@@ -22,3 +30,10 @@ export interface CreateCandidatePayload {
   portfolioUrl?: string;
   location?: string;
 }
+
+export type UpdateCandidatePayload = Partial<CreateCandidatePayload>;
+
+export type DeleteCandidateResult = {
+  id: string;
+  deleted: boolean;
+};

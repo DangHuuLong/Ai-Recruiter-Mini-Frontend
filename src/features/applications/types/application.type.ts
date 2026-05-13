@@ -71,9 +71,15 @@ export type UpdateApplicationStatusPayload = {
   note?: string;
 };
 
+export type DeleteApplicationResult = {
+  id: string;
+  deleted: boolean;
+};
+
 export type ApplicationQuery = {
   page?: number;
   limit?: number;
+  search?: string;
   candidateId?: string;
   jobDescriptionId?: string;
   resumeId?: string;

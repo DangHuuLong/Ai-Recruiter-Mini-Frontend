@@ -60,6 +60,16 @@ export type JobDescription = {
   _count?: JobDescriptionCounts;
 };
 
+export type JobDescriptionQuery = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  isActive?: boolean;
+  parseStatus?: ParseStatus;
+  sortBy?: 'createdAt' | 'updatedAt' | 'title';
+  sortOrder?: 'asc' | 'desc';
+};
+
 export type ParsedJobDescriptionState = Pick<
   JobDescription,
   | 'id'
@@ -82,6 +92,15 @@ export type CreateJobDescriptionPayload = {
   rawText: string;
   parserVersion?: string;
   createdById?: string;
+};
+
+export type UpdateJobDescriptionPayload = Partial<CreateJobDescriptionPayload> & {
+  isActive?: boolean;
+};
+
+export type DeleteJobDescriptionResult = {
+  id: string;
+  deleted: boolean;
 };
 
 export type CreateJobSkillPayload = {

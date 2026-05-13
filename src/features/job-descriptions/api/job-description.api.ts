@@ -4,18 +4,22 @@ import type { ApiResponse, PaginatedApiResponse } from '@/lib/api/api-types';
 import type {
   CreateJobDescriptionPayload,
   CreateJobSkillPayload,
+  DeleteJobDescriptionResult,
   JobDescription,
+  JobDescriptionQuery,
   JobSkill,
   ParsedJobDescriptionState,
+  UpdateJobDescriptionPayload,
   UpdateJobSkillPayload,
 } from '@/features/job-descriptions/types/job-description.type';
 
-export async function getJobDescriptions(): Promise<JobDescription[]> {
-  const response = await apiClient.get<PaginatedApiResponse<JobDescription>>(
+export async function getJobDescriptions(
+  query: JobDescriptionQuery = {},
+): Promise<PaginatedApiResponse<JobDescription>> {
+  return apiClient.get<PaginatedApiResponse<JobDescription>>(
     apiEndpoints.jobDescriptions.list,
+    { params: query },
   );
-
-  return response.data;
 }
 
 export async function createJobDescription(
@@ -32,6 +36,32 @@ export async function createJobDescription(
 export async function getJobDescription(id: string): Promise<JobDescription> {
   const response = await apiClient.get<ApiResponse<JobDescription>>(
     apiEndpoints.jobDescriptions.detail(id),
+  );
+
+  return response.data;
+}
+
+export async function updateJobDescription(
+  id: string,
+  payload: UpdateJobDescriptionPayload,
+): Promise<JobDescription> {
+  const response = await apiClient.patch<ApiResponse<JobDescription>>(
+    apiEndpoints.jobDescriptions.update(id),
+    payload,
+  );
+
+  return response.data;
+}
+
+export async function deactivateJobDescription(id: string): Promise<JobDescription> {
+  return updateJobDescription(id, { isActive: false });
+}
+
+export async function deleteJobDescription(
+  id: string,
+): Promise<DeleteJobDescriptionResult> {
+  const response = await apiClient.delete<ApiResponse<DeleteJobDescriptionResult>>(
+    apiEndpoints.jobDescriptions.delete(id),
   );
 
   return response.data;

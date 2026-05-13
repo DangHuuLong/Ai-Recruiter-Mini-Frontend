@@ -6,19 +6,18 @@ import type {
   ApplicationEvent,
   ApplicationQuery,
   CreateApplicationPayload,
+  DeleteApplicationResult,
   UpdateApplicationPayload,
   UpdateApplicationStatusPayload,
 } from '@/features/applications/types/application.type';
 
 export async function getApplications(
   query: ApplicationQuery = {},
-): Promise<Application[]> {
-  const response = await apiClient.get<PaginatedApiResponse<Application>>(
+): Promise<PaginatedApiResponse<Application>> {
+  return apiClient.get<PaginatedApiResponse<Application>>(
     apiEndpoints.applications.list,
     { params: query },
   );
-
-  return response.data;
 }
 
 export async function getApplicationById(id: string): Promise<Application> {
@@ -59,6 +58,14 @@ export async function updateApplicationStatus(
   const response = await apiClient.patch<ApiResponse<Application>>(
     apiEndpoints.applications.status(id),
     payload,
+  );
+
+  return response.data;
+}
+
+export async function deleteApplication(id: string): Promise<DeleteApplicationResult> {
+  const response = await apiClient.delete<ApiResponse<DeleteApplicationResult>>(
+    apiEndpoints.applications.delete(id),
   );
 
   return response.data;

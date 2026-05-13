@@ -14,7 +14,8 @@ export function useJobDescriptions() {
     try {
       setIsLoading(true);
       setErrorMessage(null);
-      setJobDescriptions(await getJobDescriptions());
+      const response = await getJobDescriptions({ page: 1, limit: 20 });
+      setJobDescriptions(response.data);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Failed to load job descriptions',

@@ -42,13 +42,13 @@ export function ApplicationForm() {
       try {
         setIsLoadingOptions(true);
         setErrorMessage(null);
-        const [candidateData, jobDescriptionData] = await Promise.all([
-          getCandidates(),
-          getJobDescriptions(),
+        const [candidateResponse, jobDescriptionResponse] = await Promise.all([
+          getCandidates({ page: 1, limit: 100 }),
+          getJobDescriptions({ page: 1, limit: 100 }),
         ]);
 
-        setCandidates(candidateData);
-        setJobDescriptions(jobDescriptionData);
+        setCandidates(candidateResponse.data);
+        setJobDescriptions(jobDescriptionResponse.data);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Failed to load form options';
