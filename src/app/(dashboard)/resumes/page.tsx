@@ -1,3 +1,4 @@
+import { ResumeList } from '@/features/resumes/components/resume-list';
 import { ResumeUploadForm } from '@/features/resumes/components/resume-upload-form';
 
 export default function ResumesPage() {
@@ -21,6 +22,7 @@ export default function ResumesPage() {
       </div>
 
       <ResumeUploadForm />
+      <ResumeList />
     </div>
   );
 }
