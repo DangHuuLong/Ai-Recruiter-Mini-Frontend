@@ -27,10 +27,10 @@ export const useCandidateListStore = create<CandidateListStore>((set, get) => ({
         errorMessage: null,
       });
 
-      const candidates = await getCandidates();
+      const response = await getCandidates({ page: 1, limit: 20 });
 
       set({
-        candidates,
+        candidates: response.data,
         hasLoaded: true,
       });
     } catch (error) {
