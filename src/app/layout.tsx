@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 
+import { AuthProvider } from '@/features/auth/components/auth-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 
 import './globals.css';
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={geistSans.variable} suppressHydrationWarning>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         <ToastProvider />
       </body>
     </html>

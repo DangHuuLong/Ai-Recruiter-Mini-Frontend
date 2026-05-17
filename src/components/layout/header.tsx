@@ -1,3 +1,5 @@
+import { UserMenu } from '@/features/auth/components/user-menu';
+
 export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -12,17 +14,8 @@ export function Header() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden text-right sm:block">
-            <p className="text-sm font-medium text-slate-900">Admin</p>
-            <p className="text-xs text-slate-500">Recruiter</p>
-          </div>
-
-          <div className="flex size-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-            AD
-          </div>
-        </div>
+        <UserMenu />
       </div>
     </header>
   );
-} 
+}
