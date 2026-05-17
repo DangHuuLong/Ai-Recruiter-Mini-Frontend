@@ -1,4 +1,8 @@
 export const apiEndpoints = {
+  auth: {
+    login: '/auth/login',
+  },
+
   candidates: {
     list: '/candidates',
     create: '/candidates',
