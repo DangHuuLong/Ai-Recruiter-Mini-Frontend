@@ -1,4 +1,5 @@
 import { envConfig } from '@/config/env.config';
+import { getStoredAccessToken } from '@/lib/auth/auth-storage';
 
 import { ApiError } from './api-error';
 import type { ApiErrorResponse, RequestOptions } from './api-types';
@@ -105,6 +106,28 @@ const parseXhrResponse = <T>(xhr: XMLHttpRequest, path: string): T => {
   return data as T;
 };
 
+const buildRequestHeaders = (
+  body: RequestOptions['body'],
+  headers?: HeadersInit,
+): HeadersInit => {
+  const isFormData = body instanceof FormData;
+  const accessToken = getStoredAccessToken();
+
+  return {
+    ...(!isFormData ? DEFAULT_HEADERS : {}),
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...headers,
+  };
+};
+
+const setXhrHeaders = (xhr: XMLHttpRequest, headers: HeadersInit) => {
+  Object.entries(headers).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      xhr.setRequestHeader(key, value);
+    }
+  });
+};
+
 const request = async <T>(
   method: string,
   path: string,
@@ -117,10 +140,7 @@ const request = async <T>(
 
   const response = await fetch(url, {
     method,
-    headers: {
-      ...(!isFormData ? DEFAULT_HEADERS : {}),
-      ...headers,
-    },
+    headers: buildRequestHeaders(body, headers),
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     ...fetchOptions,
   });
@@ -141,14 +161,7 @@ const uploadWithProgress = async <T>(
     const xhr = new XMLHttpRequest();
 
     xhr.open('POST', url);
-
-    if (headers) {
-      Object.entries(headers).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          xhr.setRequestHeader(key, value);
-        }
-      });
-    }
+    setXhrHeaders(xhr, buildRequestHeaders(formData, headers));
 
     xhr.upload.onprogress = (event) => {
       if (!event.lengthComputable || !onUploadProgress) {
