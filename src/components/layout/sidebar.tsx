@@ -12,27 +12,30 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      <div className="flex h-16 items-center border-b border-slate-200 px-5">
-        <Link href={ROUTES.DASHBOARD} className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">
-            AI
+    <aside className="relative z-20 hidden min-h-screen w-72 shrink-0 border-r border-white/10 bg-[#0c0718]/78 backdrop-blur-2xl lg:flex lg:flex-col">
+      <div className="absolute inset-y-10 right-0 w-px bg-gradient-to-b from-transparent via-[var(--color-accent)]/40 to-transparent" />
+
+      <div className="flex h-20 items-center border-b border-white/10 px-5">
+        <Link href={ROUTES.DASHBOARD} className="group flex items-center gap-3">
+          <span className="relative flex size-11 items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-white/[0.08] font-display text-sm font-black text-white shadow-[0_0_35px_rgba(157,124,255,0.32)] transition group-hover:scale-105">
+            <span className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/60 to-[var(--color-accent)]/35" />
+            <span className="relative">AI</span>
           </span>
 
           <span>
-            <span className="block text-sm font-semibold tracking-tight text-slate-950">
+            <span className="block font-display text-base font-bold tracking-tight text-white">
               AI Recruiter
             </span>
 
-            <span className="block text-xs font-medium text-slate-500">
-              Smart hiring workspace
+            <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-tertiary)]">
+              RMS Command
             </span>
           </span>
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-5">
-        {dashboardNavigationItems.map((item) => {
+      <nav className="flex-1 space-y-2 px-3 py-6">
+        {dashboardNavigationItems.map((item, index) => {
           const isActive = isNavigationItemActive(pathname, item.href);
 
           return (
@@ -40,31 +43,38 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'group relative flex items-center rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors duration-150',
+                'group relative flex items-center overflow-hidden rounded-2xl border px-4 py-3 text-sm font-semibold transition duration-200',
                 isActive
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950',
+                  ? 'border-[var(--color-accent)]/35 bg-[var(--color-accent)]/10 text-white shadow-[0_0_34px_rgba(87,242,204,0.12)]'
+                  : 'border-transparent text-[var(--color-text-secondary)] hover:-translate-y-0.5 hover:border-white/10 hover:bg-white/[0.06] hover:text-white',
               )}
+              style={{ animationDelay: `${index * 55}ms` }}
             >
               {isActive ? (
-                <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-blue-600" />
+                <span className="absolute inset-y-2 left-0 w-1 rounded-r-full bg-[var(--color-accent)] shadow-[0_0_18px_rgba(87,242,204,0.9)]" />
               ) : null}
 
+              <span className="mr-3 text-base text-[var(--color-accent)]/85">◆</span>
               <span className="truncate">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="px-3 pb-5">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p className="text-sm font-semibold text-slate-900">
-            MVP Workspace
+      <div className="px-4 pb-5">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.06] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.28)]">
+          <div className="absolute -right-8 -top-8 size-24 rounded-full bg-[var(--color-accent)]/20 blur-2xl" />
+          <p className="relative font-display text-sm font-bold text-white">
+            Hiring Signal
           </p>
 
-          <p className="mt-1 text-xs leading-5 text-slate-500">
-            Manage candidates, resumes, job descriptions and evaluations.
+          <p className="relative mt-1 text-xs leading-5 text-[var(--color-text-secondary)]">
+            AI-ready workspace for candidates, resumes, job posts and scoring flows.
           </p>
+
+          <div className="relative mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full w-[72%] rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]" />
+          </div>
         </div>
       </div>
     </aside>
