@@ -5,3 +5,8 @@ export type NavigationItem = {
   href: string;
   icon?: ComponentType<{ className?: string }>;
 };
+
+export type NavigationGroup = {
+  label?: string;
+  items: NavigationItem[];
+};
