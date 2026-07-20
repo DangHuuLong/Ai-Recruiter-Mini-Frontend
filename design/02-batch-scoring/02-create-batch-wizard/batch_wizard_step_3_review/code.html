@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>RecruitAI | Create Scoring Batch</title>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .step-connector { height: 2px; flex: 1 1 0%; }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details > summary { list-style: none; }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-primary-container": "#1E293B",
+                  "on-tertiary-fixed": "#311400",
+                  "surface-container-highest": "#e1e2ec",
+                  "primary-fixed": "#d8e2ff",
+                  "surface-container-high": "#e6e7f2",
+                  "background": "#f9f9ff",
+                  "error": "#EF4444",
+                  "on-primary-fixed": "#001a42",
+                  "primary": "#0058be",
+                  "primary-container": "#2170e4",
+                  "tertiary-fixed": "#ffdcc6",
+                  "surface-container-low": "#f2f3fd",
+                  "info": "#0EA5E9",
+                  "on-secondary-fixed-variant": "#444749",
+                  "on-secondary-container": "#626567",
+                  "tertiary": "#924700",
+                  "secondary-container": "#e0e3e5",
+                  "secondary": "#5c5f61",
+                  "warning-container": "#FEF3C7",
+                  "on-error": "#ffffff",
+                  "primary-hover": "#2563EB",
+                  "success": "#22C55E",
+                  "outline-variant": "#CBD5E1",
+                  "on-surface-muted": "#64748B",
+                  "surface-variant": "#F1F5F9",
+                  "secondary-fixed": "#e0e3e5",
+                  "inverse-on-surface": "#eff0fa",
+                  "tertiary-fixed-dim": "#ffb786",
+                  "on-secondary": "#ffffff",
+                  "primary-fixed-dim": "#adc6ff",
+                  "on-primary": "#ffffff",
+                  "on-error-container": "#93000a",
+                  "on-tertiary-container": "#fffbff",
+                  "error-container": "#FEE2E2",
+                  "outline": "#E2E8F0",
+                  "secondary-fixed-dim": "#c4c7c9",
+                  "on-tertiary-fixed-variant": "#723600",
+                  "focus-ring": "#93C5FD",
+                  "surface-bright": "#f9f9ff",
+                  "surface-container-lowest": "#ffffff",
+                  "surface-container": "#ecedf7",
+                  "surface-dim": "#d8d9e3",
+                  "on-background": "#191b23",
+                  "warning": "#F59E0B",
+                  "surface-tint": "#005ac2",
+                  "inverse-primary": "#adc6ff",
+                  "on-secondary-fixed": "#191c1e",
+                  "tertiary-container": "#b75b00",
+                  "on-tertiary": "#ffffff",
+                  "success-container": "#DCFCE7",
+                  "on-surface-variant": "#475569",
+                  "on-primary-fixed-variant": "#004395",
+                  "surface": "#f9f9ff",
+                  "on-surface": "#191b23",
+                  "link": "#2563EB",
+                  "inverse-surface": "#2e3038"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "lg": "24px",
+                  "md": "16px",
+                  "radius": "8px",
+                  "margin-mobile": "16px",
+                  "sm": "8px",
+                  "xl": "32px",
+                  "base": "4px",
+                  "xs": "4px",
+                  "gutter": "24px",
+                  "margin-desktop": "32px"
+          },
+          "fontFamily": {
+                  "body-sm": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "headline-sm": ["Inter"],
+                  "label-caps": ["Inter"],
+                  "body-md": ["Inter"],
+                  "headline-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+                  "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                  "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                  "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                  "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface flex overflow-hidden h-screen">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-lowest dark:bg-inverse-surface h-screen w-64 border-r border-outline">
+<div class="px-lg py-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-inverse-primary">RecruitAI</h1>
+<p class="text-body-sm text-on-surface-muted">Enterprise SaaS</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-body-md text-body-md">Candidates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Resumes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-body-md text-body-md">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment_ind</span>
+<span class="font-body-md text-body-md">Applications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-md text-body-md">Evaluations</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg" href="#">
+<span class="material-symbols-outlined">batch_prediction</span>
+<span class="font-body-md text-body-md font-semibold">Batch Scoring</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Configs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md text-body-md">Audit Log</span>
+</a>
+</nav>
+<div class="p-md border-t border-outline">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a female administrator with a friendly expression, wearing a navy blazer, set against a blurred modern office background with soft lighting and professional corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyvKeRF_KsxE3q-7q9tLM2_jvDWdd6RQnVMCRzIaXNCR8CO8-tP9RQcHIfXZVhZZRsugV1YixwhyPnYkjpFtHXkB-Uu_HLHIfC6BSmIpcK3VDNnw5rJW_apl7JP2f6Whc4HX1BjHv9tEoBFGRbZAsmyJzzOVTG4EggZBUgXGUXrbC6jbDzaOaxdoUWkDHoUux6zfFYpXtmoOhl2kwNAXTBxs8ZYT2rFWIheZ-HL1zKyfgLQXNl5Z7X9zJjLRJOrv7pcAfETh0vV0o"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-body-md text-body-md font-semibold truncate">Admin User</p>
+<p class="text-body-sm text-on-surface-muted truncate">admin@recruitai.io</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 flex flex-col h-screen overflow-y-auto">
+<!-- Top Nav Shell -->
+<header class="sticky top-0 right-0 w-full flex justify-between items-center px-lg z-30 bg-surface-container-lowest dark:bg-inverse-surface w-full h-16 border-b border-outline">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">RecruitAI Dashboard</h2>
+<div class="h-6 w-px bg-outline mx-2"></div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">home</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-body-sm">Batch Scoring</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-body-sm font-semibold text-primary">New Batch Wizard</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<input class="pl-10 pr-4 py-2 bg-surface-variant border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary-container w-64 transition-all" placeholder="Search resources..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-muted">search</span>
+</div>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Page Content Container -->
+<div class="flex-1 max-w-[1000px] mx-auto w-full p-xl">
+<!-- Stepper Component -->
+<section class="mb-xl">
+<div class="flex items-center justify-between w-full">
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="w-10 h-10 rounded-full bg-success text-on-error flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-success uppercase tracking-wider">1. Add resumes</span>
+</div>
+<div class="step-connector bg-success mx-4 opacity-30"></div>
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="w-10 h-10 rounded-full bg-success text-on-error flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-success uppercase tracking-wider">2. Add job descriptions</span>
+</div>
+<div class="step-connector bg-outline mx-4"></div>
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md ring-4 ring-primary-container ring-opacity-30">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-wider font-bold">3. Review &amp; submit</span>
+</div>
+</div>
+</section>
+<!-- Review & Submit Summary Card -->
+<section class="space-y-lg">
+<div class="bg-surface-container-lowest border border-outline rounded-xl shadow-sm overflow-hidden p-xl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface">Batch Review Summary</h3>
+<span class="px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-body-sm font-semibold">Step 3 of 3</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+<!-- Resumes List Compact -->
+<div class="bg-surface-variant p-md rounded-lg border border-outline-variant">
+<div class="flex items-center justify-between mb-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+<span class="font-body-md text-body-md font-bold uppercase tracking-tight">Resumes (42)</span>
+</div>
+<button class="text-primary text-xs font-semibold hover:underline">Edit List</button>
+</div>
+<ul class="space-y-sm max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+<li class="flex items-center justify-between text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="truncate max-w-[150px]">Sarah_Jenkins_CV.pdf</span>
+<span class="text-on-surface-muted text-[10px]">1.2MB</span>
+</li>
+<li class="flex items-center justify-between text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="truncate max-w-[150px]">David_Miller_Profile.docx</span>
+<span class="text-on-surface-muted text-[10px]">450KB</span>
+</li>
+<li class="flex items-center justify-between text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="truncate max-w-[150px]">Anita_Kumar_SWE.pdf</span>
+<span class="text-on-surface-muted text-[10px]">2.1MB</span>
+</li>
+<li class="flex items-center justify-between text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50 italic text-on-surface-muted">
+<span>+ 39 more files...</span>
+</li>
+</ul>
+</div>
+<!-- Job Descriptions List Compact -->
+<div class="bg-surface-variant p-md rounded-lg border border-outline-variant">
+<div class="flex items-center justify-between mb-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">work</span>
+<span class="font-body-md text-body-md font-bold uppercase tracking-tight">Job Descriptions (3)</span>
+</div>
+<button class="text-primary text-xs font-semibold hover:underline">Edit List</button>
+</div>
+<ul class="space-y-sm">
+<li class="flex items-center gap-3 text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<span class="truncate">Senior Software Engineer</span>
+</li>
+<li class="flex items-center gap-3 text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<span class="truncate">Product Manager (Growth)</span>
+</li>
+<li class="flex items-center gap-3 text-body-sm p-2 bg-surface-container-lowest rounded border border-outline-variant/50">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<span class="truncate">UX Designer - Mobile</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Configuration & Options -->
+<div class="space-y-md border-t border-outline-variant pt-xl">
+<div class="flex flex-col gap-2">
+<label class="text-label-caps font-label-caps text-on-surface-muted">Evaluation Config</label>
+<div class="relative group">
+<select class="w-full bg-surface appearance-none border border-outline rounded-lg px-md py-3 text-body-md focus:ring-3 focus:ring-focus-ring outline-none transition-all">
+<option selected="">Organization default</option>
+<option>Strict technical filter</option>
+<option>Soft skills focused</option>
+<option>Diversity-first ranking</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Advanced Options Disclosure -->
+<details class="group bg-surface-container-low rounded-lg transition-all duration-300">
+<summary class="flex items-center justify-between p-md cursor-pointer hover:bg-surface-container-high transition-colors rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">tune</span>
+<span class="font-body-md text-body-md font-semibold">Advanced options</span>
+</div>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-md space-y-md border-t border-outline-variant/30">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-2">
+<label class="text-body-sm font-semibold">Webhook Notification URL</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-2 text-body-sm focus:ring-2 focus:ring-primary-container" placeholder="https://api.company.com/webhooks/recruitai" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-body-sm font-semibold">Completion Email Recipient</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-2 text-body-sm focus:ring-2 focus:ring-primary-container" placeholder="hiring-team@company.com" type="email"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<input class="w-4 h-4 text-primary border-outline rounded focus:ring-primary-container" id="anon" type="checkbox"/>
+<label class="text-body-sm" for="anon">Anonymize candidate names during evaluation for bias mitigation</label>
+</div>
+</div>
+</details>
+</div>
+<!-- Actions -->
+<div class="mt-xl space-y-md">
+<button class="w-full bg-primary hover:bg-primary-hover text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm shadow-lg hover:shadow-xl transition-all active:scale-[0.98] duration-150 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-weight="fill">rocket_launch</span>
+              Start scoring 126 pairs
+            </button>
+<div class="flex items-start gap-3 p-md bg-info/10 border border-info/20 rounded-lg">
+<span class="material-symbols-outlined text-info text-md">info</span>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">
+                Processing large batches may take a few minutes. Results will appear in the <span class="font-bold text-on-surface">Evaluations</span> tab. You will receive an email once the batch processing is complete.
+              </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Help -->
+<footer class="mt-xl flex justify-between items-center text-on-surface-muted">
+<button class="flex items-center gap-2 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+<span class="text-body-sm font-semibold">Back to Job Descriptions</span>
+</button>
+<p class="text-body-sm">Need help? <a class="text-primary underline" href="#">Visit Help Center</a></p>
+</footer>
+</div>
+</main>
+<!-- Interactive script for details hover and basic animations -->
+<script>
+    // Micro-interactions for button pressure
+    const mainBtn = document.querySelector('button.bg-primary');
+    mainBtn.addEventListener('mousedown', () => {
+      mainBtn.style.transform = 'scale(0.98)';
+    });
+    mainBtn.addEventListener('mouseup', () => {
+      mainBtn.style.transform = 'scale(1)';
+    });
+    mainBtn.addEventListener('mouseleave', () => {
+      mainBtn.style.transform = 'scale(1)';
+    });
+  </script>
+</body></html>

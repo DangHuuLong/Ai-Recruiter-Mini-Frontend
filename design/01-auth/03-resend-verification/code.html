@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Resend Verification - AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#0058be",
+                    "on-primary-fixed-variant": "#004395",
+                    "on-surface-variant": "#475569",
+                    "on-tertiary-container": "#fffbff",
+                    "error-container": "#FEE2E2",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f9f9ff",
+                    "primary-hover": "#2563EB",
+                    "link": "#2563EB",
+                    "surface-tint": "#005ac2",
+                    "on-surface": "#191b23",
+                    "on-secondary-fixed-variant": "#444749",
+                    "success": "#22C55E",
+                    "on-primary-container": "#fefcff",
+                    "error": "#EF4444",
+                    "background": "#f9f9ff",
+                    "surface-variant": "#e1e2ec",
+                    "outline": "#E2E8F0",
+                    "secondary-fixed": "#e0e3e5",
+                    "on-primary-fixed": "#001a42",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "outline-variant": "#c2c6d6",
+                    "inverse-surface": "#2e3038",
+                    "surface-container-highest": "#e1e2ec",
+                    "info": "#0EA5E9",
+                    "tertiary": "#924700",
+                    "warning": "#F59E0B",
+                    "surface-container-high": "#e6e7f2",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#adc6ff",
+                    "inverse-on-surface": "#eff0fa",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "on-background": "#191b23",
+                    "surface-container-low": "#f2f3fd",
+                    "focus-ring": "#93C5FD",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-surface-muted": "#64748B",
+                    "tertiary-container": "#b75b00",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#191c1e",
+                    "primary-container": "#2170e4",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-dim": "#d8d9e3",
+                    "secondary": "#5c5f61",
+                    "on-tertiary-fixed": "#311400",
+                    "warning-container": "#FEF3C7",
+                    "secondary-container": "#e0e3e5",
+                    "surface-container": "#ecedf7",
+                    "success-container": "#DCFCE7",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-secondary-container": "#626567"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin-desktop": "32px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "radius": "8px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter", "sans-serif"],
+                    "headline-sm": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "headline-md": ["Inter", "sans-serif"],
+                    "headline-lg-mobile": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "body-sm": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-shadow {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+<!-- Verification Card -->
+<div class="w-full max-w-md bg-surface-container-lowest border border-outline rounded-xl p-xl form-shadow fade-in" id="verification-card">
+<!-- Header/Logo Area -->
+<div class="flex flex-col items-center mb-xl text-center">
+<div class="mb-lg">
+<img alt="RecruitAI Logo" class="h-16 w-16 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALbBzou5DY6DhIduG8NEDTwxUJQW-Rl2b1mioKawctku1KyY7S3CnyU0DGD7AjtcR3Erj-3wlSEU18iP-BZapF2Dl0Y55Drx3xhSpB1waorXPrAJqNNC1S2vl2E5R8fkfEn80iau5p51DfOineAy2wShc0gl5JkwYoST3MBx_mEjX6wLVFzWbuCHWsOQnenbBzGxQXzIxa_3HYJ_fA05SJ7taRpAkP-yoa9V_2SOn5dyLRlNy1LpEUkl7lqJUHeDaXou9X_uPQ1kw"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xs">Resend verification email</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Enter the email associated with your organization</p>
+</div>
+<!-- Resend Form -->
+<form class="space-y-lg" id="resend-form">
+<div class="space-y-sm">
+<label class="font-label-caps text-label-caps text-on-surface-variant block" for="email">EMAIL ADDRESS</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-muted" data-icon="mail">mail</span>
+<input class="w-full pl-11 pr-md py-sm bg-surface-container-low border border-outline rounded-lg focus:ring-4 focus:ring-focus-ring focus:border-primary transition-all font-body-md text-on-surface placeholder:text-on-surface-muted" id="email" name="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary-hover text-on-primary font-headline-sm text-headline-sm py-sm rounded-lg shadow-sm transition-all active:scale-[0.98] cursor-pointer" type="submit">
+                    Send link
+                </button>
+<div class="text-center pt-md">
+<a class="font-body-sm text-body-sm text-primary hover:text-primary-hover font-medium flex items-center justify-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                        Back to Login
+                    </a>
+</div>
+</form>
+<!-- Success State (Hidden by default) -->
+<div class="hidden mt-xl p-md bg-surface-container-low border border-primary-container rounded-lg fade-in" id="success-banner">
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                        If an account with this email exists and isn't verified yet, we've sent a new link.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Segment (Relevance Check: Suppressed standard full footer for task focus, using minimal copyright) -->
+<footer class="w-full py-lg px-margin-desktop text-center border-t border-outline bg-surface-container-low">
+<p class="font-body-sm text-body-sm text-on-surface-muted">© 2024 AI Recruiter. Cognitive Talent System.</p>
+</footer>
+<script>
+        document.getElementById('resend-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = this.querySelector('button');
+            const originalText = btn.innerText;
+            
+            // Interaction Feedback
+            btn.disabled = true;
+            btn.innerHTML = `
+                <div class="flex items-center justify-center gap-2">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Sending...</span>
+                </div>
+            `;
+            
+            // Simulating API call
+            setTimeout(() => {
+                document.getElementById('success-banner').classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = originalText;
+                
+                // Visual focus on success
+                document.getElementById('success-banner').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 1200);
+        });
+    </script>
+</body></html>

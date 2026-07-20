@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Evaluation Configs - AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#e0e3e5",
+                    "secondary": "#5c5f61",
+                    "surface-container-low": "#f2f3fd",
+                    "surface-dim": "#d8d9e3",
+                    "on-secondary-fixed": "#191c1e",
+                    "on-primary-container": "#1E293B",
+                    "surface-tint": "#005ac2",
+                    "primary": "#0058be",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "success": "#22C55E",
+                    "inverse-primary": "#adc6ff",
+                    "on-surface-variant": "#475569",
+                    "on-secondary-container": "#626567",
+                    "primary-fixed": "#d8e2ff",
+                    "focus-ring": "#93C5FD",
+                    "on-tertiary-fixed": "#311400",
+                    "surface-bright": "#f9f9ff",
+                    "on-primary-fixed-variant": "#004395",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#eff0fa",
+                    "on-background": "#191b23",
+                    "on-surface-muted": "#64748B",
+                    "surface-variant": "#F1F5F9",
+                    "surface-container-high": "#e6e7f2",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#2170e4",
+                    "success-container": "#DCFCE7",
+                    "on-primary-fixed": "#001a42",
+                    "link": "#2563EB",
+                    "tertiary-container": "#b75b00",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#E2E8F0",
+                    "background": "#f9f9ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#ecedf7",
+                    "primary-fixed-dim": "#adc6ff",
+                    "info": "#0EA5E9",
+                    "outline-variant": "#CBD5E1",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "error": "#EF4444",
+                    "tertiary": "#924700",
+                    "primary-hover": "#2563EB",
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "on-tertiary-container": "#fffbff",
+                    "surface-container-highest": "#e1e2ec",
+                    "on-surface": "#191b23",
+                    "warning-container": "#FEF3C7",
+                    "warning": "#F59E0B",
+                    "secondary-fixed": "#e0e3e5",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "inverse-surface": "#2e3038",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface": "#f9f9ff",
+                    "on-secondary-fixed-variant": "#444749"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "gutter": "24px",
+                    "radius": "8px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .table-row-hover:hover { background-color: #F8FAFC; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="flex flex-col h-screen w-64 flex-shrink-0 border-r border-outline dark:border-outline-variant bg-surface-container-low dark:bg-inverse-surface z-50">
+<div class="p-lg flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="cognition">cognition</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">AI Recruiter</h1>
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant opacity-70">Enterprise Talent</p>
+</div>
+</div>
+<nav class="flex-1 px-md py-sm space-y-xs overflow-y-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high dark:hover:bg-secondary-fixed transition-colors text-on-surface-variant dark:text-on-surface-muted font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Candidates</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high dark:hover:bg-secondary-fixed transition-colors text-on-surface-variant dark:text-on-surface-muted font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Resumes</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high dark:hover:bg-secondary-fixed transition-colors text-on-surface-variant dark:text-on-surface-muted font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span>Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high dark:hover:bg-secondary-fixed transition-colors text-on-surface-variant dark:text-on-surface-muted font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Batch Scoring</span>
+</a>
+<!-- Active State: Admin Settings (since Eval Config is an admin task) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary dark:text-primary-fixed bg-secondary-container dark:bg-secondary-fixed-dim font-bold font-body-md text-body-md cursor-pointer active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Admin Settings</span>
+</a>
+</nav>
+<div class="px-md py-lg border-t border-outline">
+<button class="w-full py-sm px-md bg-primary text-on-primary rounded-lg font-medium flex items-center justify-center gap-sm hover:bg-primary-hover transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+<span>Create New Job</span>
+</button>
+</div>
+<div class="p-md space-y-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant font-body-md text-body-md text-error" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-surface-container-lowest">
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center px-lg w-full h-16 sticky top-0 z-50 bg-surface-container-lowest border-b border-outline dark:border-outline-variant">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md focus-within:ring-2 focus-within:ring-focus-ring rounded-lg overflow-hidden border border-outline">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-variant border-none pl-xl py-xs text-body-md focus:ring-0" placeholder="Search evaluation configs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-surface-variant text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-variant text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-variant text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="h-8 w-[1px] bg-outline mx-xs"></div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-dim overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a female tech executive with a confident smile, wearing a sleek navy blazer, shot in high-definition with soft studio lighting and a clean, minimalist background that complements the corporate B2B SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxfalxzBWiSCz0-Y1t7QkTtMbDEzN5yHdUdxXDaEtBhpjmrlCiw17MhGa6V60t8rA5-eT_WZGUhizY6WDTl4MeKOkkOdEVUIqnNx51NvQzvJnTdGj4GDwfnwA0U2Ll8JJR0WE13_pZX6NJJ3PFxrxgz4BYDOXrlOkfN-QGA0-ECaSLs_EfhVRXzO_PAGRUdLjROZynxOGrModqgFFp0WKOb_r_-OA3mbZgSGTdSmesCpB48LiwoV040_Nm34AZw5wQ23vTh1RK-V0"/>
+</div>
+<span class="font-body-md text-body-md font-medium text-on-surface">Alex Rivera</span>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<section class="flex-1 overflow-y-auto p-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs text-on-surface-muted mb-sm">
+<span class="text-label-caps font-label-caps">ADMIN</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-label-caps font-label-caps text-on-surface">EVALUATION CONFIGS</span>
+</nav>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Evaluation Configs</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                        Define and manage scoring rubrics, interview criteria, and AI weighting models used across your organization's recruitment workflow.
+                    </p>
+</div>
+<button class="px-lg py-md bg-primary text-on-primary rounded-radius font-medium flex items-center gap-sm hover:bg-primary-hover active:scale-95 transition-all shadow-md">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span>New config</span>
+</button>
+</div>
+<!-- Dashboard Stats / Cards (Asymmetric Bento-ish Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg mb-xl">
+<div class="col-span-1 md:col-span-1 p-lg bg-surface-container-lowest border border-outline rounded-xl shadow-sm">
+<div class="flex items-center justify-between mb-sm">
+<span class="text-label-caps font-label-caps text-on-surface-variant">ACTIVE CONFIGS</span>
+<span class="material-symbols-outlined text-primary" data-icon="settings_suggest">settings_suggest</span>
+</div>
+<div class="text-headline-md font-headline-md text-on-surface">24</div>
+<div class="text-success text-body-sm font-medium flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+<span>+2 this month</span>
+</div>
+</div>
+<div class="col-span-1 md:col-span-3 bg-primary-container/10 p-lg border border-primary/20 rounded-xl flex items-center justify-between overflow-hidden relative">
+<div class="z-10">
+<h4 class="font-headline-sm text-headline-sm text-on-primary-container mb-xs">Global Default: Engineering V2</h4>
+<p class="font-body-md text-body-md text-on-primary-container/80 max-w-md">Currently applied to 85% of all technical open roles. Updated 3 days ago by Systems Admin.</p>
+<button class="mt-md text-primary font-semibold flex items-center gap-sm">
+                            View Model Details <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="hidden lg:block absolute -right-8 -bottom-8 opacity-10">
+<span class="material-symbols-outlined text-[160px]" data-icon="architecture">architecture</span>
+</div>
+</div>
+</div>
+<!-- Main Table Section -->
+<div class="bg-surface-container-lowest border border-outline rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-variant/50 border-b border-outline">
+<th class="px-lg py-md text-label-caps font-label-caps text-on-surface-variant">CONFIG NAME</th>
+<th class="px-lg py-md text-label-caps font-label-caps text-on-surface-variant">SCOPE</th>
+<th class="px-lg py-md text-label-caps font-label-caps text-on-surface-variant text-center">DEFAULT</th>
+<th class="px-lg py-md text-label-caps font-label-caps text-on-surface-variant">LAST UPDATED</th>
+<th class="px-lg py-md text-label-caps font-label-caps text-on-surface-variant text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline">
+<!-- Row 1 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-lg font-semibold text-on-surface">Engineering Default</span>
+<span class="text-body-sm text-on-surface-muted">Standard technical screening rubric</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-success-container text-success font-label-caps text-[10px] rounded uppercase border border-success/20">Organization default</span>
+</td>
+<td class="px-lg py-lg text-center">
+<span class="material-symbols-outlined text-primary" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-md text-body-md text-on-surface-variant">Oct 24, 2023</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-sm hover:bg-surface-variant rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-sm hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-lg font-semibold text-on-surface">Product Lead Custom</span>
+<span class="text-body-sm text-on-surface-muted">Leadership and roadmap vision focus</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-surface-variant text-on-surface-variant font-label-caps text-[10px] rounded uppercase">Senior Product Manager</span>
+</td>
+<td class="px-lg py-lg text-center">
+<span class="material-symbols-outlined text-outline" data-icon="star">star</span>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-md text-body-md text-on-surface-variant">Nov 02, 2023</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-sm hover:bg-surface-variant rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-sm hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-lg font-semibold text-on-surface">Backend Senior Tier</span>
+<span class="text-body-sm text-on-surface-muted">System design and architecture weighting</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-surface-variant text-on-surface-variant font-label-caps text-[10px] rounded uppercase">Senior Backend Engineer</span>
+</td>
+<td class="px-lg py-lg text-center">
+<span class="material-symbols-outlined text-outline" data-icon="star">star</span>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-md text-body-md text-on-surface-variant">Oct 15, 2023</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-sm hover:bg-surface-variant rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-sm hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="table-row-hover transition-colors">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-lg font-semibold text-on-surface">Designer Generalist</span>
+<span class="text-body-sm text-on-surface-muted">Visual execution and UX research mix</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-surface-variant text-on-surface-variant font-label-caps text-[10px] rounded uppercase">UI/UX Designer</span>
+</td>
+<td class="px-lg py-lg text-center">
+<span class="material-symbols-outlined text-outline" data-icon="star">star</span>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-md text-body-md text-on-surface-variant">Sep 28, 2023</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-sm hover:bg-surface-variant rounded-lg text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-sm hover:bg-error-container/20 rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-lg py-md border-t border-outline flex items-center justify-between bg-surface-variant/20">
+<span class="text-body-sm text-on-surface-variant">Showing 4 of 24 configs</span>
+<div class="flex items-center gap-xs">
+<button class="p-xs border border-outline rounded hover:bg-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-sm py-xs bg-primary text-on-primary rounded text-body-sm font-medium">1</button>
+<button class="px-sm py-xs hover:bg-surface-variant rounded text-body-sm">2</button>
+<button class="px-sm py-xs hover:bg-surface-variant rounded text-body-sm">3</button>
+<button class="p-xs border border-outline rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB Suppression: Not rendering FAB on a management list page per instructions -->
+<script>
+        // Micro-interactions for table rows and buttons
+        document.querySelectorAll('.table-row-hover').forEach(row => {
+            row.addEventListener('click', (e) => {
+                // Prevent trigger if clicking on actions
+                if (!e.target.closest('button')) {
+                    console.log('Row clicked, navigating to detail...');
+                }
+            });
+        });
+    </script>
+</body></html>

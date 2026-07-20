@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invite Member - AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .slide-over-enter {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-over-active {
+            transform: translateX(0);
+        }
+        .toast-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease-out;
+        }
+        .toast-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e6e7f2",
+                        "inverse-surface": "#2e3038",
+                        "primary": "#0058be",
+                        "on-surface-muted": "#64748B",
+                        "on-primary-container": "#fefcff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#5c5f61",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-dim": "#d8d9e3",
+                        "outline": "#E2E8F0",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "primary-hover": "#2563EB",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-variant": "#F1F5F9",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "success": "#22C55E",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface": "#f9f9ff",
+                        "primary-container": "#DBEAFE",
+                        "secondary-container": "#e0e3e5",
+                        "focus-ring": "#93C5FD",
+                        "on-surface-variant": "#475569",
+                        "outline-variant": "#CBD5E1",
+                        "warning": "#F59E0B",
+                        "inverse-primary": "#adc6ff",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#ecedf7",
+                        "on-surface": "#191b23",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-tertiary-fixed": "#311400",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "tertiary-container": "#b75b00",
+                        "tertiary": "#924700",
+                        "warning-container": "#FEF3C7",
+                        "success-container": "#DCFCE7",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "on-secondary-fixed-variant": "#444749",
+                        "inverse-on-surface": "#eff0fa",
+                        "error": "#EF4444",
+                        "surface-container-low": "#f2f3fd",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#e1e2ec",
+                        "on-secondary-container": "#626567",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#e0e3e5",
+                        "surface-tint": "#005ac2",
+                        "link": "#2563EB",
+                        "primary-fixed-dim": "#adc6ff",
+                        "info": "#0EA5E9",
+                        "on-background": "#191b23"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline flex flex-col p-4 z-40">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Talent Intelligence</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span class="font-body-md text-body-md">Candidates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-body-md text-body-md">Resumes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="work_outline">work_outline</span>
+<span class="font-body-md text-body-md">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment_ind">assignment_ind</span>
+<span class="font-body-md text-body-md">Applications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+<span class="font-body-md text-body-md">Evaluations</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-body-md text-body-md">Batch Scoring</span>
+</a>
+<div class="mt-auto">
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-primary-container rounded-lg opacity-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 h-16 left-64 bg-surface-container-lowest border-b border-outline shadow-sm flex justify-between items-center px-8 z-30">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-variant border-transparent rounded-lg text-body-md focus:ring-2 focus:ring-focus-ring focus:bg-surface-container-lowest border-outline transition-all outline-none" placeholder="Search members or settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-outline mx-2"></div>
+<div class="flex items-center gap-3 pl-2">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate male executive with a confident and approachable expression, set against a blurred modern office background with neutral gray tones and soft natural lighting to convey trust and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8DSzPbNbYLqGnFnHt8McLQ-iNlmyBKNDkNIN5P3iTrIh1tTT42VAIazoTJDKxmyko9X23YJG71qBr4gXpJEMf6G0yYP-n14tALdxiSuPolPmxp_7dp_ZjwjAQaNammsQ-nMSwdEhiDMr-ZbanwzpXgJM02chAJiq1sNrzLbkusgK0FGKrVKmj5j_W68iv_bdQNg1rDA__qzaMtIBrW1ypywDcV6tvew0izItJi3CMX_Rlb0t4TkoHScqM37khEauxyIOl6kRhd8U"/>
+</div>
+<span class="font-body-md text-body-md font-medium">Alex Rivera</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-screen">
+<div class="max-w-5xl mx-auto">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Team Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage organization members and their access levels.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-lg font-medium hover:bg-primary-hover transition-all shadow-sm" onclick="toggleSlideOver()">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 500;">person_add</span>
+                    Invite Member
+                </button>
+</div>
+<!-- Bento Grid Style Management Cards -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Main Member List Card -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline rounded-xl p-6 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-sm text-headline-sm">Active Members</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-success-container text-success text-xs font-bold rounded-full border border-success/20">12 Active</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-xs font-bold rounded-full">3 Pending</span>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Table Simulation -->
+<div class="grid grid-cols-12 px-4 py-2 text-label-caps font-label-caps text-on-surface-variant border-b border-outline">
+<div class="col-span-5">MEMBER</div>
+<div class="col-span-3">ROLE</div>
+<div class="col-span-2">STATUS</div>
+<div class="col-span-2 text-right">ACTION</div>
+</div>
+<!-- Row 1 -->
+<div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-variant rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<div class="col-span-5 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-bold">AR</div>
+<div>
+<p class="font-body-md text-body-md font-semibold">Alex Rivera (You)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">alex@talent-ai.com</p>
+</div>
+</div>
+<div class="col-span-3">
+<span class="px-2 py-1 bg-primary-container text-primary text-xs font-semibold rounded">Admin</span>
+</div>
+<div class="col-span-2">
+<div class="flex items-center gap-1.5 text-success">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-xs font-medium">Active</span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-variant rounded-lg transition-colors">
+<div class="col-span-5 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">JD</div>
+<div>
+<p class="font-body-md text-body-md font-semibold">Jordan Doe</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">j.doe@talent-ai.com</p>
+</div>
+</div>
+<div class="col-span-3">
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-xs font-semibold rounded">Recruiter</span>
+</div>
+<div class="col-span-2">
+<div class="flex items-center gap-1.5 text-success">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-xs font-medium">Active</span>
+</div>
+</div>
+<div class="col-span-2 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Info Cards -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<div class="bg-surface-container-highest rounded-xl p-6 relative overflow-hidden group">
+<div class="relative z-10">
+<h4 class="font-headline-sm text-headline-sm mb-2">Usage Limit</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">You've used 12 of your 20 member seats.</p>
+<div class="w-full bg-outline rounded-full h-2 mb-4">
+<div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+</div>
+<button class="text-primary font-bold font-body-md flex items-center gap-1 hover:underline">
+                                Upgrade Plan <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl opacity-5 group-hover:scale-110 transition-transform duration-700">group</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline rounded-xl p-6 shadow-sm">
+<h4 class="font-headline-sm text-headline-sm mb-4">Recent Activity</h4>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="mt-1"><span class="material-symbols-outlined text-primary text-sm">history</span></div>
+<div>
+<p class="font-body-sm text-body-sm"><span class="font-bold">Jordan Doe</span> updated a Job Description</p>
+<p class="text-[11px] text-on-surface-muted">2 hours ago</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="mt-1"><span class="material-symbols-outlined text-warning text-sm">mail</span></div>
+<div>
+<p class="font-body-sm text-body-sm">Invitation sent to <span class="font-bold">jane@company.com</span></p>
+<p class="text-[11px] text-on-surface-muted">5 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Slide-over Overlay Backdrop -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="backdrop" onclick="toggleSlideOver()"></div>
+<!-- Invite Member Slide-over Panel -->
+<div class="fixed inset-y-0 right-0 w-full max-w-md glass-panel border-l border-outline z-[60] slide-over-enter flex flex-col shadow-2xl" id="slideOver">
+<div class="px-8 py-6 border-b border-outline flex items-center justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Invite Member</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Add a new professional to your team</p>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors" onclick="toggleSlideOver()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto px-8 py-8">
+<form class="space-y-6" id="inviteForm" onsubmit="handleInvite(event)">
+<!-- Full Name Field -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="fullName">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-muted text-lg">person</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-outline rounded-lg text-body-md focus:ring-4 focus:ring-focus-ring/20 focus:border-primary outline-none transition-all placeholder:text-on-surface-muted" id="fullName" placeholder="e.g. Jane Cooper" required="" type="text"/>
+</div>
+</div>
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="email">Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-muted text-lg">mail</span>
+<input class="w-full pl-10 pr-4 py-3 bg-white border border-outline rounded-lg text-body-md focus:ring-4 focus:ring-focus-ring/20 focus:border-primary outline-none transition-all placeholder:text-on-surface-muted" id="email" placeholder="jane@company.com" required="" type="email"/>
+</div>
+</div>
+<!-- Role Select -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="role">Role</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-muted text-lg">badge</span>
+<select class="w-full pl-10 pr-10 py-3 bg-white border border-outline rounded-lg text-body-md focus:ring-4 focus:ring-focus-ring/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer" id="role" required="">
+<option disabled="" selected="" value="">Select a role</option>
+<option value="Admin">Admin</option>
+<option value="Recruiter">Recruiter</option>
+<option value="Hiring Manager">Hiring Manager</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-muted pointer-events-none">expand_more</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-muted mt-2 px-1">Roles define the level of access and visibility for each member.</p>
+</div>
+<!-- Privacy/TOS -->
+<div class="bg-surface-variant p-4 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">New members will receive an automated email with secure onboarding instructions.</p>
+</div>
+</form>
+</div>
+<!-- Sticky Footer Action -->
+<div class="px-8 py-6 border-t border-outline bg-surface-container-lowest">
+<button class="w-full bg-primary text-on-primary py-3.5 rounded-lg font-bold font-body-md hover:bg-primary-hover shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group" form="inviteForm" id="sendBtn" type="submit">
+                Send Invitation
+                <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">send</span>
+</button>
+</div>
+<!-- Success Toast Notification -->
+<div class="absolute bottom-28 left-8 right-8 z-[70] hidden" id="successToast">
+<div class="bg-inverse-surface text-inverse-on-surface px-4 py-4 rounded-xl shadow-2xl flex items-center gap-4 border border-white/10 toast-enter">
+<div class="w-8 h-8 rounded-full bg-success flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-semibold">Success!</p>
+<p class="font-body-sm text-body-sm opacity-90">Invitation sent to <span id="toastEmail">jane@company.com</span></p>
+</div>
+<button class="text-white/60 hover:text-white transition-colors" onclick="hideToast()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+        function toggleSlideOver() {
+            const panel = document.getElementById('slideOver');
+            const backdrop = document.getElementById('backdrop');
+            
+            if (panel.classList.contains('slide-over-active')) {
+                panel.classList.remove('slide-over-active');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                panel.classList.add('slide-over-active');
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function handleInvite(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const btn = document.getElementById('sendBtn');
+            const toast = document.getElementById('successToast');
+            const toastMsg = toast.querySelector('.toast-enter');
+            
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = `<span class="animate-spin material-symbols-outlined">progress_activity</span> Sending...`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                document.getElementById('toastEmail').innerText = email;
+                toast.classList.remove('hidden');
+                
+                // Trigger toast animation
+                setTimeout(() => {
+                    toastMsg.classList.add('toast-active');
+                }, 10);
+                
+                // Reset button
+                btn.disabled = false;
+                btn.innerHTML = `Send Invitation <span class="material-symbols-outlined">send</span>`;
+                
+                // Auto hide toast and close panel after success
+                setTimeout(() => {
+                    hideToast();
+                    setTimeout(() => {
+                        toggleSlideOver();
+                        // Reset form
+                        document.getElementById('inviteForm').reset();
+                    }, 500);
+                }, 3000);
+
+            }, 1200);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('successToast');
+            const toastMsg = toast.querySelector('.toast-enter');
+            toastMsg.classList.remove('toast-active');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
+
+        // Initialize with slide-over open for demonstration purposes
+        window.onload = () => {
+            setTimeout(toggleSlideOver, 500);
+        }
+    </script>
+</body></html>

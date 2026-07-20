@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bulk Question Upload - AI Recruiter DEV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .mono-font { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "warning-container": "#FEF3C7",
+                    "on-primary-container": "#fefcff",
+                    "surface-container": "#ecedf7",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eff0fa",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e1e2ec",
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "secondary": "#5c5f61",
+                    "on-surface": "#191b23",
+                    "info": "#0EA5E9",
+                    "on-surface-muted": "#64748B",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2e3038",
+                    "inverse-primary": "#adc6ff",
+                    "warning": "#F59E0B",
+                    "outline-variant": "#CBD5E1",
+                    "surface-tint": "#005ac2",
+                    "outline": "#E2E8F0",
+                    "surface-variant": "#F1F5F9",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#475569",
+                    "background": "#f9f9ff",
+                    "tertiary": "#924700",
+                    "on-secondary-fixed-variant": "#444749",
+                    "success": "#22C55E",
+                    "on-primary-fixed-variant": "#004395",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-low": "#f2f3fd",
+                    "error": "#EF4444",
+                    "on-tertiary-container": "#fffbff",
+                    "on-background": "#191b23",
+                    "secondary-fixed": "#e0e3e5",
+                    "on-secondary-fixed": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#e0e3e5",
+                    "primary-container": "#2170e4",
+                    "tertiary-fixed": "#ffdcc6",
+                    "tertiary-container": "#b75b00",
+                    "success-container": "#DCFCE7",
+                    "surface-container-high": "#e6e7f2",
+                    "on-primary-fixed": "#001a42",
+                    "on-tertiary-fixed": "#311400",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#626567",
+                    "surface-bright": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-hover": "#2563EB",
+                    "primary-fixed-dim": "#adc6ff",
+                    "link": "#2563EB",
+                    "surface-dim": "#d8d9e3",
+                    "primary": "#0058be",
+                    "focus-ring": "#93C5FD"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "radius": "8px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "sm": "8px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-background min-h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container fixed left-0 top-0 w-64 z-40">
+<div class="flex items-center gap-sm mb-lg px-xs">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm font-black text-on-surface">Admin Panel</h2>
+<p class="text-xs text-on-surface-variant font-label-caps">Internal Dev Mode</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-bold transition-all active:scale-95 duration-200 shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="quiz">quiz</span>
+<span class="font-label-caps">Interview Bank</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps">System Config</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="font-label-caps">Internal Tools</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-transform active:scale-95 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span class="font-label-caps">Logs</span>
+</a>
+</nav>
+<div class="pt-md border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-label-caps">System Health</span>
+</a>
+<button class="w-full mt-md py-sm px-md bg-primary hover:bg-primary-hover text-on-primary font-bold rounded-lg transition-all active:scale-95 text-body-md">
+                Test Retrieval
+            </button>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="md:ml-64 min-h-screen relative flex flex-col">
+<!-- Top Navbar -->
+<header class="sticky top-0 z-50 flex items-center justify-between w-full px-lg py-sm bg-surface-container-lowest border-b border-outline-variant">
+<div class="flex items-center gap-lg">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">AI Recruiter DEV</h1>
+<div class="hidden lg:flex items-center bg-surface-variant px-md py-xs rounded-full border border-outline">
+<span class="material-symbols-outlined text-on-surface-variant mr-xs" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64" placeholder="Search prompts..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="bug_report">bug_report</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-dim overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="A professional high-resolution headshot of a technical system administrator, wearing glasses and a focused expression. The background is a clean, modern workspace with subtle blue and gray technological lighting. Minimalist and corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHZDEQSlQDspPNtIteWVVbFW2H_GXSJRp9w1-o7mCq1gngHjGbvI7blWvjNc1vIpkEmRjdN3mS2ZnQCxK9KNYB_a7-K2DMc9fnRAAPN5i21u8kBURZzIS6wKZoxC3WlfRujDR6Ri6fRyad7FPWqQ3oymqSuGLpFW6ZwZAKma6SK1QIkgl6ujfqk6X4Rd1sBb7138ERiAnfa97SXoPNpCoE5WksyG6PYazTnUT-xW2aURtWTJ73SUduraxFmZH1DQkKwiLE1Pfkuo0"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="flex-1 p-lg overflow-y-auto">
+<div class="max-w-7xl mx-auto space-y-lg">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Question Management</h2>
+<p class="text-on-surface-variant font-body-md">Configure and scale your AI recruitment bank.</p>
+</div>
+<button class="flex items-center gap-sm px-md py-sm bg-primary text-on-primary font-bold rounded-lg shadow-md hover:bg-primary-hover active:scale-95 transition-all" id="openModal">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+                        Bulk Upload JSON
+                    </button>
+</div>
+<!-- Bento Grid Layout for Background Content -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg h-96">
+<div class="md:col-span-2 bg-white rounded-xl border border-outline p-lg shadow-sm">
+<div class="flex justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm">Active Repository</h3>
+<span class="px-md py-1 bg-success-container text-success font-label-caps rounded-full text-[10px]">SYNCED</span>
+</div>
+<div class="space-y-sm">
+<div class="p-md bg-surface-variant rounded-lg border border-outline-variant flex justify-between">
+<div>
+<p class="font-bold text-on-surface">Behavioral_Tech_2024.json</p>
+<p class="text-xs text-on-surface-variant">Last updated 2 hours ago by admin</p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="edit">edit</span>
+</div>
+<div class="p-md bg-surface-variant rounded-lg border border-outline-variant flex justify-between">
+<div>
+<p class="font-bold text-on-surface">Leadership_Competency_V3.json</p>
+<p class="text-xs text-on-surface-variant">Last updated yesterday</p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="edit">edit</span>
+</div>
+</div>
+</div>
+<div class="bg-primary text-on-primary rounded-xl p-lg flex flex-col justify-between shadow-lg relative overflow-hidden">
+<div class="z-10">
+<h3 class="font-headline-sm text-headline-sm opacity-90">Total Questions</h3>
+<p class="text-4xl font-black mt-xs">1,284</p>
+</div>
+<div class="z-10">
+<div class="flex items-center gap-xs text-xs font-bold text-success-container">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                                +12% this month
+                            </div>
+</div>
+<!-- Abstract decorative shape -->
+<div class="absolute -right-12 -bottom-12 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- SLIDE-OVER MODAL INTERFACE -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-[60] hidden flex justify-end transition-opacity duration-300 opacity-0" id="modalOverlay">
+<div class="w-full max-w-5xl bg-surface h-screen shadow-2xl translate-x-full transition-transform duration-500 ease-out flex flex-col border-l border-outline" id="modalPanel">
+<!-- Modal Header -->
+<div class="flex items-center justify-between p-lg border-b border-outline bg-surface-container-lowest">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Bulk Question Upload</h2>
+<p class="text-on-surface-variant text-body-md">Scale your interview bank by importing JSON structured data.</p>
+</div>
+<button class="p-sm rounded-full hover:bg-surface-variant text-on-surface-variant active:scale-95 transition-all" id="closeModal">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Content (Main Workspace) -->
+<div class="flex-1 flex overflow-hidden" id="uploadWorkspace">
+<!-- Left: JSON Editor -->
+<div class="w-1/2 flex flex-col p-lg border-r border-outline bg-white">
+<div class="flex items-center justify-between mb-sm">
+<label class="font-label-caps text-on-surface-variant">Paste JSON Question Array</label>
+<span class="text-[10px] text-primary bg-primary-fixed px-xs py-0.5 rounded font-mono">VALID JSON REQUIRED</span>
+</div>
+<textarea class="flex-1 mono-font text-xs p-md bg-surface-variant border-outline focus:border-primary focus:ring-focus-ring rounded-lg resize-none outline-none overflow-y-auto" id="jsonInput" placeholder='[{"question": "How do you handle conflict?", "family": "Behavioral", "competency": "Conflict Resolution"}]'></textarea>
+</div>
+<!-- Right: Live Preview -->
+<div class="w-1/2 flex flex-col p-lg bg-surface-container-low">
+<div class="flex items-center justify-between mb-sm">
+<label class="font-label-caps text-on-surface-variant">Live Preview</label>
+<span class="text-xs text-on-surface-muted" id="itemCount">0 Items Detected</span>
+</div>
+<div class="flex-1 bg-white rounded-lg border border-outline overflow-hidden flex flex-col">
+<table class="w-full text-left text-xs border-collapse">
+<thead class="bg-surface-container-highest text-on-surface-variant font-bold sticky top-0">
+<tr>
+<th class="px-md py-sm border-b border-outline">Family</th>
+<th class="px-md py-sm border-b border-outline">Competency</th>
+<th class="px-md py-sm border-b border-outline">Preview</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline" id="previewBody">
+<!-- Dynamic rows -->
+<tr class="text-on-surface-muted italic">
+<td class="px-md py-xl text-center" colspan="3">Enter valid JSON to see data preview...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Post-Upload State (Hidden by default) -->
+<div class="hidden flex-1 overflow-y-auto p-xl bg-surface-variant" id="resultsWorkspace">
+<div class="max-w-3xl mx-auto space-y-md">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 bg-success-container text-success rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">Upload Complete</h3>
+<p class="text-on-surface-variant">Processed 24 questions. 22 Succeeded, 2 Failed.</p>
+</div>
+</div>
+<div class="space-y-sm">
+<!-- Success Item -->
+<div class="bg-white p-md rounded-lg border border-outline flex items-center gap-md shadow-sm">
+<span class="material-symbols-outlined text-success" data-icon="check_circle">check_circle</span>
+<div class="flex-1">
+<p class="font-bold text-sm">Question #1: Technical Troubleshooting</p>
+<p class="text-xs text-on-surface-variant font-mono">ID: QA_902_F12</p>
+</div>
+<span class="text-[10px] bg-surface-container px-sm py-1 rounded-full text-on-surface-variant font-bold">CREATED</span>
+</div>
+<!-- Failure Item -->
+<div class="bg-white p-md rounded-lg border border-error/20 flex items-center gap-md shadow-sm border-l-4 border-l-error">
+<span class="material-symbols-outlined text-error" data-icon="error">error</span>
+<div class="flex-1">
+<p class="font-bold text-sm text-error">Question #4: Validation Error</p>
+<p class="text-xs text-on-surface-variant font-mono">Missing Required Field: "Competency"</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="edit">edit</span>
+</div>
+<!-- Success Item -->
+<div class="bg-white p-md rounded-lg border border-outline flex items-center gap-md shadow-sm">
+<span class="material-symbols-outlined text-success" data-icon="check_circle">check_circle</span>
+<div class="flex-1">
+<p class="font-bold text-sm">Question #2: Scalability Systems</p>
+<p class="text-xs text-on-surface-variant font-mono">ID: QA_902_G09</p>
+</div>
+<span class="text-[10px] bg-surface-container px-sm py-1 rounded-full text-on-surface-variant font-bold">CREATED</span>
+</div>
+<!-- Failure Item -->
+<div class="bg-white p-md rounded-lg border border-error/20 flex items-center gap-md shadow-sm border-l-4 border-l-error">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<div class="flex-1">
+<p class="font-bold text-sm text-error">Question #18: Duplicate Entity</p>
+<p class="text-xs text-on-surface-variant font-mono">Similar question exists in "Core_Tech" bank.</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="history">history</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-lg border-t border-outline flex items-center justify-between bg-surface-container-low" id="modalFooter">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="info">info</span>
+<p class="text-[11px] text-on-surface-variant max-w-sm uppercase font-bold tracking-wider">Valid JSON format ensures 99.8% parsing accuracy during bulk injection operations.</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="px-lg py-sm text-on-surface-variant font-bold hover:bg-surface-dim rounded-lg active:scale-95 transition-all text-body-md" id="cancelAction">Cancel</button>
+<button class="px-xl py-sm bg-primary text-on-primary font-bold rounded-lg shadow-lg hover:bg-primary-hover active:scale-95 transition-all text-body-md flex items-center gap-sm" id="processUpload">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+                        Process Upload
+                    </button>
+<button class="hidden px-xl py-sm bg-surface-container-highest text-on-surface font-bold rounded-lg hover:bg-surface-dim active:scale-95 transition-all text-body-md" id="resetAction">New Upload</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalPanel = document.getElementById('modalPanel');
+        const openBtn = document.getElementById('openModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelAction');
+        const processBtn = document.getElementById('processUpload');
+        const resetBtn = document.getElementById('resetAction');
+        const jsonInput = document.getElementById('jsonInput');
+        const previewBody = document.getElementById('previewBody');
+        const itemCount = document.getElementById('itemCount');
+        const uploadWorkspace = document.getElementById('uploadWorkspace');
+        const resultsWorkspace = document.getElementById('resultsWorkspace');
+
+        const openModal = () => {
+            modalOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalPanel.classList.remove('translate-x-full');
+            }, 10);
+        };
+
+        const closeModal = () => {
+            modalOverlay.classList.add('opacity-0');
+            modalPanel.classList.add('translate-x-full');
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                // Reset state
+                uploadWorkspace.classList.remove('hidden');
+                resultsWorkspace.classList.add('hidden');
+                processBtn.classList.remove('hidden');
+                resetBtn.classList.add('hidden');
+                jsonInput.value = '';
+                updatePreview();
+            }, 500);
+        };
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Preview Logic
+        jsonInput.addEventListener('input', () => {
+            updatePreview();
+        });
+
+        function updatePreview() {
+            try {
+                const data = JSON.parse(jsonInput.value);
+                if (Array.isArray(data)) {
+                    itemCount.textContent = `${data.length} Items Detected`;
+                    previewBody.innerHTML = '';
+                    data.slice(0, 10).forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-md py-sm truncate max-w-[80px] font-bold text-primary">${item.family || 'N/A'}</td>
+                            <td class="px-md py-sm truncate max-w-[100px] text-on-surface-variant">${item.competency || 'N/A'}</td>
+                            <td class="px-md py-sm truncate text-on-surface-muted">${item.question || 'N/A'}</td>
+                        `;
+                        previewBody.appendChild(row);
+                    });
+                    if (data.length > 10) {
+                        const moreRow = document.createElement('tr');
+                        moreRow.innerHTML = `<td colspan="3" class="px-md py-sm text-center text-on-surface-muted font-bold">+ ${data.length - 10} more rows...</td>`;
+                        previewBody.appendChild(moreRow);
+                    }
+                }
+            } catch (e) {
+                itemCount.textContent = `Invalid JSON Syntax`;
+                previewBody.innerHTML = `<tr class="text-on-surface-muted italic"><td colspan="3" class="px-md py-xl text-center">Scanning input...</td></tr>`;
+            }
+        }
+
+        // Process Action
+        processBtn.addEventListener('click', () => {
+            processBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-sm" data-icon="sync">sync</span> Processing...`;
+            processBtn.disabled = true;
+            
+            setTimeout(() => {
+                uploadWorkspace.classList.add('hidden');
+                resultsWorkspace.classList.remove('hidden');
+                processBtn.classList.add('hidden');
+                resetBtn.classList.remove('hidden');
+                processBtn.innerHTML = `<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span> Process Upload`;
+                processBtn.disabled = false;
+            }, 1200);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            uploadWorkspace.classList.remove('hidden');
+            resultsWorkspace.classList.add('hidden');
+            processBtn.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            jsonInput.value = '';
+            updatePreview();
+        });
+
+        // Initialize sample data
+        const sampleJson = [
+            { "question": "Explain a time you optimized a cloud cost structure.", "family": "Cloud Ops", "competency": "Cost Management" },
+            { "question": "Describe the difference between an Abstract Class and an Interface.", "family": "Software Engineering", "competency": "OO Design" },
+            { "question": "How do you manage cross-functional stakeholders?", "family": "Product Management", "competency": "Stakeholder Management" }
+        ];
+        jsonInput.value = JSON.stringify(sampleJson, null, 2);
+        updatePreview();
+
+    </script>
+</body></html>

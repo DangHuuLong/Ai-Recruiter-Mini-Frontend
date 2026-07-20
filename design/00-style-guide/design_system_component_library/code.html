@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Recruiter - Style Guide</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#001257",
+                        "surface-tint": "#4157b6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#273d9d",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-tertiary-fixed-variant": "#773200",
+                        "on-background": "#0b1c30",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-container": "#ffaa7b",
+                        "outline": "#757683",
+                        "primary": "#102b8c",
+                        "secondary-container": "#86f2e4",
+                        "surface-container": "#e5eeff",
+                        "surface-bright": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c5c5d4",
+                        "primary-fixed": "#dde1ff",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary-container": "#813700",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-fixed": "#00201d",
+                        "primary-container": "#2e44a3",
+                        "surface-container-high": "#dce9ff",
+                        "inverse-surface": "#213145",
+                        "tertiary-fixed": "#ffdbca",
+                        "tertiary-fixed-dim": "#ffb68f",
+                        "on-tertiary-fixed": "#331200",
+                        "surface": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-surface-variant": "#454652",
+                        "on-secondary-container": "#006f66",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#006a61",
+                        "tertiary": "#5d2600",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#b9c3ff",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-primary-container": "#adbaff",
+                        "inverse-primary": "#b9c3ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#89f5e7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "cell-padding-v": "12px",
+                        "base": "4px",
+                        "container-margin": "24px",
+                        "cell-padding-h": "16px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "code-sm": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "code-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .bento-item {
+            background-color: theme('colors.surface-container-lowest');
+            border: 1px solid theme('colors.outline-variant');
+            border-radius: theme('borderRadius.xl');
+            padding: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen p-8 md:p-12 max-w-[1400px] mx-auto">
+<header class="mb-16 border-b border-outline-variant pb-8">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">RecruitAI</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Design System &amp; Component Library</p>
+</header>
+<div class="bento-grid">
+<!-- Color Palette -->
+<div class="bento-item col-span-12 lg:col-span-8">
+<h2 class="font-headline-sm text-headline-sm mb-6 border-b border-outline-variant pb-2">1. Color Palette</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase">Primary</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-primary shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Primary</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-primary-container shadow-sm border border-outline-variant"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Container</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-primary-fixed shadow-sm border border-outline-variant"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Fixed</span></div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase">Neutrals (Surface)</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-background shadow-sm border border-outline-variant"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Background</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-surface shadow-sm border border-outline-variant"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Surface</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-surface-container-low shadow-sm border border-outline-variant"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Container Low</span></div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase">Semantic</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-error shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Error</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-secondary shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Secondary (Success)</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-tertiary shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Tertiary (Warning)</span></div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase">Text / Outline</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-on-background shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">On Background</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-on-surface-variant shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">On Surface Var</span></div>
+<div class="flex items-center gap-3"><div class="w-12 h-12 rounded bg-outline shadow-sm"></div><span class="font-code-sm text-code-sm text-on-surface-variant">Outline</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Typography Scale -->
+<div class="bento-item col-span-12 lg:col-span-4">
+<h2 class="font-headline-sm text-headline-sm mb-6 border-b border-outline-variant pb-2">2. Typography Scale</h2>
+<div class="space-y-6">
+<div>
+<div class="font-headline-lg text-headline-lg mb-1">Headline Large</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 32px / SemiBold</div>
+</div>
+<div>
+<div class="font-headline-md text-headline-md mb-1">Headline Medium</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 24px / SemiBold</div>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm mb-1">Headline Small</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 20px / SemiBold</div>
+</div>
+<hr class="border-outline-variant"/>
+<div>
+<div class="font-body-lg text-body-lg mb-1">Body Large</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 16px / Regular</div>
+</div>
+<div>
+<div class="font-body-md text-body-md mb-1">Body Medium</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 14px / Regular</div>
+</div>
+<div>
+<div class="font-body-sm text-body-sm mb-1">Body Small</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 13px / Regular</div>
+</div>
+<hr class="border-outline-variant"/>
+<div>
+<div class="font-label-caps text-label-caps mb-1 uppercase">Label Caps</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">Inter / 12px / Bold / Tracking 0.05em</div>
+</div>
+<div>
+<div class="font-code-sm text-code-sm mb-1">Code Small</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">JetBrains Mono / 12px / Regular</div>
+</div>
+</div>
+</div>
+<!-- Buttons & Inputs -->
+<div class="bento-item col-span-12">
+<h2 class="font-headline-sm text-headline-sm mb-6 border-b border-outline-variant pb-2">3. Buttons &amp; Inputs</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Buttons</h3>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<span class="font-code-sm text-code-sm w-24 text-on-surface-variant">Primary</span>
+<button class="bg-primary text-on-primary font-body-sm text-body-sm font-semibold px-4 py-2 rounded shadow-sm hover:opacity-90 transition-opacity">Primary Action</button>
+<button class="bg-primary text-on-primary font-body-sm text-body-sm font-semibold px-4 py-2 rounded opacity-50 cursor-not-allowed">Disabled</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-code-sm text-code-sm w-24 text-on-surface-variant">Secondary</span>
+<button class="bg-surface-container-lowest text-primary border border-primary font-body-sm text-body-sm font-semibold px-4 py-2 rounded shadow-sm hover:bg-surface-container-low transition-colors">Secondary Action</button>
+<button class="bg-surface-container-lowest text-outline border border-outline font-body-sm text-body-sm font-semibold px-4 py-2 rounded opacity-50 cursor-not-allowed">Disabled</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-code-sm text-code-sm w-24 text-on-surface-variant">Destructive</span>
+<button class="bg-surface-container-lowest text-error border border-error font-body-sm text-body-sm font-semibold px-4 py-2 rounded shadow-sm hover:bg-error hover:text-on-error transition-colors">Destructive</button>
+<button class="bg-error text-on-error font-body-sm text-body-sm font-semibold px-4 py-2 rounded shadow-sm">Confirm Action</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-code-sm text-code-sm w-24 text-on-surface-variant">Icon Ghost</span>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-2 rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-2 rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Form Elements</h3>
+<div class="space-y-6 max-w-sm">
+<div>
+<label class="block font-label-caps text-label-caps text-on-background mb-1">Standard Input</label>
+<input class="w-full h-[36px] bg-surface-container-lowest border border-outline-variant rounded px-3 font-body-sm text-body-sm text-on-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Enter text here..." type="text"/>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-background mb-1">Select Dropdown</label>
+<div class="relative">
+<select class="w-full h-[36px] bg-surface-container-lowest border border-outline-variant rounded pl-3 pr-10 font-body-sm text-body-sm text-on-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none transition-colors">
+<option>Select an option...</option>
+<option>Option A</option>
+<option>Option B</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" style="font-size: 18px;">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-background mb-1">Search Input</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" style="font-size: 18px;">search</span>
+<input class="w-full h-[36px] bg-surface-container-lowest border border-outline-variant rounded pl-9 pr-3 font-body-sm text-body-sm text-on-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Search candidates..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
