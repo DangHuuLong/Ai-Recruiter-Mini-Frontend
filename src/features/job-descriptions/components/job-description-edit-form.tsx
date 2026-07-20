@@ -41,7 +41,6 @@ export function JobDescriptionEditForm({ jobDescriptionId }: JobDescriptionEditF
       employmentType: jobDescription.employmentType ?? '',
       seniority: jobDescription.seniority ?? '',
       rawText: jobDescription.rawText,
-      parserVersion: jobDescription.parserVersion ?? '',
     });
   }, [jobDescription]);
 
@@ -110,7 +109,6 @@ export function JobDescriptionEditForm({ jobDescriptionId }: JobDescriptionEditF
           <TextInput id="location" label="Location" value={formValues.location ?? ''} error={errors.location} disabled={isSaving} onChange={(value) => updateField('location', value)} />
           <TextInput id="employmentType" label="Employment Type" value={formValues.employmentType ?? ''} error={errors.employmentType} disabled={isSaving} onChange={(value) => updateField('employmentType', value)} />
           <TextInput id="seniority" label="Seniority" value={formValues.seniority ?? ''} error={errors.seniority} disabled={isSaving} onChange={(value) => updateField('seniority', value)} />
-          <TextInput id="parserVersion" label="Parser version" value={formValues.parserVersion ?? ''} error={errors.parserVersion} disabled={isSaving} onChange={(value) => updateField('parserVersion', value)} />
         </div>
 
         <div>

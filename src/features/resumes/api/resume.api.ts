@@ -1,5 +1,5 @@
 import { apiClient, apiEndpoints } from '@/lib/api';
-import type { ApiResponse, PaginatedApiResponse } from '@/lib/api';
+import type { ApiResponse, PaginatedApiResponse, QueryParams } from '@/lib/api';
 import type {
   CreateResumePayload,
   DeleteResumeResult,
@@ -12,7 +12,7 @@ export async function getResumes(
   query: ResumeQuery = {},
 ): Promise<PaginatedApiResponse<Resume>> {
   return apiClient.get<PaginatedApiResponse<Resume>>(apiEndpoints.resumes.list, {
-    params: query,
+    params: query as QueryParams,
   });
 }
 
