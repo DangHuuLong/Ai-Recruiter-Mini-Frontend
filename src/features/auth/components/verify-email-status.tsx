@@ -19,7 +19,7 @@ export function VerifyEmailStatus() {
   const setSession = useAuthStore((state) => state.setSession);
   const [status, setStatus] = useState<VerifyStatus>(token ? 'verifying' : 'error');
   const [errorMessage, setErrorMessage] = useState<string | null>(
-    token ? null : 'Liên kết xác thực không hợp lệ.',
+    token ? null : 'This verification link is invalid.',
   );
   const hasRequested = useRef(false);
 
@@ -35,7 +35,7 @@ export function VerifyEmailStatus() {
       .catch((error) => {
         setStatus('error');
         setErrorMessage(
-          error instanceof ApiError ? error.message : 'Liên kết đã hết hạn hoặc đã được sử dụng.',
+          error instanceof ApiError ? error.message : 'This link has expired or already been used.',
         );
       });
   }, [token, setSession]);
@@ -46,8 +46,8 @@ export function VerifyEmailStatus() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-surface-variant">
           <LoaderCircleIcon className="size-7 animate-spin text-primary" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Đang xác thực email...</h2>
-        <p className="mt-2 text-sm text-on-surface-variant">Vui lòng đợi trong giây lát.</p>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Verifying your email...</h2>
+        <p className="mt-2 text-sm text-on-surface-variant">Please wait a moment.</p>
       </div>
     );
   }
@@ -58,12 +58,10 @@ export function VerifyEmailStatus() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <CircleCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Email đã được xác thực!</h2>
-        <p className="mt-2 text-sm text-on-surface-variant">
-          Tài khoản của bạn đã sẵn sàng sử dụng.
-        </p>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Email verified!</h2>
+        <p className="mt-2 text-sm text-on-surface-variant">Your account is ready to use.</p>
         <Button className="mt-6" onClick={() => router.replace(ROUTES.DASHBOARD)}>
-          Vào dashboard
+          Go to dashboard
         </Button>
       </div>
     );
@@ -74,10 +72,10 @@ export function VerifyEmailStatus() {
       <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-error-container">
         <TriangleAlertIcon className="size-7 text-error" />
       </div>
-      <h2 className="mt-5 text-xl font-bold text-on-surface">Xác thực thất bại</h2>
+      <h2 className="mt-5 text-xl font-bold text-on-surface">Verification failed</h2>
       <p className="mt-2 text-sm text-on-surface-variant">{errorMessage}</p>
       <Button className="mt-6" onClick={() => router.push(ROUTES.RESEND_VERIFICATION)}>
-        Yêu cầu liên kết mới
+        Request a new link
       </Button>
     </div>
   );

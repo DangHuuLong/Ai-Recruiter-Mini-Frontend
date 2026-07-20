@@ -27,9 +27,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   if (!isHydrated || !isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="rounded-2xl border border-slate-200 bg-white px-6 py-5 text-sm font-medium text-slate-600 shadow-sm">
-          Đang kiểm tra phiên đăng nhập...
+      <div className="flex min-h-screen items-center justify-center bg-surface px-4">
+        <div className="rounded-2xl border border-outline bg-surface-lowest px-6 py-5 text-sm font-medium text-on-surface-variant shadow-card">
+          Checking your session...
         </div>
       </div>
     );

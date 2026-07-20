@@ -36,7 +36,7 @@ export function RegisterOrganizationForm() {
       await registerOrganization(values);
       setRegisteredEmail(values.adminEmail);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Không thể tạo tổ chức. Vui lòng thử lại.';
+      const message = error instanceof ApiError ? error.message : 'Unable to create organization. Please try again.';
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -49,16 +49,17 @@ export function RegisterOrganizationForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <MailCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Kiểm tra email của bạn</h2>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Check your email</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Chúng tôi đã gửi một liên kết xác thực đến <span className="font-semibold text-on-surface">{registeredEmail}</span>.
-          Vui lòng nhấp vào liên kết đó để kích hoạt tài khoản.
+          We&apos;ve sent a verification link to{' '}
+          <span className="font-semibold text-on-surface">{registeredEmail}</span>. Please check your
+          inbox to complete your registration.
         </p>
         <Link
           href={`${ROUTES.RESEND_VERIFICATION}?email=${encodeURIComponent(registeredEmail)}`}
           className="mt-4 inline-block text-sm font-semibold text-primary hover:underline"
         >
-          Không nhận được email? Gửi lại
+          Didn&apos;t get the email? Resend it
         </Link>
       </div>
     );
@@ -67,18 +68,18 @@ export function RegisterOrganizationForm() {
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Get started</p>
-        <h2 className="mt-3 text-2xl font-bold text-on-surface">Tạo tổ chức mới</h2>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Get started</p>
+        <h2 className="mt-3 text-2xl font-bold text-on-surface">Register your organization</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Thiết lập workspace tuyển dụng cho tổ chức của bạn.
+          Start building your intelligent talent pipeline today.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           id="organizationName"
-          label="Tên tổ chức"
-          placeholder="Acme Corp"
+          label="Organization name"
+          placeholder="e.g., Acme Corp"
           icon={<BuildingIcon className="size-4.5" />}
           error={errors.organizationName?.message}
           {...register('organizationName')}
@@ -86,8 +87,8 @@ export function RegisterOrganizationForm() {
 
         <Input
           id="adminFullName"
-          label="Họ và tên"
-          placeholder="Nguyễn Văn A"
+          label="Admin full name"
+          placeholder="John Doe"
           icon={<UserIcon className="size-4.5" />}
           error={errors.adminFullName?.message}
           {...register('adminFullName')}
@@ -96,9 +97,9 @@ export function RegisterOrganizationForm() {
         <Input
           id="adminEmail"
           type="email"
-          label="Email"
+          label="Admin email"
           autoComplete="email"
-          placeholder="admin@company.com"
+          placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
           error={errors.adminEmail?.message}
           {...register('adminEmail')}
@@ -107,26 +108,26 @@ export function RegisterOrganizationForm() {
         <Input
           id="adminPassword"
           type="password"
-          label="Mật khẩu"
+          label="Admin password"
           autoComplete="new-password"
-          placeholder="Tối thiểu 8 ký tự"
-          hint="Ít nhất 8 ký tự"
+          placeholder="••••••••"
+          hint="Password must be 8+ characters"
           icon={<LockIcon className="size-4.5" />}
           error={errors.adminPassword?.message}
           {...register('adminPassword')}
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Đang tạo tổ chức...' : 'Tạo tổ chức'}
+          {isSubmitting ? 'Creating organization...' : 'Create organization'}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-on-surface-variant">
-        Đã có tài khoản?{' '}
+      <div className="mt-6 border-t border-outline-variant pt-6 text-center text-sm text-on-surface-variant">
+        Already have an account?{' '}
         <Link href={ROUTES.LOGIN} className="font-semibold text-primary hover:underline">
-          Đăng nhập
+          Log in
         </Link>
-      </p>
+      </div>
     </div>
   );
 }

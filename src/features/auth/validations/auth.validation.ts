@@ -1,18 +1,18 @@
 import { z } from 'zod';
 
-const emailField = z.string().trim().email('Email không hợp lệ');
-const passwordField = z.string().min(8, 'Mật khẩu phải có ít nhất 8 ký tự');
+const emailField = z.string().trim().email('Invalid email address');
+const passwordField = z.string().min(8, 'Password must be at least 8 characters');
 
 export const loginSchema = z.object({
   email: emailField,
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
+  password: z.string().min(1, 'Please enter your password'),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const registerOrganizationSchema = z.object({
-  organizationName: z.string().trim().min(1, 'Tên tổ chức là bắt buộc'),
-  adminFullName: z.string().trim().min(1, 'Họ tên là bắt buộc'),
+  organizationName: z.string().trim().min(1, 'Organization name is required'),
+  adminFullName: z.string().trim().min(1, 'Full name is required'),
   adminEmail: emailField,
   adminPassword: passwordField,
 });
@@ -34,10 +34,10 @@ export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 export const resetPasswordSchema = z
   .object({
     newPassword: passwordField,
-    confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((values) => values.newPassword === values.confirmPassword, {
-    message: 'Mật khẩu xác nhận không khớp',
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   });
 

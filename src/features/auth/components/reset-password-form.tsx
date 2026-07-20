@@ -41,7 +41,7 @@ export function ResetPasswordForm() {
       await resetPassword({ token, newPassword: values.newPassword });
       setIsDone(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Không thể đặt lại mật khẩu. Vui lòng thử lại.';
+      const message = error instanceof ApiError ? error.message : 'Unable to reset password. Please try again.';
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -54,12 +54,12 @@ export function ResetPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <CircleCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Đặt lại mật khẩu thành công</h2>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Password updated</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Bạn có thể đăng nhập bằng mật khẩu mới ngay bây giờ.
+          You can now log in using your new password.
         </p>
         <Button className="mt-6" onClick={() => router.replace(ROUTES.LOGIN)}>
-          Về trang đăng nhập
+          Return to login
         </Button>
       </div>
     );
@@ -71,12 +71,12 @@ export function ResetPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-error-container">
           <TriangleAlertIcon className="size-7 text-error" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Liên kết không hợp lệ</h2>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Invalid link</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.
+          This password reset link is invalid or has expired.
         </p>
         <Button className="mt-6" onClick={() => router.push(ROUTES.FORGOT_PASSWORD)}>
-          Yêu cầu liên kết mới
+          Request a new link
         </Button>
       </div>
     );
@@ -85,9 +85,9 @@ export function ResetPasswordForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Đặt lại mật khẩu</h2>
+        <h2 className="text-xl font-bold text-on-surface">Reset your password</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Nhập mật khẩu mới cho tài khoản của bạn.
+          Enter a new password for your account.
         </p>
       </div>
 
@@ -95,10 +95,10 @@ export function ResetPasswordForm() {
         <Input
           id="newPassword"
           type="password"
-          label="Mật khẩu mới"
+          label="New password"
           autoComplete="new-password"
-          placeholder="Tối thiểu 8 ký tự"
-          hint="Ít nhất 8 ký tự"
+          placeholder="••••••••"
+          hint="Minimum 8 characters"
           icon={<LockIcon className="size-4.5" />}
           error={errors.newPassword?.message}
           {...register('newPassword')}
@@ -107,16 +107,16 @@ export function ResetPasswordForm() {
         <Input
           id="confirmPassword"
           type="password"
-          label="Xác nhận mật khẩu"
+          label="Confirm password"
           autoComplete="new-password"
-          placeholder="Nhập lại mật khẩu mới"
+          placeholder="Re-enter your new password"
           icon={<LockIcon className="size-4.5" />}
           error={errors.confirmPassword?.message}
           {...register('confirmPassword')}
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+          {isSubmitting ? 'Updating...' : 'Update password'}
         </Button>
       </form>
     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MailIcon } from 'lucide-react';
+import { ChevronLeftIcon, MailIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -38,7 +38,7 @@ export function ResendVerificationForm() {
       await resendVerification(values);
       setIsSent(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Không thể gửi email. Vui lòng thử lại.';
+      const message = error instanceof ApiError ? error.message : 'Unable to send email. Please try again.';
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -48,9 +48,9 @@ export function ResendVerificationForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Gửi lại email xác thực</h2>
+        <h2 className="text-xl font-bold text-on-surface">Resend verification email</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Nhập email tài khoản để nhận lại liên kết xác thực.
+          Enter your account email to receive a new verification link.
         </p>
       </div>
 
@@ -58,28 +58,32 @@ export function ResendVerificationForm() {
         <Input
           id="email"
           type="email"
-          label="Email"
+          label="Email address"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
           error={errors.email?.message}
           {...register('email')}
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Đang gửi...' : 'Gửi liên kết'}
+          {isSubmitting ? 'Sending...' : 'Send link'}
         </Button>
       </form>
 
       {isSent ? (
         <div className="mt-5 rounded-lg border border-info bg-surface-variant p-3.5 text-sm text-on-surface-variant">
-          Nếu tài khoản với email này tồn tại và chưa được xác thực, chúng tôi đã gửi một liên kết mới.
+          If an account with this email exists and isn&apos;t verified yet, we&apos;ve sent a new link.
         </div>
       ) : null}
 
       <p className="mt-6 text-center text-sm">
-        <Link href={ROUTES.LOGIN} className="font-semibold text-primary hover:underline">
-          ← Quay lại đăng nhập
+        <Link
+          href={ROUTES.LOGIN}
+          className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+        >
+          <ChevronLeftIcon className="size-4" />
+          Back to login
         </Link>
       </p>
     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MailCheckIcon, MailIcon } from 'lucide-react';
+import { ArrowRightIcon, ChevronLeftIcon, MailCheckIcon, MailIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -36,7 +36,7 @@ export function ForgotPasswordForm() {
       await forgotPassword(values);
       setIsSent(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Không thể gửi email. Vui lòng thử lại.';
+      const message = error instanceof ApiError ? error.message : 'Unable to send email. Please try again.';
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -49,12 +49,12 @@ export function ForgotPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <MailCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Kiểm tra email của bạn</h2>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">Check your email</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Nếu tài khoản với email này tồn tại, chúng tôi đã gửi một liên kết đặt lại mật khẩu.
+          If an account with this email exists, we&apos;ve sent instructions to reset your password.
         </p>
         <Link href={ROUTES.LOGIN} className="mt-5 inline-block text-sm font-semibold text-primary hover:underline">
-          ← Quay lại đăng nhập
+          Back to login
         </Link>
       </div>
     );
@@ -63,9 +63,9 @@ export function ForgotPasswordForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Quên mật khẩu?</h2>
+        <h2 className="text-xl font-bold text-on-surface">Forgot password?</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Nhập email tài khoản để nhận liên kết đặt lại mật khẩu.
+          Enter your email and we&apos;ll send you a link to reset your password.
         </p>
       </div>
 
@@ -73,22 +73,27 @@ export function ForgotPasswordForm() {
         <Input
           id="email"
           type="email"
-          label="Email"
+          label="Email address"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
           error={errors.email?.message}
           {...register('email')}
         />
 
-        <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Đang gửi...' : 'Gửi liên kết đặt lại'}
+        <Button type="submit" isLoading={isSubmitting} className="gap-2">
+          {isSubmitting ? 'Sending...' : 'Send reset link'}
+          {!isSubmitting ? <ArrowRightIcon className="size-4" /> : null}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm">
-        <Link href={ROUTES.LOGIN} className="font-semibold text-primary hover:underline">
-          ← Quay lại đăng nhập
+        <Link
+          href={ROUTES.LOGIN}
+          className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+        >
+          <ChevronLeftIcon className="size-4" />
+          Back to login
         </Link>
       </p>
     </div>

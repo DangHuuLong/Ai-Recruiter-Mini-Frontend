@@ -48,7 +48,7 @@ export function UserMenu() {
         onClick={handleLogout}
         className="rounded-lg border border-outline px-3 py-2 text-sm font-semibold text-on-surface-variant transition hover:bg-surface-variant hover:text-on-surface"
       >
-        Đăng xuất
+        Log out
       </button>
     </div>
   );
