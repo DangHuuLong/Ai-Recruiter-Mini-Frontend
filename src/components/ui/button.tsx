@@ -25,7 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex h-11 w-full items-center justify-center rounded-lg px-4 text-sm font-semibold transition disabled:cursor-not-allowed',
+          'inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-lg px-4 text-sm font-semibold transition disabled:cursor-not-allowed',
           VARIANT_CLASSES[variant],
           className,
         )}
