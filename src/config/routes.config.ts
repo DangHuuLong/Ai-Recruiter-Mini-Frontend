@@ -1,5 +1,6 @@
 export const ROUTES = {
   ROOT: '/',
+  PUBLIC_TRY: '/try',
   LOGIN: '/login',
   REGISTER: '/register',
   VERIFY_EMAIL: '/verify-email',
