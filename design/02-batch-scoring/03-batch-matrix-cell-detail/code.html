@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Batch Scoring Matrix | AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for high-density matrix */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Sticky Column Shadow */
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+        .matrix-cell-hover:hover .cell-checkbox {
+            opacity: 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "link": "#2563EB",
+                        "background": "#f9f9ff",
+                        "error": "#EF4444",
+                        "on-primary-fixed-variant": "#004395",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e1e2ec",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "on-surface-variant": "#475569",
+                        "surface-variant": "#e1e2ec",
+                        "surface-dim": "#d8d9e3",
+                        "focus-ring": "#93C5FD",
+                        "warning-container": "#FEF3C7",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed": "#191c1e",
+                        "warning": "#F59E0B",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-container": "#e0e3e5",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-container-high": "#e6e7f2",
+                        "on-secondary-fixed-variant": "#444749",
+                        "inverse-primary": "#adc6ff",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "on-secondary-container": "#626567",
+                        "on-tertiary-fixed": "#311400",
+                        "success-container": "#DCFCE7",
+                        "on-surface-muted": "#64748B",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#DBEAFE",
+                        "info": "#0EA5E9",
+                        "surface-container": "#ecedf7",
+                        "surface": "#f9f9ff",
+                        "on-background": "#191b23",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-primary-fixed": "#001a42",
+                        "success": "#22C55E",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#eff0fa",
+                        "outline": "#E2E8F0",
+                        "on-primary-container": "#fefcff",
+                        "surface-container-low": "#f2f3fd",
+                        "inverse-surface": "#2e3038",
+                        "secondary": "#5c5f61",
+                        "tertiary": "#924700",
+                        "surface-tint": "#005ac2",
+                        "outline-variant": "#c2c6d6",
+                        "tertiary-fixed": "#ffdcc6",
+                        "primary": "#0058be",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d8e2ff",
+                        "primary-hover": "#2563EB",
+                        "tertiary-container": "#b75b00",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "radius": "8px",
+                        "sm": "8px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased overflow-hidden">
+<!-- Sidebar Component (Anchored) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col relative bg-white">
+<!-- Header Section -->
+<header class="h-16 px-8 flex items-center justify-between bg-surface-container-lowest border-b border-outline shadow-sm z-40 sticky top-0">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Q3 Engineering Hires - Batch #42</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-success-container text-success text-xs font-bold tracking-wide">COMPLETED</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 mr-4 text-on-surface-muted border-r border-outline pr-4">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span class="material-symbols-outlined text-xl">help_outline</span>
+</div>
+<button class="px-4 py-2 text-primary font-semibold border border-primary rounded-lg hover:bg-primary-container transition-colors font-body-md">
+                    Export CSV
+                </button>
+<button class="px-5 py-2 bg-primary text-on-primary font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-sm font-body-md">
+                    Promote Selected
+                </button>
+<div class="ml-2 flex items-center gap-sm">
+<div class="text-right hidden sm:block">
+<p class="font-body-sm text-body-sm font-semibold">Sarah Jenkins</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">HR Manager</p>
+</div>
+<div class="w-9 h-9 rounded-full bg-primary-fixed overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a recruitment manager in a modern office, wearing a casual blazer, smiling with clean lighting and corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5Nx2sh2g-jnhEAQ__y-BpVWUMzrTOBiGeY_wuzVrAEUkYo8cdPCd5ztaI3qhurPhTHYVHcBQelD54pDTg_ySAaxaor8zcDUyNXCu-AhhcYGYGvKf7BwyyJOYNUX5rwmHsoNoMG32b2Wrufi-juhOKee8HtT3FNPOPf7Qw2pfR8DgLcCC1P9kVb3D8I_PEOyb_QP-M3aO7WdrIp9wxd9hXsefNYg3y8fZ9Oq-gnu86MCLHPXXyF9dWQSs0avE_p3z2e8Athj3PUHY"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Matrix Content Area -->
+<div class="flex-1 overflow-hidden relative flex">
+<!-- Scrollable Matrix Grid -->
+<div class="flex-1 overflow-auto custom-scrollbar bg-surface-container-low p-6">
+<div class="inline-block min-w-full bg-white rounded-xl shadow-sm border border-outline overflow-hidden">
+<table class="border-collapse text-left">
+<thead class="sticky-header">
+<tr class="bg-surface-container-low">
+<!-- Corner Empty Header -->
+<th class="sticky-col bg-surface-container-low border-b border-r border-outline p-4 w-64 min-w-[256px]">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-on-surface-variant">CANDIDATES</span>
+<span class="material-symbols-outlined text-on-surface-muted cursor-pointer hover:text-primary">filter_list</span>
+</div>
+</th>
+<!-- Job Headers (Columns) -->
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-primary text-xl">code</span>
+<span class="text-xs font-bold text-center leading-tight">Senior Frontend Engineer</span>
+</div>
+</th>
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-on-surface-muted text-xl">palette</span>
+<span class="text-xs font-bold text-center leading-tight">Product Designer</span>
+</div>
+</th>
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-on-surface-muted text-xl">cloud</span>
+<span class="text-xs font-bold text-center leading-tight">DevOps Lead</span>
+</div>
+</th>
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-on-surface-muted text-xl">database</span>
+<span class="text-xs font-bold text-center leading-tight">Backend Architect</span>
+</div>
+</th>
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-on-surface-muted text-xl">security</span>
+<span class="text-xs font-bold text-center leading-tight">Security Specialist</span>
+</div>
+</th>
+<th class="border-b border-outline p-4 min-w-[140px] bg-white">
+<div class="flex flex-col items-center gap-1 text-on-surface-muted">
+<span class="material-symbols-outlined text-xl">add_circle_outline</span>
+<span class="text-xs font-bold">Add JD</span>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<!-- Row: Sarah Jenkins -->
+<tr class="group hover:bg-surface-container transition-colors">
+<td class="sticky-col bg-white group-hover:bg-surface-container border-r border-b border-outline p-4 font-semibold text-sm flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+<span>Sarah Jenkins</span>
+</div>
+<span class="material-symbols-outlined text-success text-lg" title="Resume Parsed">check_circle</span>
+</td>
+<!-- Sarah x Frontend (Selected/Active) -->
+<td class="border-b border-outline p-0 relative matrix-cell-hover cursor-pointer" onclick="toggleDrawer()">
+<div class="bg-success-container/40 p-4 h-full w-full flex items-center justify-center ring-2 ring-primary ring-inset z-10">
+<span class="font-headline-sm text-on-primary-fixed-variant">92</span>
+<span class="material-symbols-outlined text-[10px] absolute top-1 right-1 text-warning" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-warning-container/20 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">68</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">42</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-warning-container/30 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">74</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">21</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 bg-surface-container-lowest"></td>
+</tr>
+<!-- Row: David Miller -->
+<tr class="group hover:bg-surface-container transition-colors">
+<td class="sticky-col bg-white group-hover:bg-surface-container border-r border-b border-outline p-4 font-semibold text-sm flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+<span>David Miller</span>
+</div>
+<span class="material-symbols-outlined text-success text-lg">check_circle</span>
+</td>
+<td class="border-b border-outline p-4 text-center bg-warning-container/30 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">79</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-success-container/20 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">88</span>
+<span class="material-symbols-outlined text-[10px] absolute top-1 right-1 text-warning" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">55</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">39</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">12</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 bg-surface-container-lowest"></td>
+</tr>
+<!-- Row: Anita Kumar -->
+<tr class="group hover:bg-surface-container transition-colors">
+<td class="sticky-col bg-white group-hover:bg-surface-container border-r border-b border-outline p-4 font-semibold text-sm flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+<span>Anita Kumar</span>
+</div>
+<span class="material-symbols-outlined text-success text-lg">check_circle</span>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">58</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-surface-container matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">31</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-error-container/20 matrix-cell-hover relative">
+<span class="material-symbols-outlined text-error" title="Error in calculation">warning</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-success-container/30 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">91</span>
+<span class="material-symbols-outlined text-[10px] absolute top-1 right-1 text-warning" style="font-variation-settings: 'FILL' 1;">star</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 text-center bg-success-container/20 matrix-cell-hover relative">
+<span class="text-on-surface-variant font-semibold">86</span>
+<div class="cell-checkbox opacity-0 absolute inset-0 bg-black/5 flex items-center justify-center transition-opacity">
+<input class="rounded border-outline-variant text-primary focus:ring-focus-ring" type="checkbox"/>
+</div>
+</td>
+<td class="border-b border-outline p-4 bg-surface-container-lowest"></td>
+</tr>
+<!-- Repeat filling generic rows for high density effect -->
+<script>
+                                const names = ["Marcus Zhao", "Elena Petrov", "Jordan Smith", "Tariq Hussain", "Chloe LeBlanc"];
+                                const container = document.querySelector('tbody');
+                                names.forEach(name => {
+                                    const row = document.createElement('tr');
+                                    row.className = "group hover:bg-surface-container transition-colors";
+                                    row.innerHTML = `
+                                        <td class="sticky-col bg-white group-hover:bg-surface-container border-r border-b border-outline p-4 font-semibold text-sm flex items-center justify-between gap-2">
+                                            <div class="flex items-center gap-3">
+                                                <input type="checkbox" class="rounded border-outline-variant text-primary focus:ring-focus-ring">
+                                                <span>${name}</span>
+                                            </div>
+                                            <span class="material-symbols-outlined text-success text-lg">check_circle</span>
+                                        </td>
+                                        <td class="border-b border-outline p-4 text-center bg-surface-container"><span class="text-on-surface-variant">--</span></td>
+                                        <td class="border-b border-outline p-4 text-center bg-surface-container"><span class="text-on-surface-variant">--</span></td>
+                                        <td class="border-b border-outline p-4 text-center bg-surface-container"><span class="text-on-surface-variant">--</span></td>
+                                        <td class="border-b border-outline p-4 text-center bg-surface-container"><span class="text-on-surface-variant">--</span></td>
+                                        <td class="border-b border-outline p-4 text-center bg-surface-container"><span class="text-on-surface-variant">--</span></td>
+                                        <td class="border-b border-outline p-4 bg-surface-container-lowest"></td>
+                                    `;
+                                    container.appendChild(row);
+                                });
+                            </script>
+</tbody>
+</table>
+</div>
+</div>
+<!-- CELL DETAIL DRAWER -->
+<div class="absolute right-0 top-0 h-full w-[440px] bg-white shadow-2xl border-l border-outline translate-x-0 transition-transform duration-300 z-50 flex flex-col" id="detailDrawer">
+<div class="p-6 border-b border-outline flex justify-between items-start bg-surface-container-lowest">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Sarah Jenkins</h3>
+<p class="text-on-surface-muted font-body-md">Senior Frontend Engineer</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-16 h-16 rounded-full border-4 border-success flex items-center justify-center">
+<span class="text-2xl font-bold text-on-surface">92</span>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+<!-- Breakdown -->
+<section>
+<h4 class="font-label-caps text-on-surface-muted mb-4 uppercase">Scoring Criteria Breakdown</h4>
+<div class="space-y-5">
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<span class="font-body-md font-semibold">Technical Skills <span class="text-on-surface-muted font-normal">(40% weight)</span></span>
+<span class="font-bold text-success">95/100</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<span class="font-body-md font-semibold">Relevant Experience <span class="text-on-surface-muted font-normal">(30% weight)</span></span>
+<span class="font-bold text-success">88/100</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<span class="font-body-md font-semibold">Cultural Fit <span class="text-on-surface-muted font-normal">(30% weight)</span></span>
+<span class="font-bold text-success">94/100</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 94%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Skills -->
+<section>
+<h4 class="font-label-caps text-on-surface-muted mb-4 uppercase">Skill Alignment</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-success-container text-on-primary-fixed-variant rounded-full text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done</span> React
+                            </span>
+<span class="px-3 py-1 bg-success-container text-on-primary-fixed-variant rounded-full text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done</span> TypeScript
+                            </span>
+<span class="px-3 py-1 bg-success-container text-on-primary-fixed-variant rounded-full text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done</span> Tailwind
+                            </span>
+<span class="px-3 py-1 bg-warning-container text-on-tertiary-fixed-variant rounded-full text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> Next.js
+                            </span>
+<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">close</span> GraphQL
+                            </span>
+</div>
+</section>
+<!-- Interview Questions -->
+<section>
+<h4 class="font-label-caps text-on-surface-muted mb-4 uppercase">AI Interview Questions</h4>
+<div class="p-4 bg-surface rounded-xl border border-outline relative">
+<span class="absolute -top-3 left-3 px-2 bg-white text-[10px] font-bold text-primary border border-outline rounded uppercase">Architecture</span>
+<p class="text-sm italic text-on-surface leading-relaxed">
+                                "Describe your experience with atomic design patterns and how you've scaled design systems in multi-repo environments..."
+                            </p>
+</div>
+</section>
+</div>
+<div class="p-6 border-t border-outline bg-surface-container-lowest">
+<button class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">rocket_launch</span>
+                        Promote to Pipeline
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('detailDrawer');
+            if (drawer.style.transform === 'translateX(100%)') {
+                drawer.style.transform = 'translateX(0%)';
+            } else {
+                drawer.style.transform = 'translateX(100%)';
+            }
+        }
+        
+        // Initialize drawer state on mobile view or standard load
+        window.addEventListener('load', () => {
+            // For demo, keep open by default, but allow toggling
+            // document.getElementById('detailDrawer').style.transform = 'translateX(0%)';
+        });
+    </script>
+</body></html>

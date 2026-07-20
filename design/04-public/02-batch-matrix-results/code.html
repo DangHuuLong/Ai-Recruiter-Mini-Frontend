@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Public Batch Results | AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "warning-container": "#FEF3C7",
+                "on-surface-variant": "#475569",
+                "outline-variant": "#c2c6d6",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed-dim": "#adc6ff",
+                "error": "#EF4444",
+                "surface-container-high": "#e6e7f2",
+                "on-tertiary-fixed-variant": "#723600",
+                "on-secondary-container": "#626567",
+                "on-primary": "#ffffff",
+                "on-primary-fixed-variant": "#004395",
+                "primary-container": "#2170e4",
+                "on-secondary-fixed-variant": "#444749",
+                "info": "#0EA5E9",
+                "on-surface": "#191b23",
+                "primary-fixed": "#d8e2ff",
+                "success-container": "#DCFCE7",
+                "tertiary-container": "#b75b00",
+                "success": "#22C55E",
+                "inverse-on-surface": "#eff0fa",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#2e3038",
+                "surface-tint": "#005ac2",
+                "on-primary-container": "#fefcff",
+                "error-container": "#FEE2E2",
+                "surface-dim": "#d8d9e3",
+                "surface-container-low": "#f2f3fd",
+                "primary": "#0058be",
+                "outline": "#E2E8F0",
+                "tertiary-fixed-dim": "#ffb786",
+                "secondary-container": "#e0e3e5",
+                "background": "#f9f9ff",
+                "link": "#2563EB",
+                "focus-ring": "#93C5FD",
+                "secondary-fixed-dim": "#c4c7c9",
+                "surface-bright": "#f9f9ff",
+                "on-tertiary-container": "#fffbff",
+                "tertiary": "#924700",
+                "inverse-primary": "#adc6ff",
+                "surface-container-highest": "#e1e2ec",
+                "on-secondary-fixed": "#191c1e",
+                "on-background": "#191b23",
+                "on-surface-muted": "#64748B",
+                "tertiary-fixed": "#ffdcc6",
+                "on-tertiary-fixed": "#311400",
+                "on-primary-fixed": "#001a42",
+                "on-error": "#ffffff",
+                "primary-hover": "#2563EB",
+                "secondary-fixed": "#e0e3e5",
+                "secondary": "#5c5f61",
+                "warning": "#F59E0B",
+                "surface": "#f9f9ff",
+                "on-tertiary": "#ffffff",
+                "surface-variant": "#e1e2ec",
+                "surface-container": "#ecedf7",
+                "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "xs": "4px",
+                "radius": "8px",
+                "lg": "24px",
+                "md": "16px",
+                "margin-desktop": "32px",
+                "gutter": "24px",
+                "xl": "32px",
+                "sm": "8px",
+                "margin-mobile": "16px",
+                "base": "4px"
+            },
+            "fontFamily": {
+                "headline-lg": ["Inter"],
+                "headline-md": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-lg": ["Inter"],
+                "label-caps": ["Inter"],
+                "headline-sm": ["Inter"],
+                "body-md": ["Inter"],
+                "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .heatmap-cell {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .drawer-overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+        .drawer-content {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c6d6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Conversion Banner (Top-bar) -->
+<div class="bg-primary text-on-primary py-sm px-margin-desktop sticky top-0 z-50 shadow-md">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-sm">
+<p class="font-body-md text-body-md text-center md:text-left">
+                Sign up to save these results, unlock full batch scoring, and invite your team.
+            </p>
+<button class="bg-white text-primary font-bold px-lg py-xs rounded-lg hover:bg-primary-fixed transition-colors text-body-md whitespace-nowrap">
+                Sign up free
+            </button>
+</div>
+</div>
+<!-- TopNavBar -->
+<nav class="w-full h-16 bg-surface dark:bg-surface-dim border-b border-outline dark:border-outline-variant flat no shadows sticky top-10 md:top-12 z-40">
+<div class="max-w-7xl mx-auto px-margin-desktop flex justify-between items-center w-full h-full">
+<div class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">
+                AI Recruiter
+            </div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant dark:text-on-surface-muted hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 scale-95 active:opacity-80 font-body-md">
+                    Log in
+                </button>
+<button class="bg-primary text-on-primary font-bold px-md py-sm rounded-lg hover:bg-primary-hover transition-all scale-95 active:opacity-80 text-body-md">
+                    Sign up
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="max-w-7xl mx-auto px-margin-desktop py-xl">
+<!-- Header Section -->
+<header class="mb-xl">
+<div class="flex items-center gap-sm text-on-surface-muted mb-xs">
+<span class="material-symbols-outlined text-[18px]">public</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Public Shared Batch</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg mb-xs">Engineering Pipeline: Q3 Growth</h1>
+<p class="text-on-surface-variant font-body-md max-w-2xl">
+                Analyzing 12 candidates against 5 key technical roles. Match scores are based on AI semantic cross-referencing of skills, experience duration, and cultural indicators.
+            </p>
+</header>
+<!-- High-Density Heatmap Matrix -->
+<div class="bg-surface-container-lowest border border-outline rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="p-md text-left border-b border-r border-outline min-w-[240px] sticky left-0 z-20 bg-surface-container-low">
+<span class="font-label-caps text-label-caps text-on-surface-muted">CANDIDATE</span>
+</th>
+<!-- Job Columns -->
+<th class="p-md text-center border-b border-outline min-w-[150px]">
+<div class="font-label-caps text-label-caps text-on-surface-muted mb-xs">ROLE</div>
+<div class="font-body-md font-bold text-on-surface">Senior Frontend</div>
+</th>
+<th class="p-md text-center border-b border-outline min-w-[150px]">
+<div class="font-label-caps text-label-caps text-on-surface-muted mb-xs">ROLE</div>
+<div class="font-body-md font-bold text-on-surface">Backend Lead</div>
+</th>
+<th class="p-md text-center border-b border-outline min-w-[150px]">
+<div class="font-label-caps text-label-caps text-on-surface-muted mb-xs">ROLE</div>
+<div class="font-body-md font-bold text-on-surface">DevOps Engineer</div>
+</th>
+<th class="p-md text-center border-b border-outline min-w-[150px]">
+<div class="font-label-caps text-label-caps text-on-surface-muted mb-xs">ROLE</div>
+<div class="font-body-md font-bold text-on-surface">iOS Specialist</div>
+</th>
+<th class="p-md text-center border-b border-outline min-w-[150px]">
+<div class="font-label-caps text-label-caps text-on-surface-muted mb-xs">ROLE</div>
+<div class="font-body-md font-bold text-on-surface">AI Research</div>
+</th>
+</tr>
+</thead>
+<tbody class="font-body-md">
+<!-- Candidate Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-md border-b border-r border-outline sticky left-0 z-20 bg-white group-hover:bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a diverse software engineer with a neutral expression, high-end studio lighting, soft corporate bokeh background, clean skin textures, professional attire, modern tech-office aesthetic, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCscHGjS-_XgqRWoNH2MmoG7c8XuMqvkP8NGp-JkofuV9jLV22odhfGINHZYmGLrL8Vx8KLcg_r39gLMubrex__t_JHN03cG8EVNVa3sE9i69y8v3rTr2WIGPo2XQY7zwoiNoDNBrifyjvlZfzWvGIBhLhnOAk6kn2HTikSTmMfxFihczD51Ok8jlpvx25HNFn0uPlYxjwYSYpjz3QP9J0Ss1vtj61Jt9Lu4XfmKGFWJOERtey9YB3zFMJ4PbDjCBPZ7OtaFaBIQVA"/>
+</div>
+<div>
+<div class="font-bold">Alex Rivera</div>
+<div class="text-body-sm text-on-surface-variant">San Francisco, CA</div>
+</div>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline bg-success-container text-success-container-on" onclick="openDrawer('Alex Rivera', 'Senior Frontend', 94)">
+<div class="flex flex-col items-center justify-center h-16 bg-green-500 bg-opacity-20">
+<span class="font-bold text-success">94%</span>
+<span class="text-[10px] uppercase font-bold text-success">Optimal</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Alex Rivera', 'Backend Lead', 42)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">42%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Alex Rivera', 'DevOps Engineer', 18)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">18%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Alex Rivera', 'iOS Specialist', 12)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">12%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Alex Rivera', 'AI Research', 5)">
+<div class="flex flex-col items-center justify-center h-16 bg-error-container bg-opacity-10">
+<span class="font-bold text-error">5%</span>
+<span class="text-[10px] uppercase font-bold text-error">Mismatch</span>
+</div>
+</td>
+</tr>
+<!-- Candidate Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-md border-b border-r border-outline sticky left-0 z-20 bg-white group-hover:bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a senior tech professional, confident smile, clean corporate office background with glass walls and plants, bright daylight, professional lighting, modern minimalist clothing, highly professional photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr4WZ60-6TzzVHmtg0QII9FPqrtiLFkU65Ac_xt0_pFywBHylDwRvKwGByPKPV6RrVzWRdNuebi_UOE7N-NGwF6cH45Axd9PUMx6v-E5OCRiyVNWD_b92rDNtcn69f5dIAysiGhhP1e4PyK2tILE5ayxLyFHGhg3y80B75m9rz-55vo6KBWHY6mtwcC-2gvnNHsx_vwUAJoWMJxnuteKJb7H3JogZ3Hv4UBkePGx-u5KseRP2iYQTPyiOrdW3mL6wIygDweSwCb1M"/>
+</div>
+<div>
+<div class="font-bold">Sarah Jenkins</div>
+<div class="text-body-sm text-on-surface-variant">London, UK</div>
+</div>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Sarah Jenkins', 'Senior Frontend', 68)">
+<div class="flex flex-col items-center justify-center h-16 bg-info bg-opacity-10">
+<span class="font-bold text-info">68%</span>
+<span class="text-[10px] uppercase font-bold text-info">Strong</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Sarah Jenkins', 'Backend Lead', 89)">
+<div class="flex flex-col items-center justify-center h-16 bg-success-container bg-opacity-20">
+<span class="font-bold text-success">89%</span>
+<span class="text-[10px] uppercase font-bold text-success">Optimal</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Sarah Jenkins', 'DevOps Engineer', 72)">
+<div class="flex flex-col items-center justify-center h-16 bg-info bg-opacity-10">
+<span class="font-bold text-info">72%</span>
+<span class="text-[10px] uppercase font-bold text-info">Strong</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Sarah Jenkins', 'iOS Specialist', 21)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">21%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Sarah Jenkins', 'AI Research', 44)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">44%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+</tr>
+<!-- Candidate Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-md border-b border-r border-outline sticky left-0 z-20 bg-white group-hover:bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A profile photo of a young male software developer, wearing a professional sweater, warm indoor office lighting, background features architectural detail, shallow depth of field, high-resolution DSLR photography, clean corporate look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoKyb4FfKzbYraOueArpN8PK8lBXjSK8l-XrIYfcHb3QGjwr5NsZ4mabenuxZ8jhD5hUt8a6hBRdL-PDFl0vCWYdJY3k3O5eJLe2q9skoCdQ4-Cy4n7gzJJKjTG1Aa3oSdMumW9BPcLPuoIBNbRpz6jQv1IRphM0SXBnm86gff_OOyv8bngmWuMq6mmOoEvQ7u4zg7QWaotlGctijdKw8lfhloctkRfatyZ8cjSu1yjueAqre8QPHCpTyCwr-gulb3z11uE6N1M5Y"/>
+</div>
+<div>
+<div class="font-bold">Jordan Wu</div>
+<div class="text-body-sm text-on-surface-variant">Austin, TX</div>
+</div>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Jordan Wu', 'Senior Frontend', 12)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">12%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Jordan Wu', 'Backend Lead', 15)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">15%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Jordan Wu', 'DevOps Engineer', 8)">
+<div class="flex flex-col items-center justify-center h-16 bg-error-container bg-opacity-10">
+<span class="font-bold text-error">8%</span>
+<span class="text-[10px] uppercase font-bold text-error">Mismatch</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Jordan Wu', 'iOS Specialist', 96)">
+<div class="flex flex-col items-center justify-center h-16 bg-success-container bg-opacity-20">
+<span class="font-bold text-success">96%</span>
+<span class="text-[10px] uppercase font-bold text-success">Optimal</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Jordan Wu', 'AI Research', 31)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">31%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+</tr>
+<!-- Candidate Row 4 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="p-md border-b border-r border-outline sticky left-0 z-20 bg-white group-hover:bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Headshot of a middle-aged woman in leadership role, professional tech environment, bright workspace with large windows, modern minimalist furniture, soft ambient light, warm and professional atmosphere, cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsyFw3Glb0lgu2a-LZwhfTbNRXnTdAmmh83hRbpBaI6ftjXgbVRTQCCLtSRk_pTq0aA-9IVoVzlCwVSw0sbgP08MBp8Wdfk0O4K394RBOZ9EZXEnvzAArD2iRWSzFowkTBJbw-8i9bK3uKYZ7l5lbXRi1ka5DhFGgq4jc7uv5bJ1OoDWQ5_OvtHo0Ew070RvR0A56RYk_K4TFXLzoNh1PyOxMqFH6bKu-_ayFbUr5jpBErqeZUfWhzXIoHoK12lgMcoTZkvJ-M3xA"/>
+</div>
+<div>
+<div class="font-bold">Elena Moretti</div>
+<div class="text-body-sm text-on-surface-variant">Berlin, DE</div>
+</div>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Elena Moretti', 'Senior Frontend', 44)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">44%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Elena Moretti', 'Backend Lead', 52)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">52%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Elena Moretti', 'DevOps Engineer', 38)">
+<div class="flex flex-col items-center justify-center h-16 bg-warning-container bg-opacity-20">
+<span class="font-bold text-warning">38%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Partial</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Elena Moretti', 'iOS Specialist', 29)">
+<div class="flex flex-col items-center justify-center h-16 bg-surface-container">
+<span class="font-bold text-on-surface-variant">29%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-muted">Weak</span>
+</div>
+</td>
+<td class="heatmap-cell p-0 border-b border-outline" onclick="openDrawer('Elena Moretti', 'AI Research', 91)">
+<div class="flex flex-col items-center justify-center h-16 bg-success-container bg-opacity-20">
+<span class="font-bold text-success">91%</span>
+<span class="text-[10px] uppercase font-bold text-success">Optimal</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Analytics Insight Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-xl">
+<div class="bg-surface border border-outline p-md rounded-xl">
+<div class="flex items-center gap-xs text-on-surface-muted mb-sm">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Batch Statistics</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-headline-md font-headline-md">12</div>
+<div class="text-body-sm text-on-surface-variant">Candidates Scored</div>
+</div>
+<div class="text-right">
+<div class="text-headline-md font-headline-md text-success">4</div>
+<div class="text-body-sm text-on-surface-variant">Optimal Matches</div>
+</div>
+</div>
+</div>
+<div class="bg-surface border border-outline p-md rounded-xl">
+<div class="flex items-center gap-xs text-on-surface-muted mb-sm">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">AI Accuracy</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<div class="text-headline-md font-headline-md">98.4%</div>
+<div class="text-body-sm text-on-surface-variant">Model Confidence</div>
+</div>
+<div class="text-right">
+<div class="text-headline-md font-headline-md text-info">RecruitAI Engine</div>
+<div class="text-body-sm text-on-surface-variant">Proprietary Model</div>
+</div>
+</div>
+</div>
+<div class="bg-surface border border-outline p-md rounded-xl flex items-center justify-center text-center">
+<div class="w-full">
+<button class="w-full bg-primary-container text-on-primary-container py-md px-lg rounded-lg font-bold hover:opacity-90 transition-opacity">
+                        Save This Batch to Account
+                    </button>
+<p class="text-[11px] text-on-surface-muted mt-xs">Required to edit scoring weights or export data.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Detail Drawer Overlay -->
+<div class="fixed inset-0 z-50 hidden drawer-overlay" id="drawerOverlay" onclick="closeDrawer()">
+<!-- Detail Drawer Content -->
+<div class="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl z-50 drawer-content translate-x-full overflow-y-auto custom-scrollbar" id="drawerContent" onclick="event.stopPropagation()">
+<div class="p-xl">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-headline-sm" id="drawerAvatar">AR</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm" id="drawerCandidateName">Alex Rivera</h2>
+<p class="text-primary font-bold font-body-md uppercase tracking-wider text-sm" id="drawerJobTitle">Senior Frontend</p>
+</div>
+</div>
+<button class="p-xs hover:bg-surface-container rounded-full transition-colors" onclick="closeDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl mb-xl border border-outline">
+<div class="flex justify-between items-center mb-sm">
+<span class="font-bold text-on-surface">Match Quality</span>
+<span class="text-headline-sm font-headline-sm text-success" id="drawerScore">94%</span>
+</div>
+<div class="w-full h-2 bg-outline-variant rounded-full overflow-hidden">
+<div class="h-full bg-success transition-all duration-1000" id="drawerProgressBar" style="width: 0%"></div>
+</div>
+</div>
+<div class="space-y-xl">
+<!-- Skills Found -->
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-muted mb-md">SKILLS DETECTED (TOP MATCHES)</h3>
+<div class="flex flex-wrap gap-sm">
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-bold text-body-sm">React 18+</span>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-bold text-body-sm">TypeScript</span>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-bold text-body-sm">Next.js</span>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-bold text-body-sm">Tailwind CSS</span>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full font-bold text-body-sm">Unit Testing</span>
+<span class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded-full font-bold text-body-sm">Node.js</span>
+</div>
+</div>
+<!-- AI Score Breakdown -->
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-muted mb-md">SCORE BREAKDOWN</h3>
+<div class="space-y-md">
+<div class="flex justify-between items-center text-body-md">
+<span class="text-on-surface-variant">Technical Experience</span>
+<span class="font-bold text-success">Excellent (98/100)</span>
+</div>
+<div class="flex justify-between items-center text-body-md">
+<span class="text-on-surface-variant">Tooling Proficiency</span>
+<span class="font-bold text-success">High (89/100)</span>
+</div>
+<div class="flex justify-between items-center text-body-md">
+<span class="text-on-surface-variant">Industry Domain Fit</span>
+<span class="font-bold text-info">Moderate (72/100)</span>
+</div>
+</div>
+</div>
+<!-- AI-Generated Interview Questions -->
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-muted mb-md">AI-GENERATED INTERVIEW QUESTIONS</h3>
+<div class="space-y-md">
+<div class="bg-surface border-l-4 border-primary p-md rounded-r-lg">
+<p class="text-body-md font-bold mb-xs">Architecture Scalability</p>
+<p class="text-body-sm text-on-surface-variant italic">"Based on your work with Next.js, how would you handle state hydration issues in a micro-frontend architecture?"</p>
+</div>
+<div class="bg-surface border-l-4 border-primary p-md rounded-r-lg">
+<p class="text-body-md font-bold mb-xs">Performance Optimization</p>
+<p class="text-body-sm text-on-surface-variant italic">"Could you describe a scenario where you had to significantly reduce TBT (Total Blocking Time) on a content-heavy dashboard?"</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-xl pt-lg border-t border-outline">
+<button class="w-full bg-primary text-on-primary font-bold py-md rounded-lg mb-md">
+                        Unlock Full Profile to Invite
+                    </button>
+<p class="text-center text-body-sm text-on-surface-muted">
+                        This is a read-only preview of the candidate analysis.
+                    </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-xl bg-surface-container-low dark:bg-inverse-surface border-t border-outline dark:border-outline-variant">
+<div class="max-w-7xl mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="text-label-caps font-label-caps text-on-surface-muted dark:text-on-surface-variant">
+                © 2024 AI Recruiter. All rights reserved. Secure and Private by design.
+            </div>
+<div class="flex gap-lg">
+<a class="text-body-sm font-body-sm text-on-surface-variant dark:text-on-surface-muted hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant dark:text-on-surface-muted hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-primary dark:text-primary-fixed-dim underline hover:text-primary-hover transition-colors duration-200 opacity-80 hover:opacity-100" href="#">Sign up</a>
+</div>
+</div>
+</footer>
+<script>
+        function openDrawer(name, job, score) {
+            const overlay = document.getElementById('drawerOverlay');
+            const drawer = document.getElementById('drawerContent');
+            const nameEl = document.getElementById('drawerCandidateName');
+            const jobEl = document.getElementById('drawerJobTitle');
+            const scoreEl = document.getElementById('drawerScore');
+            const progressEl = document.getElementById('drawerProgressBar');
+            const avatarEl = document.getElementById('drawerAvatar');
+
+            // Update content
+            nameEl.innerText = name;
+            jobEl.innerText = job;
+            scoreEl.innerText = score + '%';
+            
+            // Set initials for avatar
+            const initials = name.split(' ').map(n => n[0]).join('');
+            avatarEl.innerText = initials;
+
+            // Handle color logic for score
+            if (score >= 80) {
+                scoreEl.className = 'text-headline-sm font-headline-sm text-success';
+                progressEl.className = 'h-full bg-success transition-all duration-1000';
+            } else if (score >= 50) {
+                scoreEl.className = 'text-headline-sm font-headline-sm text-info';
+                progressEl.className = 'h-full bg-info transition-all duration-1000';
+            } else if (score >= 30) {
+                scoreEl.className = 'text-headline-sm font-headline-sm text-warning';
+                progressEl.className = 'h-full bg-warning transition-all duration-1000';
+            } else {
+                scoreEl.className = 'text-headline-sm font-headline-sm text-error';
+                progressEl.className = 'h-full bg-error transition-all duration-1000';
+            }
+
+            // Show drawer
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                drawer.classList.remove('translate-x-full');
+                progressEl.style.width = score + '%';
+            }, 10);
+        }
+
+        function closeDrawer() {
+            const overlay = document.getElementById('drawerOverlay');
+            const drawer = document.getElementById('drawerContent');
+            const progressEl = document.getElementById('drawerProgressBar');
+
+            drawer.classList.add('translate-x-full');
+            progressEl.style.width = '0%';
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close on ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDrawer();
+        });
+    </script>
+</body></html>

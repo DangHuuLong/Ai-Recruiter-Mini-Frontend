@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RecruitAI - Create Scoring Batch</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#1E293B",
+                    "on-tertiary-fixed": "#311400",
+                    "surface-container-highest": "#e1e2ec",
+                    "primary-fixed": "#d8e2ff",
+                    "surface-container-high": "#e6e7f2",
+                    "background": "#f9f9ff",
+                    "error": "#EF4444",
+                    "on-primary-fixed": "#001a42",
+                    "primary": "#0058be",
+                    "primary-container": "#2170e4",
+                    "tertiary-fixed": "#ffdcc6",
+                    "surface-container-low": "#f2f3fd",
+                    "info": "#0EA5E9",
+                    "on-secondary-fixed-variant": "#444749",
+                    "on-secondary-container": "#626567",
+                    "tertiary": "#924700",
+                    "secondary-container": "#e0e3e5",
+                    "secondary": "#5c5f61",
+                    "warning-container": "#FEF3C7",
+                    "on-error": "#ffffff",
+                    "primary-hover": "#2563EB",
+                    "success": "#22C55E",
+                    "outline-variant": "#CBD5E1",
+                    "on-surface-muted": "#64748B",
+                    "surface-variant": "#F1F5F9",
+                    "secondary-fixed": "#e0e3e5",
+                    "inverse-on-surface": "#eff0fa",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#fffbff",
+                    "error-container": "#FEE2E2",
+                    "outline": "#E2E8F0",
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "focus-ring": "#93C5FD",
+                    "surface-bright": "#f9f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#ecedf7",
+                    "surface-dim": "#d8d9e3",
+                    "on-background": "#191b23",
+                    "warning": "#F59E0B",
+                    "surface-tint": "#005ac2",
+                    "inverse-primary": "#adc6ff",
+                    "on-secondary-fixed": "#191c1e",
+                    "tertiary-container": "#b75b00",
+                    "on-tertiary": "#ffffff",
+                    "success-container": "#DCFCE7",
+                    "on-surface-variant": "#475569",
+                    "on-primary-fixed-variant": "#004395",
+                    "surface": "#f9f9ff",
+                    "on-surface": "#191b23",
+                    "link": "#2563EB",
+                    "inverse-surface": "#2e3038"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "md": "16px",
+                    "radius": "8px",
+                    "margin-mobile": "16px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "gutter": "24px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .drag-active {
+            border-color: #0058be;
+            background-color: #f2f3fd;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f9f9ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md overflow-hidden">
+<!-- App Shell Container -->
+<div class="flex h-screen w-full">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 ml-64 flex flex-col h-full bg-white relative">
+<!-- TopNavBar -->
+<header class="sticky top-0 right-0 w-full flex justify-between items-center px-lg z-30 h-16 bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline">
+<div class="flex items-center gap-4">
+<span class="text-headline-sm font-bold text-primary">AI Recruiter</span>
+<div class="h-8 w-[1px] bg-outline mx-2"></div>
+<div class="flex items-center bg-surface-variant px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full p-0" placeholder="Search batches, resumes, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline mx-2"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right hidden sm:block">
+<p class="font-body-sm text-body-sm font-semibold">Sarah Jenkins</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">HR Manager</p>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a female HR manager in a modern office environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLsEIMTHPDIEiqZrT6ZNdK0CeqwspbaUTtL-2lxgO4NeF4F5qws_BjiLbr_uXkJXsQd5HFL44kyqJfO_tcRPINPQUIj43N9smw2MkpJoY1gbEOHEGR3RWyzk_IS1xGNdzPM-olkkjWZNp2ie41KRCHW7nyMWefDPzHSAKo_vYy3q2hOQc9xBQubCxLTpZct8gWOREwmo_wB3PBvy53oGEstD0eKM3Q5sRZoU7M_-lhPrs31UDeavTF6NcX9ClgXSGCcAVUJeBgCIs"/>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary-hover active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                        New Scoring
+                    </button>
+</div>
+</header>
+<!-- Wizard Content -->
+<div class="flex-1 overflow-y-auto p-xl">
+<div class="max-w-4xl mx-auto">
+<!-- Title and Stepper -->
+<div class="mb-xl text-center md:text-left">
+<h2 class="font-headline-md text-headline-md text-on-primary-container mb-lg">Create Scoring Batch</h2>
+<!-- Horizontal Stepper -->
+<div class="flex items-center justify-between relative mb-8">
+<!-- Progress Line -->
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-outline -translate-y-1/2 z-0"></div>
+<div class="absolute top-1/2 left-0 w-1/4 h-[2px] bg-primary -translate-y-1/2 z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-center bg-white pr-4">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm ring-4 ring-white ring-offset-0">1</div>
+<span class="mt-2 text-sm font-bold text-primary">1. Add resumes</span>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-center bg-white px-4">
+<div class="w-10 h-10 rounded-full bg-outline-variant text-on-surface-variant flex items-center justify-center font-bold text-sm ring-4 ring-white ring-offset-0">2</div>
+<span class="mt-2 text-sm font-medium text-on-surface-variant">2. Add job descriptions</span>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-center bg-white pl-4">
+<div class="w-10 h-10 rounded-full bg-outline-variant text-on-surface-variant flex items-center justify-center font-bold text-sm ring-4 ring-white ring-offset-0">3</div>
+<span class="mt-2 text-sm font-medium text-on-surface-variant">3. Review &amp; submit</span>
+</div>
+</div>
+</div>
+<!-- Main Card -->
+<div class="bg-surface-container-lowest border border-outline rounded-xl overflow-hidden shadow-sm">
+<!-- Card Tabs -->
+<div class="flex border-b border-outline">
+<button class="flex-1 py-4 px-6 text-sm font-bold border-b-2 border-primary text-primary bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined text-[18px] mr-2" data-icon="upload_file">upload_file</span>
+                                Upload files
+                            </button>
+<button class="flex-1 py-4 px-6 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] mr-2" data-icon="content_paste">content_paste</span>
+                                Paste text
+                            </button>
+<button class="flex-1 py-4 px-6 text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] mr-2" data-icon="list_alt">list_alt</span>
+                                Structured form
+                            </button>
+</div>
+<!-- Card Body -->
+<div class="p-lg">
+<h3 class="font-headline-sm text-headline-sm mb-md">Add Resumes</h3>
+<p class="text-on-surface-variant mb-xl">Upload the resumes you want to score against your target roles. Supports PDF and DOCX formats up to 10MB per file.</p>
+<!-- Drop Zone -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-surface-variant/30 hover:bg-surface-variant/50 transition-all cursor-pointer group mb-xl" id="drop-zone">
+<div class="w-16 h-16 bg-white border border-outline rounded-2xl flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[40px]" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<p class="font-bold text-lg text-on-surface mb-1">Drag and drop resumes here</p>
+<p class="text-on-surface-variant text-sm mb-lg">or click to browse from your computer</p>
+<div class="flex gap-4">
+<span class="flex items-center gap-1 text-[12px] font-bold text-on-surface-muted bg-white border border-outline rounded-lg px-3 py-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+                                        PDF
+                                    </span>
+<span class="flex items-center gap-1 text-[12px] font-bold text-on-surface-muted bg-white border border-outline rounded-lg px-3 py-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="description">description</span>
+                                        DOCX
+                                    </span>
+</div>
+</div>
+<!-- Uploaded Files List -->
+<div class="space-y-3">
+<h4 class="text-xs font-bold text-on-surface-muted uppercase tracking-widest mb-sm">Uploaded Files (3)</h4>
+<!-- File 1 -->
+<div class="flex items-center gap-4 p-md bg-surface-container-low border border-outline rounded-lg hover:border-primary transition-colors group">
+<div class="w-10 h-10 bg-error-container text-on-error-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-sm text-on-surface truncate">smith_cv.pdf</p>
+<p class="text-xs text-on-surface-variant">1.2MB • Uploaded just now</p>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-muted hover:text-error hover:bg-error-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- File 2 -->
+<div class="flex items-center gap-4 p-md bg-surface-container-low border border-outline rounded-lg hover:border-primary transition-colors group">
+<div class="w-10 h-10 bg-info/10 text-info rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-sm text-on-surface truncate">doe_resume.docx</p>
+<p class="text-xs text-on-surface-variant">850KB • Uploaded 2 mins ago</p>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-muted hover:text-error hover:bg-error-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- File 3 -->
+<div class="flex items-center gap-4 p-md bg-surface-container-low border border-outline rounded-lg hover:border-primary transition-colors group">
+<div class="w-10 h-10 bg-error-container text-on-error-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-sm text-on-surface truncate">jones_cv.pdf</p>
+<p class="text-xs text-on-surface-variant">2.1MB • Uploaded 5 mins ago</p>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-muted hover:text-error hover:bg-error-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card Footer -->
+<div class="px-lg py-md bg-surface-container-low border-t border-outline flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-32 h-2 bg-outline rounded-full overflow-hidden">
+<div class="w-[1.5%] h-full bg-primary rounded-full"></div>
+</div>
+<span class="text-sm font-medium text-on-surface-variant">3 / 2000 files uploaded</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 text-on-surface-variant font-bold text-sm hover:bg-surface-container-high rounded-lg transition-colors">Cancel</button>
+<button class="px-8 py-2 bg-primary text-on-primary font-bold text-sm rounded-lg hover:bg-primary-hover active:scale-[0.98] transition-all shadow-md">
+                                    Continue
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Toast Notification Container (Fixed Position) -->
+<div class="fixed bottom-lg right-lg flex flex-col gap-2 z-50" id="toast-container"></div>
+</main>
+</div>
+<!-- UI Interaction Scripts -->
+<script>
+        const dropZone = document.getElementById('drop-zone');
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('drag-active');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-active');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            showToast('Files received! Simulating upload processing...', 'info');
+        }, false);
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colorClass = type === 'success' ? 'bg-success-container text-on-success-container' : 'bg-primary-container text-on-primary-container';
+            const icon = type === 'success' ? 'check_circle' : 'info';
+            
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl ${colorClass} border border-outline animate-bounce-short`;
+            toast.innerHTML = `
+                <span class="material-symbols-outlined text-[20px]">${icon}</span>
+                <span class="text-sm font-bold">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Add micro-animations to buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.97)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+<style>
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 0.5s ease-out;
+        }
+    </style>
+</body></html>

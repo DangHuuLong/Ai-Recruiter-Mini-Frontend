@@ -146,7 +146,7 @@ export function JobSkillManager({ jobDescriptionId, skills, onSkillsChange }: Jo
           </div>
           <div>
             <label htmlFor="weightHint" className="mb-1 block text-sm font-medium text-slate-800">Weight</label>
-            <input id="weightHint" type="number" step="0.1" min="0" max="1" value={formValues.weightHint} onChange={(event) => updateField('weightHint', Number(event.target.value))} disabled={isSubmitting} className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
+            <input id="weightHint" type="number" step="0.1" min="0" max="1" value={formValues.weightHint as number} onChange={(event) => updateField('weightHint', Number(event.target.value))} disabled={isSubmitting} className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
             {errors.weightHint ? <p className="mt-1 text-xs text-red-600">{errors.weightHint}</p> : null}
           </div>
         </div>

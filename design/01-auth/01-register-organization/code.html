@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register Organization - AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#0058be",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-surface-variant": "#475569",
+                        "on-tertiary-container": "#fffbff",
+                        "error-container": "#FEE2E2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "primary-hover": "#2563EB",
+                        "link": "#2563EB",
+                        "surface-tint": "#005ac2",
+                        "on-surface": "#191b23",
+                        "on-secondary-fixed-variant": "#444749",
+                        "success": "#22C55E",
+                        "on-primary-container": "#fefcff",
+                        "error": "#EF4444",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#e1e2ec",
+                        "outline": "#E2E8F0",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-primary-fixed": "#001a42",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "outline-variant": "#c2c6d6",
+                        "inverse-surface": "#2e3038",
+                        "surface-container-highest": "#e1e2ec",
+                        "info": "#0EA5E9",
+                        "tertiary": "#924700",
+                        "warning": "#F59E0B",
+                        "surface-container-high": "#e6e7f2",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#adc6ff",
+                        "inverse-on-surface": "#eff0fa",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "on-background": "#191b23",
+                        "surface-container-low": "#f2f3fd",
+                        "focus-ring": "#93C5FD",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-surface-muted": "#64748B",
+                        "tertiary-container": "#b75b00",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-container": "#2170e4",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-dim": "#d8d9e3",
+                        "secondary": "#5c5f61",
+                        "on-tertiary-fixed": "#311400",
+                        "warning-container": "#FEF3C7",
+                        "secondary-container": "#e0e3e5",
+                        "surface-container": "#ecedf7",
+                        "success-container": "#DCFCE7",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-secondary-container": "#626567"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "radius": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .success-overlay {
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+        .success-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Panel: Brand & Identity -->
+<section class="md:w-5/12 lg:w-4/12 bg-inverse-surface p-xl flex flex-col justify-between relative overflow-hidden">
+<!-- Decorative atmospheric background pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+<div class="absolute -bottom-24 -right-24 w-96 h-96 bg-info rounded-full blur-[120px]"></div>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-sm mb-xl">
+<img alt="RecruitAI Logo" class="w-10 h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALbBzou5DY6DhIduG8NEDTwxUJQW-Rl2b1mioKawctku1KyY7S3CnyU0DGD7AjtcR3Erj-3wlSEU18iP-BZapF2Dl0Y55Drx3xhSpB1waorXPrAJqNNC1S2vl2E5R8fkfEn80iau5p51DfOineAy2wShc0gl5JkwYoST3MBx_mEjX6wLVFzWbuCHWsOQnenbBzGxQXzIxa_3HYJ_fA05SJ7taRpAkP-yoa9V_2SOn5dyLRlNy1LpEUkl7lqJUHeDaXou9X_uPQ1kw"/>
+<span class="font-headline-sm text-headline-sm text-inverse-on-surface">AI Recruiter</span>
+</div>
+<div class="space-y-md max-w-sm">
+<h1 class="font-headline-lg text-headline-lg text-inverse-on-surface leading-tight">
+                        The intelligent layer for your hiring team
+                    </h1>
+<p class="font-body-lg text-body-lg text-outline-variant">
+                        Leverage proprietary AI algorithms to score candidates, predict performance, and automate high-volume screenings with surgical precision.
+                    </p>
+</div>
+</div>
+<!-- Abstract AI Graphic -->
+<div class="relative z-10 mt-xl flex justify-center">
+<img class="w-full max-w-md aspect-square object-contain drop-shadow-2xl" data-alt="An abstract, glowing 3D visualization of a neural network or digital brain constructed from interconnected lines and light points, rendered in a corporate blue and white aesthetic. The background is a deep slate grey, conveying intelligence and high-technology stability. Soft bokeh effects and light trails suggest movement and cognitive processing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9KALW6Hrp_n6VUuoEBzR-C89ZoOC0UHzyxg0ke2G1dsz8EkWmFoafTGDHlZXS7nmcPqVjklvc2hcnyo0FmaMzo9j0G4YxbgXijvUus2OnQvIL1tF0Y-SDw-_p-37l7bceUnrbWtpKmBbt1V-d5cJiK3hPjM_nNu7bmBobpXXuj_ebUkSZFveLmfMnMnaJxHI6nhFjXq3qzkrnsPqaObCWTeU0imx-haM9lDRhddNuHjbQXn1JIGXNou2aa1_Y5GKgcSFHZQanl-Y"/>
+</div>
+<div class="relative z-10 mt-xl">
+<p class="font-body-sm text-body-sm text-outline-variant opacity-60">
+                    © 2024 AI Recruiter. Cognitive Talent System.
+                </p>
+</div>
+</section>
+<!-- Right Panel: Registration Form -->
+<section class="flex-1 bg-surface flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+<div class="w-full max-w-[480px]" id="register-container">
+<div class="bg-surface-container-lowest border border-outline rounded-xl p-xl shadow-sm">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Register</h2>
+<p class="font-body-md text-body-md text-on-surface-muted">Start building your intelligent talent pipeline today.</p>
+</div>
+<form class="space-y-lg" id="registration-form" onsubmit="handleRegistration(event)">
+<!-- Org Name -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="org-name">Organization Name</label>
+<input class="w-full h-12 px-md bg-surface border border-outline rounded-lg focus:ring-2 focus:ring-focus-ring focus:border-primary transition-all font-body-md" id="org-name" placeholder="e.g., Acme Corp" required="" type="text"/>
+</div>
+<!-- Admin Name -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="admin-name">Admin Full Name</label>
+<input class="w-full h-12 px-md bg-surface border border-outline rounded-lg focus:ring-2 focus:ring-focus-ring focus:border-primary transition-all font-body-md" id="admin-name" placeholder="John Doe" required="" type="text"/>
+</div>
+<!-- Admin Email -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="admin-email">Admin Email</label>
+<input class="w-full h-12 px-md bg-surface border border-outline rounded-lg focus:ring-2 focus:ring-focus-ring focus:border-primary transition-all font-body-md" id="admin-email" placeholder="name@company.com" required="" type="email"/>
+</div>
+<!-- Password -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block uppercase" for="admin-password">Admin Password</label>
+<input class="w-full h-12 px-md bg-surface border border-outline rounded-lg focus:ring-2 focus:ring-focus-ring focus:border-primary transition-all font-body-md" id="admin-password" minlength="8" placeholder="••••••••" required="" type="password"/>
+<p class="font-body-sm text-body-sm text-on-surface-muted mt-1">Password must be 8+ characters</p>
+</div>
+<button class="w-full h-12 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg transition-colors flex items-center justify-center gap-sm active:opacity-90" type="submit">
+                            Create organization
+                        </button>
+</form>
+<div class="mt-xl pt-lg border-t border-outline text-center">
+<p class="font-body-md text-body-md text-on-surface-muted">
+                            Already have an account? 
+                            <a class="text-primary font-semibold hover:underline" href="#">Log in</a>
+</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Success State Overlay (Modal) -->
+<div class="success-overlay fixed inset-0 z-50 items-center justify-center bg-black/40 px-margin-mobile" id="success-overlay">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-xl p-xl shadow-xl flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
+<div class="w-16 h-16 bg-success-container text-success rounded-full flex items-center justify-center mb-lg">
+<span class="material-symbols-outlined !text-4xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm">Check your email</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl">
+                We've sent a verification link to <span class="font-semibold text-on-surface" id="display-email">your email</span>. Please check your inbox to complete your registration.
+            </p>
+<button class="font-label-caps text-label-caps text-primary hover:text-primary-hover uppercase tracking-wider transition-colors" onclick="resendEmail()">
+                Resend email
+            </button>
+</div>
+</div>
+<script>
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('admin-email').value;
+            document.getElementById('display-email').textContent = emailInput;
+            
+            const overlay = document.getElementById('success-overlay');
+            overlay.classList.add('active');
+            
+            // Add interaction logic to form button
+            const btn = e.target.querySelector('button');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                // Keep it showing for demo purposes
+            }, 800);
+        }
+
+        function resendEmail() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = "SENDING...";
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = "EMAIL SENT!";
+                btn.classList.replace('text-primary', 'text-success');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.replace('text-success', 'text-primary');
+                    btn.disabled = false;
+                }, 2000);
+            }, 1000);
+        }
+
+        // Close modal on escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('success-overlay').classList.remove('active');
+            }
+        });
+    </script>
+</body></html>

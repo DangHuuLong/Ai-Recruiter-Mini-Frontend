@@ -1,5 +1,5 @@
 import { apiClient, apiEndpoints } from '@/lib/api';
-import type { ApiResponse, PaginatedApiResponse } from '@/lib/api/api-types';
+import type { ApiResponse, PaginatedApiResponse, QueryParams } from '@/lib/api/api-types';
 
 import type {
   Candidate,
@@ -26,7 +26,7 @@ export async function getCandidates(
 ): Promise<PaginatedApiResponse<Candidate>> {
   return apiClient.get<PaginatedApiResponse<Candidate>>(
     apiEndpoints.candidates.list,
-    { params: query },
+    { params: query as QueryParams },
   );
 }
 
