@@ -15,4 +15,15 @@ export const ROUTES = {
   APPLICATION_CREATE: '/applications/new',
 
   EVALUATIONS: '/evaluations',
+
+  BATCH_SCORING: '/batch-scoring',
+  BATCH_SCORING_CREATE: '/batch-scoring/new',
+
+  EVALUATION_CONFIGS: '/evaluation-configs',
+
+  USERS: '/users',
+
+  AUDIT_LOG: '/audit-log',
+
+  INTERVIEW_QUESTIONS: '/interview-questions',
 } as const;
