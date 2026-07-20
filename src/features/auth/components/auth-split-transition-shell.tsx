@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -68,12 +69,12 @@ export function AuthSplitTransitionShell({ children }: AuthSplitTransitionShellP
         className="relative z-0 flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:max-w-xl"
       >
         <div className="w-full max-w-md">
-          <div className="mb-6 flex items-center gap-2.5 lg:hidden">
+          <Link href={ROUTES.ROOT} className="mb-6 flex w-fit items-center gap-2.5 lg:hidden">
             <span className="relative size-12">
               <Image src="/images/logo.svg" alt="AI Recruiter logo" fill className="object-contain" />
             </span>
             <span className="text-base font-bold text-on-surface">AI Recruiter</span>
-          </div>
+          </Link>
 
           <div className="rounded-2xl border border-outline bg-surface-lowest p-8 shadow-card">
             {children}
