@@ -97,7 +97,7 @@ export function getParsedDataNamedList(
           getParsedDataString(item, 'description'),
       };
     })
-    .filter((item): item is ParsedNamedItem => Boolean(item));
+    .filter((item) => item !== null);
 }
 
 export function getParsedSkillList(data: ParsedDataRecord): ParsedSkill[] {
@@ -137,7 +137,7 @@ export function getParsedSkillList(data: ParsedDataRecord): ParsedSkill[] {
           getParsedDataString(item, 'normalizedName'),
       };
     })
-    .filter((item): item is ParsedSkill => Boolean(item));
+    .filter((item) => item !== null);
 }
 
 export function getSkillIconLabel(skill: string): string {
