@@ -131,65 +131,65 @@
 </head>
 <body class="bg-background text-on-surface flex overflow-hidden h-screen">
 <!-- Side Navigation Shell -->
-<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-lowest dark:bg-inverse-surface h-screen w-64 border-r border-outline">
-<div class="px-lg py-xl">
-<div class="flex items-center gap-3">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
 <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined">auto_awesome</span>
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-inverse-primary">RecruitAI</h1>
-<p class="text-body-sm text-on-surface-muted">Enterprise SaaS</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
 </div>
-<nav class="flex-1 px-sm space-y-1">
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">person_search</span>
-<span class="font-body-md text-body-md">Candidates</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">description</span>
-<span class="font-body-md text-body-md">Resumes</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">work</span>
-<span class="font-body-md text-body-md">Job Descriptions</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined">assignment_ind</span>
-<span class="font-body-md text-body-md">Applications</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
 <span class="material-symbols-outlined">analytics</span>
-<span class="font-body-md text-body-md">Evaluations</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg" href="#">
-<span class="material-symbols-outlined">batch_prediction</span>
-<span class="font-body-md text-body-md font-semibold">Batch Scoring</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-body-md text-body-md">Configs</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined">group</span>
-<span class="font-body-md text-body-md">Users</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">history</span>
-<span class="font-body-md text-body-md">Audit Log</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
 </a>
 </nav>
-<div class="p-md border-t border-outline">
-<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer">
-<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a female administrator with a friendly expression, wearing a navy blazer, set against a blurred modern office background with soft lighting and professional corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyvKeRF_KsxE3q-7q9tLM2_jvDWdd6RQnVMCRzIaXNCR8CO8-tP9RQcHIfXZVhZZRsugV1YixwhyPnYkjpFtHXkB-Uu_HLHIfC6BSmIpcK3VDNnw5rJW_apl7JP2f6Whc4HX1BjHv9tEoBFGRbZAsmyJzzOVTG4EggZBUgXGUXrbC6jbDzaOaxdoUWkDHoUux6zfFYpXtmoOhl2kwNAXTBxs8ZYT2rFWIheZ-HL1zKyfgLQXNl5Z7X9zJjLRJOrv7pcAfETh0vV0o"/>
-<div class="flex-1 overflow-hidden">
-<p class="font-body-md text-body-md font-semibold truncate">Admin User</p>
-<p class="text-body-sm text-on-surface-muted truncate">admin@recruitai.io</p>
-</div>
-</div>
-</div>
 </aside>
 <!-- Main Content Area -->
 <main class="flex-1 ml-64 flex flex-col h-screen overflow-y-auto">
@@ -362,14 +362,6 @@
 </div>
 </div>
 </section>
-<!-- Footer Help -->
-<footer class="mt-xl flex justify-between items-center text-on-surface-muted">
-<button class="flex items-center gap-2 hover:text-on-surface transition-colors">
-<span class="material-symbols-outlined text-sm">arrow_back</span>
-<span class="text-body-sm font-semibold">Back to Job Descriptions</span>
-</button>
-<p class="text-body-sm">Need help? <a class="text-primary underline" href="#">Visit Help Center</a></p>
-</footer>
 </div>
 </main>
 <!-- Interactive script for details hover and basic animations -->

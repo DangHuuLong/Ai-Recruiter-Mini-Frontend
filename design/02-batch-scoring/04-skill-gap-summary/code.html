@@ -138,52 +138,65 @@
 </head>
 <body class="bg-background text-on-surface">
 <!-- Sidebar Navigation Shell -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline flex flex-col py-md px-sm z-50">
-<div class="flex items-center gap-sm px-sm mb-xl">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
 <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="font-headline-sm text-headline-sm font-black text-primary">AI Recruiter</h1>
-<p class="text-[10px] font-label-caps text-on-surface-variant uppercase tracking-wider">Enterprise HR</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">groups</span>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
 <span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">description</span>
 <span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">work</span>
 <span class="font-label-caps text-label-caps">Job Descriptions</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">assignment</span>
 <span class="font-label-caps text-label-caps">Applications</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">fact_check</span>
 <span class="font-label-caps text-label-caps">Evaluations</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container font-bold rounded-lg shadow-sm" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
 <span class="font-label-caps text-label-caps">Batch Scoring</span>
 </a>
-</nav>
-<div class="mt-auto border-t border-outline pt-md space-y-1">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-caps text-label-caps">Configs</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
 </a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">history</span>
-<span class="font-label-caps text-label-caps">Audit Logs</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
 </a>
-</div>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
+</nav>
 </aside>
 <!-- Main Content Canvas -->
 <main class="ml-64 min-h-screen">

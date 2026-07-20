@@ -129,41 +129,65 @@
 </head>
 <body class="bg-background text-on-surface">
 <!-- Side Navigation Shell -->
-<aside class="fixed left-0 top-0 h-full flex flex-col p-4 bg-surface-container-low border-r border-outline w-64 z-10">
-<div class="mb-8 px-4">
-<h1 class="font-headline-sm text-headline-sm font-black text-primary">AI Recruiter</h1>
-<p class="font-label-caps text-label-caps text-on-surface-variant">Talent Intelligence</p>
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
 </div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">person_search</span> Candidates
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">description</span> Resumes
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">work_outline</span> Job Descriptions
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">assignment_ind</span> Applications
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">rate_review</span> Evaluations
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md rounded-lg" href="#">
-<span class="material-symbols-outlined">query_stats</span> Batch Scoring
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-primary-container rounded-lg font-body-md text-body-md" href="#">
-<span class="material-symbols-outlined">settings</span> Settings
-            </a>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
 </nav>
-<div class="mt-auto border-t border-outline pt-4 px-4 flex items-center gap-3">
-<img class="w-10 h-10 rounded-full bg-surface-container-high border border-outline" data-alt="A professional headshot of a recruitment manager in a bright, modern corporate office. The photography is clean with soft studio lighting and a shallow depth of field, adhering to a minimalist professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAubea12JLf6tUNcba3Vj9ppXFh4KAC5r4BMbDKHMQpxlO9Hkpdy4Wt33QmLOMPtGS0iGqr2Z_pCTLZs_cQKPp2fFu4RIPpKSqbIPa2tSKTiYy37uJY8zU4kbzoS53PmQ3IUvGJ4zlM12OMpeEtKinYP8sPOlKTEjf48QPrqTz7y4RNUrcClt8qHeLm7EZSIdJ12MumjrXY3Y-H76LFMd4EEjN-voAylvBwHKJmOSuBW39n1OCiFIp7xgOIrNDUNO2ecBTjU6qrVUU"/>
-<div class="overflow-hidden">
-<p class="font-body-sm text-body-sm font-bold truncate">Alex Chen</p>
-<p class="font-label-caps text-[10px] text-on-surface-variant">Super Admin</p>
-</div>
-</div>
 </aside>
 <!-- Main Content Area -->
 <main class="ml-64 min-h-screen">

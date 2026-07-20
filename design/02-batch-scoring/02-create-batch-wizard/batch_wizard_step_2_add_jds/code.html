@@ -113,68 +113,65 @@
 <!-- Authenticated App Shell -->
 <div class="flex min-h-screen">
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-lowest border-r border-outline w-64">
-<div class="px-6 py-8">
-<div class="flex items-center gap-3">
-<div class="bg-primary p-1.5 rounded-lg">
-<span class="material-symbols-outlined text-on-primary text-[24px]">batch_prediction</span>
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="text-headline-sm font-headline-sm font-bold text-primary">RecruitAI</h1>
-<p class="text-[11px] font-label-caps text-on-surface-muted uppercase tracking-wider">Enterprise SaaS</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
 </div>
-<nav class="flex-1 px-4 space-y-1">
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
-<span class="font-body-md text-body-md">Candidates</span>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span class="font-body-md text-body-md">Resumes</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="work">work</span>
-<span class="font-body-md text-body-md">Job Descriptions</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="assignment_ind">assignment_ind</span>
-<span class="font-body-md text-body-md">Applications</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span class="font-body-md text-body-md">Evaluations</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-medium" href="#">
-<span class="material-symbols-outlined" data-icon="batch_prediction" style="font-variation-settings: 'FILL' 1;">batch_prediction</span>
-<span class="font-body-md text-body-md">Batch Scoring</span>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
 </a>
-<div class="pt-4 pb-2 px-4">
-<p class="text-[11px] font-label-caps text-on-surface-muted uppercase tracking-widest">System</p>
-</div>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span class="font-body-md text-body-md">Configs</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span class="font-body-md text-body-md">Users</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-body-md text-body-md">Audit Log</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
 </a>
 </nav>
-<div class="p-4 border-t border-outline">
-<div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low">
-<img class="w-10 h-10 rounded-full object-cover border border-outline" data-alt="A professional corporate headshot of a middle-aged male administrator with a confident smile, wearing a clean navy blazer. He is positioned against a soft, out-of-focus modern office background with blue and white tones that match the enterprise SaaS aesthetic. The lighting is bright and professional, conveying trust and stability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3t1BGdilHkSr2JhgSpSGVy3faXMFD2AHvtegsXE8nMmwuxdeeuGy2oFoULgN_Ht0paJnI5hMwBl7NRyAfdHKo8NrLWTyqp8MqupSnIB9ghF3BUCiaRsbQrOROq6LihscAW2ytfIbQ-TO0Wpc4NmEhxs8v3lwjD6l5QYfbT8LudInvWTOqGXSSnGcVVeUOs5cXZD6ceKMD8FJKFdLdmi4hhATbW7gkYO63agLtSpY0SMam6_K8hm6jSLQLvJtRVdhD22UmjV46GM0"/>
-<div class="overflow-hidden">
-<p class="text-body-sm font-semibold truncate">Alex Chen</p>
-<p class="text-[11px] text-on-surface-muted truncate">Admin Access</p>
-</div>
-</div>
-</div>
 </aside>
 <!-- Main Content Wrapper -->
 <main class="flex-1 ml-64 flex flex-col min-h-screen">
@@ -321,10 +318,6 @@ Qualifications:
 </div>
 </div>
 </div>
-<!-- Global Footer (Subtle) -->
-<footer class="mt-auto py-8 text-center border-t border-outline-variant bg-surface-container-lowest">
-<p class="text-body-sm text-on-surface-muted">© 2024 RecruitAI Systems Inc. • <a class="hover:text-primary" href="#">Privacy Policy</a> • <a class="hover:text-primary" href="#">Terms of Service</a></p>
-</footer>
 </main>
 </div>
 <!-- Micro-interaction Script -->

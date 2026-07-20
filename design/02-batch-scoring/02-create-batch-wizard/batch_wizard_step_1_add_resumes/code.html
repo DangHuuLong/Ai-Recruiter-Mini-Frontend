@@ -145,66 +145,65 @@
 <!-- App Shell Container -->
 <div class="flex h-screen w-full">
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-lowest dark:bg-inverse-surface w-64 border-r border-outline">
-<div class="p-lg flex items-center gap-3">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
 <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-inverse-primary leading-tight">RecruitAI</h1>
-<p class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Enterprise SaaS</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
-<nav class="flex-1 px-md py-sm space-y-1 overflow-y-auto">
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
-<span>Candidates</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span>Resumes</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="work">work</span>
-<span>Job Descriptions</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="assignment_ind">assignment_ind</span>
-<span>Applications</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span>Evaluations</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-semibold shadow-sm" href="#">
-<span class="material-symbols-outlined" data-icon="batch_prediction" style="font-variation-settings: 'FILL' 1;">batch_prediction</span>
-<span>Batch Scoring</span>
-</a>
-<div class="pt-lg pb-sm px-4">
-<p class="text-[10px] font-bold text-on-surface-muted uppercase tracking-widest">Settings</p>
 </div>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Configs</span>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span>Users</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-<span>Audit Log</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
 </a>
 </nav>
-<div class="p-md border-t border-outline">
-<div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low">
-<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional high-resolution headshot of a female executive in her 40s, wearing business attire, smiling warmly against a soft-focus corporate office background. The lighting is bright and professional with a modern corporate aesthetic featuring cool blue and white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUNsROhzpAixcEX48ABXC191u-bDSVKKcjCql9AcGJIHUgRZ1mFkuGAMpZH_i0n1S6SK_cD71eOfWnTwSCYhAqGIld5NkNZPrwUo_jsf9BF0TdyhO2U81hksYyfoHbCiWMNXPgfOZwdU5Cq6Q8_XvqFf2PecUUAh49yDfPeLYYanFTzKISwuIj7kOiIPmOxmdFtM3mtTWSZzbhRJB7RSuAKCofb8gSQP86gJDp1aFNVLNt2393qqW5wm0VPUp6B9LZzxOKOUbXJ14"/>
-<div class="flex-1 overflow-hidden">
-<p class="font-bold text-sm truncate">Sarah Jenkins</p>
-<p class="text-xs text-on-surface-variant truncate">Admin Access</p>
-</div>
-</div>
-</div>
 </aside>
 <!-- Main Canvas -->
 <main class="flex-1 ml-64 flex flex-col h-full bg-white relative">

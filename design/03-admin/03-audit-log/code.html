@@ -126,60 +126,65 @@
 </head>
 <body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
 <!-- Sidebar Navigation Shell -->
-<aside class="bg-surface-container-low dark:bg-inverse-surface h-screen w-64 flex flex-col fixed left-0 top-0 shadow-sm z-50 overflow-y-auto transition-colors duration-200 ease-in-out py-md">
-<div class="px-lg mb-xl">
-<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-inverse-primary leading-tight">AI Recruiter</h1>
-<p class="text-on-surface-muted text-body-sm">Enterprise Talent Hub</p>
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
 </div>
-<nav class="flex-1 space-y-1 px-sm">
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
-<span>Candidates</span>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span>Resumes</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="work">work</span>
-<span>Job Descriptions</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
-<span>Applications</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
-<span>Evaluations</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
-<span>Batch Scoring</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Configs</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span>Users</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
 </a>
-<!-- Active State: Audit Logs -->
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-primary dark:text-inverse-primary font-bold border-r-4 border-primary dark:border-inverse-primary bg-primary-container/10 transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
-<span>Audit Logs</span>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
 </a>
-<a class="flex items-center gap-3 px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
-<span>Admin</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
 </a>
 </nav>
-<div class="mt-auto px-md pt-lg">
-<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-on-primary py-sm px-md rounded-lg font-bold shadow-sm transition-all duration-200">
-<span class="material-symbols-outlined text-lg">add</span>
-<span>New Opening</span>
-</button>
-</div>
 </aside>
 <!-- Top Navigation Bar -->
 <header class="fixed top-0 right-0 h-16 ml-64 px-lg w-[calc(100%-16rem)] bg-surface border-b border-outline-variant flex justify-between items-center z-40 transition-all duration-200">
@@ -200,7 +205,7 @@
 <div class="flex items-center gap-3 pl-lg border-l border-outline-variant">
 <div class="text-right">
 <p class="text-body-sm font-bold leading-tight">Admin User</p>
-<p class="text-xs text-on-surface-muted">System Administrator</p>
+<p class="text-xs text-on-surface-muted">Organization Admin</p>
 </div>
 <img class="w-10 h-10 rounded-full border border-outline object-cover" data-alt="Close-up portrait of a professional woman with a confident expression, set against a blurred modern office background with soft neutral lighting and professional color tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTg7ltALsXiGGZH4XC4vfjOVWNhOoICbwLGnZr9aNTp-gYZWPUw2EA-H9qdCyMDLjYei9sl1_mmjtUmV28l81jvHlvBz5Jht6T7vDP4qmcC-VOeaGaCDo_TAv8PLJpGa-Dka4PL3wEuDNibkuz2ogrNAuQyk3Od09UOie6cafsGvISvwhHdrSEBiCoEXLRqRdiEMnEbb__YauGCKwiZ98qdGOd92HfpSQLmGkAfFtJCdgLrT7JJUZgdjzAOcomnhI0_b8l6dGlI3s"/>
 </div>

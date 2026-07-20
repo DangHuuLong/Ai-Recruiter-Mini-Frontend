@@ -151,47 +151,64 @@
 </head>
 <body class="bg-background font-body-md text-on-surface antialiased overflow-hidden">
 <!-- Sidebar Component (Anchored) -->
-<aside class="fixed left-0 top-0 h-full flex flex-col p-4 bg-surface-container-low border-r border-outline w-64 z-50">
-<div class="mb-8 px-4 flex items-center gap-3">
-<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">neurology</span>
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="font-headline-sm text-headline-sm font-black text-primary">AI Recruiter</h1>
-<p class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Talent Intelligence</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
-<nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">person_search</span>
-<span class="font-body-md">Candidates</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
 <span class="material-symbols-outlined">description</span>
-<span class="font-body-md">Resumes</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">work_outline</span>
-<span class="font-body-md">Job Descriptions</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">assignment_ind</span>
-<span class="font-body-md">Applications</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">rate_review</span>
-<span class="font-body-md">Evaluations</span>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-primary-container rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">query_stats</span>
-<span class="font-body-md">Batch Scoring</span>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
 </a>
-<div class="mt-auto pt-4 border-t border-outline-variant">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-body-md">Settings</span>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
 </a>
-</div>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
 </nav>
 </aside>
 <!-- Main Content Area -->

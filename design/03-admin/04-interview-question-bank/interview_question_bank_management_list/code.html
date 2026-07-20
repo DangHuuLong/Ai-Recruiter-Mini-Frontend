@@ -127,57 +127,65 @@
 </head>
 <body class="bg-background text-on-background min-h-screen flex overflow-hidden">
 <!-- SideNavBar Anchor -->
-<aside class="hidden md:flex flex-col h-screen p-md gap-sm border-r border-outline-variant bg-surface-container dark:bg-inverse-surface w-64 fixed left-0 top-0 z-50 shadow-md dark:shadow-none">
-<div class="flex flex-col gap-xs mb-lg">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
 <div class="flex items-center gap-sm">
-<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-on-primary-container">terminal</span>
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
 </div>
 <div>
-<h1 class="font-headline-sm text-headline-sm font-black text-on-surface dark:text-inverse-on-surface">Admin Panel</h1>
-<p class="font-label-caps text-label-caps text-on-surface-variant opacity-70">Internal Dev Mode</p>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
 </div>
 </div>
 </div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-caps text-label-caps">Dashboard</span>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
 </a>
-<a class="flex items-center gap-md px-md py-sm bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-lg font-bold hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
 <span class="material-symbols-outlined">quiz</span>
-<span class="font-label-caps text-label-caps">Interview Bank</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-caps text-label-caps">System Config</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
-<span class="material-symbols-outlined">build</span>
-<span class="font-label-caps text-label-caps">Internal Tools</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
-<span class="material-symbols-outlined">terminal</span>
-<span class="font-label-caps text-label-caps">Logs</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high dark:hover:bg-surface-variant rounded-lg hover:translate-x-1 transition-transform duration-200 active:scale-95" href="#">
-<span class="material-symbols-outlined">support</span>
-<span class="font-label-caps text-label-caps">Support</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
 </a>
 </nav>
-<div class="mt-auto border-t border-outline-variant pt-md flex flex-col gap-xs">
-<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-bold mb-md hover:bg-primary-hover transition-colors active:scale-95">
-                Test Retrieval
-            </button>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high rounded-lg" href="#">
-<span class="material-symbols-outlined">monitor_heart</span>
-<span class="font-label-caps text-label-caps">System Health</span>
-</a>
-<a class="flex items-center gap-md px-md py-sm text-on-surface-variant dark:text-on-surface-muted hover:bg-surface-container-high rounded-lg" href="#">
-<span class="material-symbols-outlined">description</span>
-<span class="font-label-caps text-label-caps">Documentation</span>
-</a>
-</div>
 </aside>
 <!-- Main Content Canvas -->
 <main class="flex-1 ml-0 md:ml-64 flex flex-col h-screen overflow-y-auto bg-surface">
