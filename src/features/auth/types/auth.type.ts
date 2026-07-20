@@ -18,3 +18,31 @@ export type LoginResult = {
   expiresIn: number;
   user: AuthUser;
 };
+
+export type RegisterOrganizationPayload = {
+  organizationName: string;
+  adminFullName: string;
+  adminEmail: string;
+  adminPassword: string;
+};
+
+export type VerifyEmailPayload = {
+  token: string;
+};
+
+export type ResendVerificationPayload = {
+  email: string;
+};
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+};
+
+export type MessageResult = {
+  message: string;
+};

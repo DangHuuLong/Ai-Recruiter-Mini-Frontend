@@ -1,6 +1,11 @@
 export const apiEndpoints = {
   auth: {
     login: '/auth/login',
+    registerOrganization: '/auth/register-organization',
+    verifyEmail: '/auth/verify-email',
+    resendVerification: '/auth/resend-verification',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password',
   },
 
   candidates: {

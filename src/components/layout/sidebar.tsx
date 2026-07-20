@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { SparklesIcon } from 'lucide-react';
 
 import { navigationGroups } from '@/config/navigation.config';
 import { ROUTES } from '@/config/routes.config';
@@ -16,8 +16,8 @@ export function Sidebar() {
     <aside className="hidden min-h-screen w-72 shrink-0 border-r border-outline bg-surface-lowest lg:flex lg:flex-col">
       <div className="flex h-20 items-center border-b border-outline px-5">
         <Link href={ROUTES.DASHBOARD} className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-on-primary">
-            <SparklesIcon className="size-5" />
+          <span className="relative flex size-11 shrink-0 items-center justify-center rounded-xl border border-outline bg-surface-lowest">
+            <Image src="/images/logo.svg" alt="" fill className="object-contain p-1" />
           </span>
 
           <span>
