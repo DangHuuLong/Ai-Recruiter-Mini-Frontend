@@ -1,4 +1,7 @@
 import Image from 'next/image';
+import Link from 'next/link';
+
+import { ROUTES } from '@/config/routes.config';
 
 type AuthBrandPanelProps = {
   eyebrow: string;
@@ -25,12 +28,12 @@ export function AuthBrandPanel({
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/75 to-[#0F172A]/35" />
 
-      <div className="relative z-10 flex items-center gap-3">
+      <Link href={ROUTES.ROOT} className="relative z-10 flex w-fit items-center gap-3">
         <span className="relative flex size-16 shrink-0 items-center justify-center rounded-xl bg-white p-1.5">
           <Image src="/images/logo.svg" alt="AI Recruiter logo" fill className="object-contain p-1.5" />
         </span>
         <span className="text-lg font-bold">AI Recruiter</span>
-      </div>
+      </Link>
 
       <div className="relative z-10 max-w-xl">
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary-hover">
