@@ -1,21 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --color-primary: #9d7cff;
-  --color-secondary: #1c1238;
-  --color-accent: #57f2cc;
-  --color-surface: rgba(23, 15, 44, 0.74);
-  --color-surface-strong: rgba(38, 25, 69, 0.86);
-  --color-muted: rgba(196, 185, 224, 0.14);
-  --color-border: rgba(197, 181, 255, 0.18);
-  --color-text-primary: #f8f4ff;
-  --color-text-secondary: #cfc5eb;
-  --color-text-tertiary: #8f83b6;
-  --font-display: 'Bricolage Grotesque', sans-serif;
-  --font-body: 'Manrope', sans-serif;
-  --background: #080511;
-  --foreground: var(--color-text-primary);
+  --background: #f9f9ff;
+  --foreground: #191b23;
 }
 
 * {
@@ -24,33 +11,14 @@
 
 html {
   min-height: 100%;
-  background: #080511;
+  background: var(--background);
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(157, 124, 255, 0.32), transparent 30rem),
-    radial-gradient(circle at 82% 0%, rgba(87, 242, 204, 0.18), transparent 26rem),
-    radial-gradient(circle at 80% 78%, rgba(232, 96, 255, 0.14), transparent 24rem),
-    linear-gradient(135deg, #080511 0%, #10091f 52%, #070411 100%);
+  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body);
-}
-
-body::before {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  content: '';
-  opacity: 0.35;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(circle at 50% 20%, black, transparent 70%);
 }
 
 button,
@@ -60,11 +28,7 @@ textarea {
   font: inherit;
 }
 
-.font-display {
-  font-family: var(--font-display);
-}
-
 ::selection {
-  background: rgba(87, 242, 204, 0.32);
-  color: #ffffff;
+  background: rgba(0, 88, 190, 0.18);
+  color: #0b1c30;
 }
