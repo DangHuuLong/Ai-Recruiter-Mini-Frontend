@@ -1,6 +1,3 @@
-import { apiClient, apiEndpoints } from '@/lib/api';
-import type { ApiResponse } from '@/lib/api/api-types';
-
 import type {
   ForgotPasswordPayload,
   LoginPayload,
@@ -12,60 +9,52 @@ import type {
   VerifyEmailPayload,
 } from '@/features/auth/types/auth.type';
 
-export async function login(payload: LoginPayload): Promise<LoginResult> {
-  const response = await apiClient.post<ApiResponse<LoginResult>>(
-    apiEndpoints.auth.login,
-    payload,
-  );
+const MOCK_DELAY_MS = 600;
 
-  return response.data;
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const buildMockSession = (email: string): LoginResult => ({
+  accessToken: 'mock-access-token',
+  tokenType: 'Bearer',
+  expiresIn: 3600,
+  user: {
+    id: 'mock-user-id',
+    email,
+    fullName: 'Sarah Jenkins',
+    role: 'ADMIN',
+  },
+});
+
+export async function login(payload: LoginPayload): Promise<LoginResult> {
+  await delay(MOCK_DELAY_MS);
+  return buildMockSession(payload.email);
 }
 
 export async function registerOrganization(
   payload: RegisterOrganizationPayload,
 ): Promise<MessageResult> {
-  const response = await apiClient.post<ApiResponse<unknown>>(
-    apiEndpoints.auth.registerOrganization,
-    payload,
-  );
-
-  return { message: response.message };
+  await delay(MOCK_DELAY_MS);
+  return { message: `Verification email sent to ${payload.adminEmail}` };
 }
 
-export async function verifyEmail(payload: VerifyEmailPayload): Promise<LoginResult> {
-  const response = await apiClient.post<ApiResponse<LoginResult>>(
-    apiEndpoints.auth.verifyEmail,
-    payload,
-  );
-
-  return response.data;
+export async function verifyEmail(_payload: VerifyEmailPayload): Promise<LoginResult> {
+  await delay(MOCK_DELAY_MS);
+  return buildMockSession('sarah.jenkins@company.com');
 }
 
 export async function resendVerification(
-  payload: ResendVerificationPayload,
+  _payload: ResendVerificationPayload,
 ): Promise<MessageResult> {
-  const response = await apiClient.post<ApiResponse<unknown>>(
-    apiEndpoints.auth.resendVerification,
-    payload,
-  );
-
-  return { message: response.message };
+  await delay(MOCK_DELAY_MS);
+  return { message: 'Verification email resent' };
 }
 
-export async function forgotPassword(payload: ForgotPasswordPayload): Promise<MessageResult> {
-  const response = await apiClient.post<ApiResponse<unknown>>(
-    apiEndpoints.auth.forgotPassword,
-    payload,
-  );
-
-  return { message: response.message };
+export async function forgotPassword(_payload: ForgotPasswordPayload): Promise<MessageResult> {
+  await delay(MOCK_DELAY_MS);
+  return { message: 'Password reset email sent' };
 }
 
-export async function resetPassword(payload: ResetPasswordPayload): Promise<MessageResult> {
-  const response = await apiClient.post<ApiResponse<unknown>>(
-    apiEndpoints.auth.resetPassword,
-    payload,
-  );
-
-  return { message: response.message };
+export async function resetPassword(_payload: ResetPasswordPayload): Promise<MessageResult> {
+  await delay(MOCK_DELAY_MS);
+  return { message: 'Password updated' };
 }
