@@ -16,7 +16,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div>
         {label ? (
-          <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-on-surface">
+          <label
+            htmlFor={id}
+            className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant"
+          >
             {label}
           </label>
         ) : null}
