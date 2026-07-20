@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Verification | AI Recruiter</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 2s linear infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#0058be",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-surface-variant": "#475569",
+                        "on-tertiary-container": "#fffbff",
+                        "error-container": "#FEE2E2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "primary-hover": "#2563EB",
+                        "link": "#2563EB",
+                        "surface-tint": "#005ac2",
+                        "on-surface": "#191b23",
+                        "on-secondary-fixed-variant": "#444749",
+                        "success": "#22C55E",
+                        "on-primary-container": "#fefcff",
+                        "error": "#EF4444",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#e1e2ec",
+                        "outline": "#E2E8F0",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-primary-fixed": "#001a42",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "outline-variant": "#c2c6d6",
+                        "inverse-surface": "#2e3038",
+                        "surface-container-highest": "#e1e2ec",
+                        "info": "#0EA5E9",
+                        "tertiary": "#924700",
+                        "warning": "#F59E0B",
+                        "surface-container-high": "#e6e7f2",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#adc6ff",
+                        "inverse-on-surface": "#eff0fa",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "on-background": "#191b23",
+                        "surface-container-low": "#f2f3fd",
+                        "focus-ring": "#93C5FD",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-surface-muted": "#64748B",
+                        "tertiary-container": "#b75b00",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#191c1e",
+                        "primary-container": "#2170e4",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-dim": "#d8d9e3",
+                        "secondary": "#5c5f61",
+                        "on-tertiary-fixed": "#311400",
+                        "warning-container": "#FEF3C7",
+                        "secondary-container": "#e0e3e5",
+                        "surface-container": "#ecedf7",
+                        "success-container": "#DCFCE7",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-secondary-container": "#626567"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "radius": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen flex flex-col font-body-md text-on-surface antialiased">
+<!-- Top App Bar (Shell Navigation Hidden per instructions) -->
+<header class="w-full h-16 flex items-center justify-center pt-xl">
+<div class="flex items-center gap-sm">
+<img alt="AI Recruiter Logo" class="h-10 w-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALbBzou5DY6DhIduG8NEDTwxUJQW-Rl2b1mioKawctku1KyY7S3CnyU0DGD7AjtcR3Erj-3wlSEU18iP-BZapF2Dl0Y55Drx3xhSpB1waorXPrAJqNNC1S2vl2E5R8fkfEn80iau5p51DfOineAy2wShc0gl5JkwYoST3MBx_mEjX6wLVFzWbuCHWsOQnenbBzGxQXzIxa_3HYJ_fA05SJ7taRpAkP-yoa9V_2SOn5dyLRlNy1LpEUkl7lqJUHeDaXou9X_uPQ1kw"/>
+<span class="font-headline-md text-primary tracking-tight">AI Recruiter</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-margin-mobile">
+<div class="max-w-[480px] w-full flex flex-col gap-lg">
+<!-- 1. LOADING STATE CARD -->
+<div class="bg-surface-container-lowest border border-outline rounded-lg p-xl shadow-sm text-center" id="state-loading">
+<div class="flex justify-center mb-md">
+<span class="material-symbols-outlined text-primary text-[48px] animate-spin-slow" data-icon="progress_activity">progress_activity</span>
+</div>
+<h2 class="font-headline-sm text-on-surface mb-xs">Verifying your email...</h2>
+<p class="text-on-surface-variant font-body-md">This will only take a second. We're securing your account.</p>
+</div>
+<!-- 2. SUCCESS STATE CARD -->
+<div class="bg-surface-container-lowest border border-outline rounded-lg p-xl shadow-sm text-center" id="state-success">
+<div class="flex justify-center mb-md">
+<div class="bg-success-container w-16 h-16 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-success text-[32px] fill-icon" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<h2 class="font-headline-sm text-on-surface mb-xs">Email verified!</h2>
+<p class="text-on-surface-variant font-body-md mb-lg">Your account is now fully active. You can now access all AI Recruiter features.</p>
+<button class="w-full bg-primary hover:bg-primary-hover text-on-primary py-md px-lg rounded-lg font-label-caps transition-all active:scale-[0.98]">
+                    GO TO DASHBOARD
+                </button>
+</div>
+<!-- 3. ERROR STATE CARD -->
+<div class="bg-surface-container-lowest border border-outline rounded-lg p-xl shadow-sm text-center" id="state-error">
+<div class="flex justify-center mb-md">
+<div class="bg-warning-container w-16 h-16 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-warning text-[32px] fill-icon" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+</div>
+<h2 class="font-headline-sm text-on-surface mb-xs">Link expired or used</h2>
+<p class="text-on-surface-variant font-body-md mb-lg">This verification link is no longer valid. Please request a new one to continue.</p>
+<button class="w-full bg-primary hover:bg-primary-hover text-on-primary py-md px-lg rounded-lg font-label-caps transition-all active:scale-[0.98]">
+                    REQUEST NEW LINK
+                </button>
+</div>
+</div>
+</main>
+<!-- Simple Footer (No Nav Links as per Transactional Screen suppression) -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col items-center justify-center border-t border-outline">
+<p class="font-body-sm text-on-surface-muted">© 2024 AI Recruiter. Cognitive Talent System.</p>
+<div class="mt-sm flex gap-md">
+<a class="font-label-caps text-on-surface-muted hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-caps text-on-surface-muted hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+</footer>
+<!-- Micro-interaction script to toggle states for preview purposes -->
+<script>
+        // In a real app, logic would control these. This script allows visual testing of the states.
+        const states = {
+            loading: document.getElementById('state-loading'),
+            success: document.getElementById('state-success'),
+            error: document.getElementById('state-error')
+        };
+
+        // Function to show one state and hide others (optional functionality for demo)
+        function showState(activeState) {
+            Object.keys(states).forEach(key => {
+                if(key === activeState) {
+                    states[key].classList.remove('hidden');
+                    states[key].classList.add('flex', 'flex-col');
+                } else {
+                    states[key].classList.add('hidden');
+                }
+            });
+        }
+
+        // For this landing page view as requested: "Show three distinct card states for the user to see"
+        // So we keep them all visible in the stack as presented above in the HTML.
+        // If a single-view was preferred, showState('loading') would be called here.
+    </script>
+</body></html>
