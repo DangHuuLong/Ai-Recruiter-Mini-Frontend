@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 :root {
   --background: #f9f9ff;
@@ -31,4 +32,13 @@ textarea {
 ::selection {
   background: rgba(0, 88, 190, 0.18);
   color: #0b1c30;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
