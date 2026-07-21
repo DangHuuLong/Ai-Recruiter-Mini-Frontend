@@ -1,10 +1,10 @@
 import { Input } from '@/components/ui/input';
-import { DynamicListSection } from '@/features/public-batches/components/dynamic-list-section';
-import { LineListField } from '@/features/public-batches/components/line-list-field';
+import { DynamicListSection } from '@/components/batch-input/dynamic-list-section';
+import { LineListField } from '@/components/batch-input/line-list-field';
 import {
   EMPTY_JD_SKILL,
   type JobDescriptionStructuredValues,
-} from '@/features/public-batches/types/structured-input.type';
+} from '@/components/batch-input/structured-input.type';
 
 type JdStructuredFormProps = {
   value: JobDescriptionStructuredValues;

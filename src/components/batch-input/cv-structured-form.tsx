@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
-import { DynamicListSection } from '@/features/public-batches/components/dynamic-list-section';
-import { LineListField } from '@/features/public-batches/components/line-list-field';
+import { DynamicListSection } from '@/components/batch-input/dynamic-list-section';
+import { LineListField } from '@/components/batch-input/line-list-field';
 import {
   EMPTY_RESUME_ACHIEVEMENT,
   EMPTY_RESUME_CERTIFICATION,
@@ -10,7 +10,7 @@ import {
   EMPTY_RESUME_PROJECT,
   EMPTY_RESUME_SKILL,
   type ResumeStructuredValues,
-} from '@/features/public-batches/types/structured-input.type';
+} from '@/components/batch-input/structured-input.type';
 
 type CvStructuredFormProps = {
   value: ResumeStructuredValues;
