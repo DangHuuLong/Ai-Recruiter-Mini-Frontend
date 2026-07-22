@@ -1,3 +1,14 @@
+import {
+  AwardIcon,
+  BriefcaseIcon,
+  FileTextIcon,
+  GlobeIcon,
+  GraduationCapIcon,
+  RocketIcon,
+  TagsIcon,
+  UserIcon,
+} from 'lucide-react';
+
 import type {
   ParsedDataFieldProps,
   ParsedDataListProps,
@@ -11,7 +22,6 @@ import {
   getParsedDataRecordList,
   getParsedDataString,
   getParsedSkillList,
-  getSkillIconLabel,
   isParsedDataRecord,
 } from '@/features/resumes/utils/parsed-resume-data.util';
 import { getDisplayValue } from '@/lib/utils/display-value.util';
@@ -23,16 +33,16 @@ function ParsedDataSection({
   children,
 }: ParsedDataSectionProps) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
+    <section className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg font-semibold text-blue-700">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
           {icon}
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold text-slate-950">{title}</h3>
+          <h3 className="text-base font-semibold text-on-surface">{title}</h3>
           {description ? (
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-on-surface-variant">
               {description}
             </p>
           ) : null}
@@ -46,11 +56,11 @@ function ParsedDataSection({
 
 function ParsedDataField({ label, value }: ParsedDataFieldProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+    <div className="rounded-xl border border-outline bg-surface-variant px-4 py-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
         {label}
       </p>
-      <p className="mt-1 break-words text-sm font-medium text-slate-900">
+      <p className="mt-1 break-words text-sm font-medium text-on-surface">
         {getDisplayValue(value ? String(value) : null)}
       </p>
     </div>
@@ -59,7 +69,7 @@ function ParsedDataField({ label, value }: ParsedDataFieldProps) {
 
 function ParsedDataList({ items, emptyMessage }: ParsedDataListProps) {
   if (!items.length) {
-    return <p className="text-sm text-slate-600">{emptyMessage}</p>;
+    return <p className="text-sm text-on-surface-variant">{emptyMessage}</p>;
   }
 
   return (
@@ -67,11 +77,11 @@ function ParsedDataList({ items, emptyMessage }: ParsedDataListProps) {
       {items.map((item) => (
         <li
           key={item.name}
-          className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700"
+          className="rounded-xl border border-outline bg-surface-variant px-4 py-3 text-sm leading-6 text-on-surface-variant"
         >
-          <span className="font-semibold text-slate-900">{item.name}</span>
+          <span className="font-semibold text-on-surface">{item.name}</span>
           {item.description ? (
-            <span className="text-slate-600"> — {item.description}</span>
+            <span className="text-on-surface-variant"> — {item.description}</span>
           ) : null}
         </li>
       ))}
@@ -81,31 +91,24 @@ function ParsedDataList({ items, emptyMessage }: ParsedDataListProps) {
 
 function SkillList({ skills }: { skills: ParsedSkill[] }) {
   if (!skills.length) {
-    return <p className="text-sm text-slate-600">No skills were extracted.</p>;
+    return <p className="text-sm text-on-surface-variant">No skills were extracted.</p>;
   }
 
   return (
     <div className="flex flex-wrap gap-2">
-      {skills.map((skill) => {
-        const iconSource = skill.normalizedName ?? skill.name;
-
-        return (
-          <span
-            key={`${skill.name}-${skill.category ?? 'general'}`}
-            className="inline-flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700"
-          >
-            <span className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-white px-1 text-xs font-bold text-blue-700 shadow-sm">
-              {getSkillIconLabel(iconSource)}
+      {skills.map((skill) => (
+        <span
+          key={`${skill.name}-${skill.category ?? 'general'}`}
+          className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary-container px-3 py-2 text-sm font-semibold text-on-primary-container"
+        >
+          <span>{skill.name}</span>
+          {skill.category ? (
+            <span className="rounded-lg bg-surface-lowest/80 px-2 py-0.5 text-xs font-semibold capitalize text-on-surface-muted">
+              {skill.category}
             </span>
-            <span>{skill.name}</span>
-            {skill.category ? (
-              <span className="rounded-lg bg-white/80 px-2 py-0.5 text-xs font-semibold capitalize text-slate-500">
-                {skill.category}
-              </span>
-            ) : null}
-          </span>
-        );
-      })}
+          ) : null}
+        </span>
+      ))}
     </div>
   );
 }
@@ -142,20 +145,20 @@ function RecordCard({
     : [];
 
   return (
-    <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <h4 className="text-sm font-semibold text-slate-950">{title}</h4>
+    <article className="rounded-xl border border-outline bg-surface-variant p-4">
+      <h4 className="text-sm font-semibold text-on-surface">{title}</h4>
       {subtitle ? (
-        <p className="mt-1 text-sm font-medium text-slate-600">{subtitle}</p>
+        <p className="mt-1 text-sm font-medium text-on-surface-variant">{subtitle}</p>
       ) : null}
       {description ? (
-        <p className="mt-3 text-sm leading-6 text-slate-700">{description}</p>
+        <p className="mt-3 text-sm leading-6 text-on-surface-variant">{description}</p>
       ) : null}
       {technologies.length ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {technologies.map((technology) => (
             <span
               key={technology}
-              className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600"
+              className="rounded-lg border border-outline bg-surface-lowest px-2 py-1 text-xs font-semibold text-on-surface-variant"
             >
               {technology}
             </span>
@@ -182,16 +185,16 @@ function EducationCard({
   const yearRange = `${getDisplayValue(startYear ? String(startYear) : null)} - ${getDisplayValue(endYear ? String(endYear) : null)}`;
 
   return (
-    <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <article className="rounded-xl border border-outline bg-surface-variant p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h4 className="text-sm font-semibold text-slate-950">{institution}</h4>
-          <p className="mt-1 text-sm font-medium text-slate-600">
+          <h4 className="text-sm font-semibold text-on-surface">{institution}</h4>
+          <p className="mt-1 text-sm font-medium text-on-surface-variant">
             {[degree, fieldOfStudy].filter(Boolean).join(' · ') || 'Not provided'}
           </p>
         </div>
 
-        <span className="inline-flex w-fit rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+        <span className="inline-flex w-fit rounded-lg border border-outline bg-surface-lowest px-3 py-1 text-xs font-semibold text-on-surface-variant">
           {yearRange}
         </span>
       </div>
@@ -204,7 +207,7 @@ function EducationCard({
       </div>
 
       {description ? (
-        <p className="mt-4 whitespace-pre-line rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+        <p className="mt-4 whitespace-pre-line rounded-xl border border-outline bg-surface-lowest px-4 py-3 text-sm leading-6 text-on-surface-variant">
           {description}
         </p>
       ) : null}
@@ -215,7 +218,7 @@ function EducationCard({
 export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
   if (!isParsedDataRecord(parsedData)) {
     return (
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+      <div className="rounded-2xl border border-warning/30 bg-warning-container p-4 text-sm text-on-surface">
         Parsed CV data is available, but it does not match the expected display
         structure.
       </div>
@@ -233,42 +236,44 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
 
   return (
     <div className="space-y-5">
-      <ParsedDataSection
-        title="Personal information"
-        description="Candidate identity and contact fields extracted from the CV."
-        icon="👤"
-      >
-        <div className="grid gap-3 md:grid-cols-2">
-          <ParsedDataField
-            label="Name"
-            value={
-              getParsedDataString(personal, 'name') ??
-              getParsedDataString(personal, 'full_name')
-            }
-          />
-          <ParsedDataField label="Email" value={getParsedDataString(personal, 'email')} />
-          <ParsedDataField label="Phone" value={getParsedDataString(personal, 'phone')} />
-          <ParsedDataField
-            label="Location"
-            value={getParsedDataString(personal, 'location')}
-          />
-        </div>
-      </ParsedDataSection>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <ParsedDataSection
+          title="Personal information"
+          description="Candidate identity and contact fields extracted from the CV."
+          icon={<UserIcon className="size-5" />}
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            <ParsedDataField
+              label="Name"
+              value={
+                getParsedDataString(personal, 'name') ??
+                getParsedDataString(personal, 'full_name')
+              }
+            />
+            <ParsedDataField label="Email" value={getParsedDataString(personal, 'email')} />
+            <ParsedDataField label="Phone" value={getParsedDataString(personal, 'phone')} />
+            <ParsedDataField
+              label="Location"
+              value={getParsedDataString(personal, 'location')}
+            />
+          </div>
+        </ParsedDataSection>
+
+        <ParsedDataSection
+          title="Professional summary"
+          description="Short profile summary detected by the parser."
+          icon={<FileTextIcon className="size-5" />}
+        >
+          <p className="rounded-xl border border-outline bg-surface-variant px-4 py-3 text-sm leading-6 text-on-surface-variant">
+            {getDisplayValue(summary)}
+          </p>
+        </ParsedDataSection>
+      </div>
 
       <ParsedDataSection
-        title="Professional summary"
-        description="Short profile summary detected by the parser."
-        icon="📝"
-      >
-        <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
-          {getDisplayValue(summary)}
-        </p>
-      </ParsedDataSection>
-
-      <ParsedDataSection
-        title={`Technical skills (${skills.length})`}
-        description="Skills are shown as compact tags with category and technology indicators."
-        icon="⚙"
+        title={`Skills (${skills.length})`}
+        description="Skills are shown as compact tags, grouped by category where available."
+        icon={<TagsIcon className="size-5" />}
       >
         <SkillList skills={skills} />
       </ParsedDataSection>
@@ -276,7 +281,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
       <ParsedDataSection
         title="Experience"
         description="Work history extracted from the CV."
-        icon="💼"
+        icon={<BriefcaseIcon className="size-5" />}
       >
         <div className="space-y-3">
           {experience.length ? (
@@ -288,7 +293,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               />
             ))
           ) : (
-            <p className="text-sm text-slate-600">No experience was extracted.</p>
+            <p className="text-sm text-on-surface-variant">No experience was extracted.</p>
           )}
         </div>
       </ParsedDataSection>
@@ -296,7 +301,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
       <ParsedDataSection
         title="Education"
         description="Education records detected from the CV."
-        icon="🎓"
+        icon={<GraduationCapIcon className="size-5" />}
       >
         <div className="space-y-3">
           {education.length ? (
@@ -308,7 +313,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               />
             ))
           ) : (
-            <p className="text-sm text-slate-600">No education was extracted.</p>
+            <p className="text-sm text-on-surface-variant">No education was extracted.</p>
           )}
         </div>
       </ParsedDataSection>
@@ -316,7 +321,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
       <ParsedDataSection
         title="Projects"
         description="Project highlights extracted from the CV."
-        icon="🚀"
+        icon={<RocketIcon className="size-5" />}
       >
         <div className="space-y-3">
           {projects.length ? (
@@ -328,7 +333,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               />
             ))
           ) : (
-            <p className="text-sm text-slate-600">No projects were extracted.</p>
+            <p className="text-sm text-on-surface-variant">No projects were extracted.</p>
           )}
         </div>
       </ParsedDataSection>
@@ -337,7 +342,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
         <ParsedDataSection
           title="Certifications"
           description="Certificates found in the CV."
-          icon="🏅"
+          icon={<AwardIcon className="size-5" />}
         >
           <ParsedDataList
             items={certifications}
@@ -348,7 +353,7 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
         <ParsedDataSection
           title="Languages"
           description="Languages found in the CV."
-          icon="🌐"
+          icon={<GlobeIcon className="size-5" />}
         >
           <ParsedDataList
             items={languages}
