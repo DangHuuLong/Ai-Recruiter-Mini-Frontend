@@ -1,9 +1,10 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { PlusIcon, XIcon } from 'lucide-react';
-import { useState } from 'react';
+import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
+import { ActionIconButton, DataTable, type DataTableColumn, type DataTableSort, type DataTableSortOrder } from '@/components/common';
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +16,19 @@ import {
   type MockUser,
   type UserRole,
 } from '@/features/users/mock/user-mock-data';
+import { sortMock } from '@/lib/utils/mock-delay';
 import { cn } from '@/lib/utils/cn';
 import { formatDate } from '@/lib/utils/format-date';
+
+const ROLE_FILTER_OPTIONS = (Object.keys(ROLE_LABELS) as UserRole[]).map((role) => ({
+  label: ROLE_LABELS[role],
+  value: role,
+}));
+
+const STATUS_FILTER_OPTIONS = [
+  { label: 'Active', value: 'true' },
+  { label: 'Inactive', value: 'false' },
+];
 
 function getInitials(name: string | null, email: string) {
   const source = name?.trim() || email;
@@ -28,10 +40,102 @@ function getInitials(name: string | null, email: string) {
     .join('');
 }
 
+function buildColumns(
+  role: UserRole | '',
+  status: string,
+  onEdit: (user: MockUser) => void,
+): DataTableColumn<MockUser>[] {
+  return [
+    {
+      key: 'member',
+      header: 'Member',
+      sortKey: 'fullName',
+      render: (user) => (
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">
+            {getInitials(user.fullName, user.email)}
+          </div>
+          <div>
+            <p className="font-semibold text-on-surface">
+              {user.fullName ?? user.email}
+              {user.id === MOCK_CURRENT_USER_ID ? (
+                <span className="ml-1.5 text-xs font-normal text-on-surface-muted">(You)</span>
+              ) : null}
+            </p>
+            <p className="text-xs text-on-surface-muted">{user.email}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'role',
+      header: 'Role',
+      filter: { key: 'role', options: ROLE_FILTER_OPTIONS, activeValue: role },
+      render: (user) => (
+        <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
+          {ROLE_LABELS[user.role]}
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      filter: { key: 'isActive', options: STATUS_FILTER_OPTIONS, activeValue: status },
+      render: (user) => (
+        <span
+          className={cn(
+            'rounded-full px-2.5 py-1 text-xs font-semibold',
+            user.isActive ? 'bg-success-container text-success' : 'bg-surface-variant text-on-surface-muted',
+          )}
+        >
+          {user.isActive ? 'Active' : 'Inactive'}
+        </span>
+      ),
+    },
+    {
+      key: 'joined',
+      header: 'Joined',
+      sortKey: 'createdAt',
+      render: (user) => (
+        <p className="whitespace-nowrap text-sm text-on-surface-variant">{formatDate(user.createdAt)}</p>
+      ),
+    },
+    {
+      key: 'action',
+      header: 'Actions',
+      className: 'text-right',
+      render: (user) => (
+        <div className="flex justify-end">
+          <ActionIconButton icon={<PencilIcon className="size-4" />} label="Edit" onClick={() => onEdit(user)} />
+        </div>
+      ),
+    },
+  ];
+}
+
 export function UserList() {
   const [users, setUsers] = useState<MockUser[]>(MOCK_USERS);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<MockUser | null>(null);
+  const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
+
+  const handleSortChange = (key: string, order: DataTableSortOrder) => {
+    setSort({ key, order });
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'role') setRoleFilter(value as UserRole | '');
+    if (key === 'isActive') setStatusFilter(value);
+  };
+
+  const visibleUsers = useMemo(() => {
+    let filtered = users;
+    if (roleFilter) filtered = filtered.filter((user) => user.role === roleFilter);
+    if (statusFilter) filtered = filtered.filter((user) => String(user.isActive) === statusFilter);
+    return sortMock(filtered, sort?.key, sort?.order);
+  }, [users, roleFilter, statusFilter, sort]);
 
   const [inviteName, setInviteName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
@@ -89,80 +193,14 @@ export function UserList() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
-        <table className="w-full border-collapse text-sm">
-          <thead className="bg-surface-variant">
-            <tr>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Member
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Role
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Status
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Joined
-              </th>
-              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline">
-            {users.map((user) => (
-              <tr key={user.id} className="transition-colors hover:bg-surface-variant/60">
-                <td className="px-5 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary">
-                      {getInitials(user.fullName, user.email)}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-on-surface">
-                        {user.fullName ?? user.email}
-                        {user.id === MOCK_CURRENT_USER_ID ? (
-                          <span className="ml-1.5 text-xs font-normal text-on-surface-muted">(You)</span>
-                        ) : null}
-                      </p>
-                      <p className="text-xs text-on-surface-muted">{user.email}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-4">
-                  <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-                    {ROLE_LABELS[user.role]}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
-                  <span
-                    className={cn(
-                      'rounded-full px-2.5 py-1 text-xs font-semibold',
-                      user.isActive
-                        ? 'bg-success-container text-success'
-                        : 'bg-surface-variant text-on-surface-muted',
-                    )}
-                  >
-                    {user.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap text-on-surface-variant">
-                  {formatDate(user.createdAt)}
-                </td>
-                <td className="px-5 py-4 text-right">
-                  <button
-                    type="button"
-                    onClick={() => openEdit(user)}
-                    className="cursor-pointer text-sm font-semibold text-primary hover:underline"
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        data={visibleUsers}
+        columns={buildColumns(roleFilter, statusFilter, openEdit)}
+        getRowKey={(user) => user.id}
+        sort={sort}
+        onSortChange={handleSortChange}
+        onFilterChange={handleFilterChange}
+      />
 
       <AnimatePresence>
         {isInviteOpen ? (

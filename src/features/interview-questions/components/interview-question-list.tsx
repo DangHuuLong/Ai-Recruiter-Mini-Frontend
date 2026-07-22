@@ -1,9 +1,15 @@
 'use client';
 
-import { CheckIcon, FlaskConicalIcon, PlusIcon, UploadIcon } from 'lucide-react';
+import { CheckIcon, FlaskConicalIcon, PencilIcon, PlusIcon, Trash2Icon, UploadIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
+import {
+  ActionIconButton,
+  DataTable,
+  type DataTableColumn,
+  type DataTableSort,
+} from '@/components/common';
 import { showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import {
@@ -12,6 +18,7 @@ import {
   QUALITY_GATE_LABELS,
   QUESTION_TYPE_LABELS,
   SOURCE_LABELS,
+  type InterviewQuestionSource,
   type InterviewQuestionType,
   type MockInterviewQuestion,
   type QuestionQualityGateStatus,
@@ -21,7 +28,116 @@ import {
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
 } from '@/features/interview-questions/mock/interview-question-taxonomy';
+import { sortMock } from '@/lib/utils/mock-delay';
 import { cn } from '@/lib/utils/cn';
+
+const OCCUPATION_FAMILY_FILTER_OPTIONS = (Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map(
+  (family) => ({ label: OCCUPATION_FAMILY_LABELS[family], value: family }),
+);
+
+const QUALITY_GATE_FILTER_OPTIONS = (Object.keys(QUALITY_GATE_LABELS) as QuestionQualityGateStatus[]).map(
+  (status) => ({ label: QUALITY_GATE_LABELS[status], value: status }),
+);
+
+const SOURCE_FILTER_OPTIONS = (Object.keys(SOURCE_LABELS) as InterviewQuestionSource[]).map((source) => ({
+  label: SOURCE_LABELS[source],
+  value: source,
+}));
+
+function buildColumns(
+  occupationFamily: OccupationFamily | '',
+  qualityGateStatus: QuestionQualityGateStatus | '',
+  source: InterviewQuestionSource | '',
+  onApprove: (question: MockInterviewQuestion) => void,
+  onDelete: (question: MockInterviewQuestion) => void,
+): DataTableColumn<MockInterviewQuestion>[] {
+  return [
+    {
+      key: 'question',
+      header: 'Question',
+      sortKey: 'questionText',
+      className: 'max-w-xs',
+      render: (question) => (
+        <div>
+          <p className="truncate font-medium text-on-surface">{question.questionText}</p>
+          <p className="mt-0.5 text-xs text-on-surface-muted">{QUESTION_TYPE_LABELS[question.questionType]}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'family',
+      header: 'Family / Specialization',
+      sortKey: 'occupationFamily',
+      filter: { key: 'occupationFamily', options: OCCUPATION_FAMILY_FILTER_OPTIONS, activeValue: occupationFamily },
+      render: (question) => (
+        <div className="text-on-surface-variant">
+          {OCCUPATION_FAMILY_LABELS[question.occupationFamily]}
+          <span className="block text-xs text-on-surface-muted">{question.specialization}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'competency',
+      header: 'Competency',
+      sortKey: 'competency',
+      render: (question) => <p className="text-on-surface-variant">{question.competency}</p>,
+    },
+    {
+      key: 'quality',
+      header: 'Quality',
+      filter: { key: 'qualityGateStatus', options: QUALITY_GATE_FILTER_OPTIONS, activeValue: qualityGateStatus },
+      render: (question) => (
+        <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', QUALITY_GATE_CLASSES[question.qualityGateStatus])}>
+          {QUALITY_GATE_LABELS[question.qualityGateStatus]}
+        </span>
+      ),
+    },
+    {
+      key: 'source',
+      header: 'Source',
+      filter: { key: 'source', options: SOURCE_FILTER_OPTIONS, activeValue: source },
+      render: (question) => (
+        <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
+          {SOURCE_LABELS[question.source]}
+        </span>
+      ),
+    },
+    {
+      key: 'usage',
+      header: 'Usage',
+      sortKey: 'usageCount',
+      render: (question) => <p className="text-on-surface-variant">{question.usageCount}</p>,
+    },
+    {
+      key: 'action',
+      header: 'Actions',
+      className: 'text-right',
+      render: (question) => (
+        <div className="flex flex-wrap items-center justify-end gap-1">
+          {question.qualityGateStatus === 'PENDING_REVIEW' ? (
+            <ActionIconButton
+              icon={<CheckIcon className="size-4" />}
+              label="Approve"
+              variant="primary"
+              onClick={() => onApprove(question)}
+            />
+          ) : null}
+          <ActionIconButton
+            href={`${ROUTES.INTERVIEW_QUESTIONS}/${question.id}/edit`}
+            icon={<PencilIcon className="size-4" />}
+            label="Edit"
+          />
+          <ActionIconButton
+            icon={<Trash2Icon className="size-4" />}
+            label="Delete"
+            variant="danger"
+            onClick={() => onDelete(question)}
+          />
+        </div>
+      ),
+    },
+  ];
+}
 
 export function InterviewQuestionList() {
   const [questions, setQuestions] = useState<MockInterviewQuestion[]>(MOCK_INTERVIEW_QUESTIONS);
@@ -29,16 +145,31 @@ export function InterviewQuestionList() {
   const [specialization, setSpecialization] = useState('');
   const [questionType, setQuestionType] = useState<InterviewQuestionType | ''>('');
   const [qualityGateStatus, setQualityGateStatus] = useState<QuestionQualityGateStatus | ''>('');
+  const [source, setSource] = useState<InterviewQuestionSource | ''>('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
 
   const specializationOptions = getSpecializationsFor(occupationFamily);
 
-  const filtered = questions.filter((q) => {
-    if (occupationFamily && q.occupationFamily !== occupationFamily) return false;
-    if (specialization && q.specialization !== specialization) return false;
-    if (questionType && q.questionType !== questionType) return false;
-    if (qualityGateStatus && q.qualityGateStatus !== qualityGateStatus) return false;
-    return true;
-  });
+  const filtered = useMemo(() => {
+    const result = questions.filter((q) => {
+      if (occupationFamily && q.occupationFamily !== occupationFamily) return false;
+      if (specialization && q.specialization !== specialization) return false;
+      if (questionType && q.questionType !== questionType) return false;
+      if (qualityGateStatus && q.qualityGateStatus !== qualityGateStatus) return false;
+      if (source && q.source !== source) return false;
+      return true;
+    });
+    return sortMock(result, sort?.key, sort?.order);
+  }, [questions, occupationFamily, specialization, questionType, qualityGateStatus, source, sort]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'occupationFamily') {
+      setOccupationFamily(value as OccupationFamily | '');
+      setSpecialization('');
+    }
+    if (key === 'qualityGateStatus') setQualityGateStatus(value as QuestionQualityGateStatus | '');
+    if (key === 'source') setSource(value as InterviewQuestionSource | '');
+  };
 
   const handleApprove = (question: MockInterviewQuestion) => {
     setQuestions((current) =>
@@ -94,22 +225,6 @@ export function InterviewQuestionList() {
 
       <div className="flex flex-wrap gap-3">
         <select
-          value={occupationFamily}
-          onChange={(e) => {
-            setOccupationFamily(e.target.value as OccupationFamily | '');
-            setSpecialization('');
-          }}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-        >
-          <option value="">All families</option>
-          {(Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map((family) => (
-            <option key={family} value={family}>
-              {OCCUPATION_FAMILY_LABELS[family]}
-            </option>
-          ))}
-        </select>
-
-        <select
           value={specialization}
           onChange={(e) => setSpecialization(e.target.value)}
           disabled={!occupationFamily}
@@ -135,19 +250,6 @@ export function InterviewQuestionList() {
             </option>
           ))}
         </select>
-
-        <select
-          value={qualityGateStatus}
-          onChange={(e) => setQualityGateStatus(e.target.value as QuestionQualityGateStatus | '')}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-        >
-          <option value="">All quality statuses</option>
-          {(Object.keys(QUALITY_GATE_LABELS) as QuestionQualityGateStatus[]).map((status) => (
-            <option key={status} value={status}>
-              {QUALITY_GATE_LABELS[status]}
-            </option>
-          ))}
-        </select>
       </div>
 
       {filtered.length === 0 ? (
@@ -156,95 +258,14 @@ export function InterviewQuestionList() {
           <p className="mt-1 text-sm text-on-surface-variant">Try clearing a filter or add a new question.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
-          <table className="w-full border-collapse text-sm">
-            <thead className="bg-surface-variant">
-              <tr>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Question
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Family / Specialization
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Competency
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Quality
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Source
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Usage
-                </th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-outline">
-              {filtered.map((question) => (
-                <tr key={question.id} className="transition-colors hover:bg-surface-variant/60">
-                  <td className="max-w-xs px-5 py-4">
-                    <p className="truncate font-medium text-on-surface">{question.questionText}</p>
-                    <p className="mt-0.5 text-xs text-on-surface-muted">
-                      {QUESTION_TYPE_LABELS[question.questionType]}
-                    </p>
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">
-                    {OCCUPATION_FAMILY_LABELS[question.occupationFamily]}
-                    <span className="block text-xs text-on-surface-muted">{question.specialization}</span>
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{question.competency}</td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={cn(
-                        'rounded-full px-2.5 py-1 text-xs font-semibold',
-                        QUALITY_GATE_CLASSES[question.qualityGateStatus],
-                      )}
-                    >
-                      {QUALITY_GATE_LABELS[question.qualityGateStatus]}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-                      {SOURCE_LABELS[question.source]}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{question.usageCount}</td>
-                  <td className="px-5 py-4">
-                    <div className="flex justify-end gap-3">
-                      {question.qualityGateStatus === 'PENDING_REVIEW' ? (
-                        <button
-                          type="button"
-                          onClick={() => handleApprove(question)}
-                          className="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold text-success transition-colors hover:bg-success-container hover:underline"
-                        >
-                          <CheckIcon className="size-3.5" />
-                          Approve
-                        </button>
-                      ) : null}
-                      <Link
-                        href={`${ROUTES.INTERVIEW_QUESTIONS}/${question.id}/edit`}
-                        className="cursor-pointer text-sm font-semibold text-primary hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(question)}
-                        className="cursor-pointer text-sm font-semibold text-error hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={filtered}
+          columns={buildColumns(occupationFamily, qualityGateStatus, source, handleApprove, handleDelete)}
+          getRowKey={(question) => question.id}
+          sort={sort}
+          onSortChange={(key, order) => setSort({ key, order })}
+          onFilterChange={handleFilterChange}
+        />
       )}
     </div>
   );

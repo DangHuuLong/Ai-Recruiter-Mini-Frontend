@@ -1,7 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { EyeIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
+import {
+  ActionIconButton,
+  DataTable,
+  type DataTableColumn,
+  type DataTableSort,
+} from '@/components/common';
 import {
   ACTION_CLASSES,
   AUDIT_RESOURCE_TYPES,
@@ -9,19 +16,101 @@ import {
   type MockAuditLog,
 } from '@/features/audit-log/mock/audit-log-mock-data';
 import { MOCK_USERS } from '@/features/users/mock/user-mock-data';
+import { sortMock } from '@/lib/utils/mock-delay';
 import { cn } from '@/lib/utils/cn';
 import { formatDateTime } from '@/lib/utils/format-date';
+
+const RESOURCE_TYPE_FILTER_OPTIONS = AUDIT_RESOURCE_TYPES.map((type) => ({ label: type, value: type }));
+
+const ACTOR_FILTER_OPTIONS = MOCK_USERS.map((user) => ({
+  label: user.fullName ?? user.email,
+  value: user.id,
+}));
+
+const ACTION_FILTER_OPTIONS = Object.keys(ACTION_CLASSES).map((action) => ({ label: action, value: action }));
+
+function buildColumns(
+  resourceType: string,
+  actorUserId: string,
+  action: string,
+  onViewDetails: (log: MockAuditLog) => void,
+): DataTableColumn<MockAuditLog>[] {
+  return [
+    {
+      key: 'timestamp',
+      header: 'Timestamp',
+      sortKey: 'createdAt',
+      render: (log) => (
+        <p className="whitespace-nowrap text-on-surface-variant">{formatDateTime(log.createdAt)}</p>
+      ),
+    },
+    {
+      key: 'actor',
+      header: 'Actor',
+      filter: { key: 'actorUserId', options: ACTOR_FILTER_OPTIONS, activeValue: actorUserId },
+      render: (log) => <p className="text-on-surface">{log.actor?.fullName ?? log.actor?.email ?? '—'}</p>,
+    },
+    {
+      key: 'action',
+      header: 'Status',
+      filter: { key: 'action', options: ACTION_FILTER_OPTIONS, activeValue: action },
+      render: (log) => (
+        <span
+          className={cn(
+            'rounded-full px-2.5 py-1 text-xs font-semibold',
+            ACTION_CLASSES[log.action] ?? 'bg-surface-variant text-on-surface-variant',
+          )}
+        >
+          {log.action}
+        </span>
+      ),
+    },
+    {
+      key: 'resource',
+      header: 'Resource',
+      filter: { key: 'resourceType', options: RESOURCE_TYPE_FILTER_OPTIONS, activeValue: resourceType },
+      render: (log) => (
+        <p className="text-on-surface-variant">
+          {log.resourceType}
+          {log.resourceId ? <span className="ml-1 text-xs text-on-surface-muted">#{log.resourceId}</span> : null}
+        </p>
+      ),
+    },
+    {
+      key: 'action-column',
+      header: 'Action',
+      className: 'text-right',
+      render: (log) => (
+        <div className="flex justify-end">
+          <ActionIconButton icon={<EyeIcon className="size-4" />} label="View details" onClick={() => onViewDetails(log)} />
+        </div>
+      ),
+    },
+  ];
+}
 
 export function AuditLogViewer() {
   const [resourceType, setResourceType] = useState('');
   const [actorUserId, setActorUserId] = useState('');
+  const [action, setAction] = useState('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
   const [selectedLog, setSelectedLog] = useState<MockAuditLog | null>(null);
 
-  const filtered = MOCK_AUDIT_LOGS.filter((log) => {
-    if (resourceType && log.resourceType !== resourceType) return false;
-    if (actorUserId && log.actor?.id !== actorUserId) return false;
-    return true;
-  });
+  const filtered = useMemo(() => {
+    const result = MOCK_AUDIT_LOGS.filter((log) => {
+      if (resourceType && log.resourceType !== resourceType) return false;
+      if (actorUserId && log.actor?.id !== actorUserId) return false;
+      if (action && log.action !== action) return false;
+      return true;
+    });
+    return sortMock(result, sort?.key, sort?.order);
+  }, [resourceType, actorUserId, action, sort]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'resourceType') setResourceType(value);
+    if (key === 'actorUserId') setActorUserId(value);
+    if (key === 'action') setAction(value);
+  };
 
   return (
     <div className="space-y-6">
@@ -32,34 +121,6 @@ export function AuditLogViewer() {
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <select
-          value={resourceType}
-          onChange={(e) => setResourceType(e.target.value)}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-        >
-          <option value="">All resource types</option>
-          {AUDIT_RESOURCE_TYPES.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={actorUserId}
-          onChange={(e) => setActorUserId(e.target.value)}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-        >
-          <option value="">All team members</option>
-          {MOCK_USERS.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.fullName ?? user.email}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {filtered.length === 0 ? (
         <div className="rounded-2xl border border-outline bg-surface-lowest p-12 text-center shadow-card">
           <p className="text-sm font-semibold text-on-surface">No audit history yet</p>
@@ -68,64 +129,14 @@ export function AuditLogViewer() {
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
-          <table className="w-full border-collapse text-sm">
-            <thead className="bg-surface-variant">
-              <tr>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Timestamp
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Actor
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Action
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Resource
-                </th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-on-surface-variant" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-outline">
-              {filtered.map((log) => (
-                <tr key={log.id} className="transition-colors hover:bg-surface-variant/60">
-                  <td className="whitespace-nowrap px-5 py-4 text-on-surface-variant">
-                    {formatDateTime(log.createdAt)}
-                  </td>
-                  <td className="px-5 py-4 text-on-surface">
-                    {log.actor?.fullName ?? log.actor?.email ?? '—'}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={cn(
-                        'rounded-full px-2.5 py-1 text-xs font-semibold',
-                        ACTION_CLASSES[log.action] ?? 'bg-surface-variant text-on-surface-variant',
-                      )}
-                    >
-                      {log.action}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">
-                    {log.resourceType}
-                    {log.resourceId ? (
-                      <span className="ml-1 text-xs text-on-surface-muted">#{log.resourceId}</span>
-                    ) : null}
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedLog(log)}
-                      className="cursor-pointer text-sm font-semibold text-primary hover:underline"
-                    >
-                      View details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={filtered}
+          columns={buildColumns(resourceType, actorUserId, action, setSelectedLog)}
+          getRowKey={(log) => log.id}
+          sort={sort}
+          onSortChange={(key, order) => setSort({ key, order })}
+          onFilterChange={handleFilterChange}
+        />
       )}
 
       {selectedLog ? (
