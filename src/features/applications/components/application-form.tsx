@@ -1,5 +1,6 @@
 'use client';
 
+import { InfoIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
@@ -14,9 +15,9 @@ import type { JobDescription } from '@/features/job-descriptions/types/job-descr
 import type { Resume } from '@/features/resumes/types/resume.type';
 
 const fieldClassName =
-  'h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
+  'h-11 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30';
 
-const labelClassName = 'text-sm font-medium text-slate-700';
+const labelClassName = 'text-xs font-semibold uppercase tracking-wide text-on-surface-variant';
 
 export function ApplicationForm() {
   const router = useRouter();
@@ -145,7 +146,15 @@ export function ApplicationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+    <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
+      <div className="flex gap-3 rounded-xl border border-primary/20 bg-primary-container p-4">
+        <InfoIcon className="size-5 shrink-0 text-on-primary-container" />
+        <p className="text-sm text-on-primary-container">
+          <span className="font-semibold">Workflow requirement:</span> resume selection is locked until a candidate is
+          selected — resume options are filtered to that candidate&apos;s own resumes.
+        </p>
+      </div>
+
       <div className="grid gap-5 lg:grid-cols-3">
         <label className="space-y-2">
           <span className={labelClassName}>Candidate</span>
@@ -181,7 +190,7 @@ export function ApplicationForm() {
             ))}
           </select>
           {candidateId && !isLoadingResumes && resumes.length === 0 ? (
-            <p className="text-xs text-amber-600">
+            <p className="text-xs font-medium text-warning">
               This candidate has no resume yet.
             </p>
           ) : null}
@@ -226,11 +235,11 @@ export function ApplicationForm() {
         </label>
       </div>
 
-      <div className="flex justify-end gap-3 border-t border-slate-200 pt-5">
+      <div className="flex justify-end gap-3 border-t border-outline pt-5">
         <button
           type="button"
           onClick={() => router.push('/applications')}
-          className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+          className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
         >
           Cancel
         </button>
@@ -238,7 +247,7 @@ export function ApplicationForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? 'Creating...' : 'Create Application'}
         </button>

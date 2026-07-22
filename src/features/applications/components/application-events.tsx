@@ -1,22 +1,23 @@
 'use client';
 
+import { HistoryIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { getApplicationEvents } from '@/features/applications/api/application.api';
 import type { ApplicationEvent } from '@/features/applications/types/application.type';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 type ApplicationEventsProps = {
   applicationId: string;
   reloadKey?: string | number;
 };
 
-const formatDate = (value: string) => {
-  return new Intl.DateTimeFormat('en', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-};
+function eventIcon(eventType: string) {
+  if (eventType === 'STATUS_CHANGED') return RefreshCwIcon;
+  if (eventType === 'APPLICATION_CREATED') return PlusIcon;
+  return HistoryIcon;
+}
 
 const renderEventDescription = (event: ApplicationEvent) => {
   if (event.eventType === 'STATUS_CHANGED') {
@@ -26,23 +27,23 @@ const renderEventDescription = (event: ApplicationEvent) => {
 
     return (
       <div className="space-y-1">
-        <p className="text-sm text-slate-700">
+        <p className="text-sm text-on-surface-variant">
           Status changed from <span className="font-semibold">{fromStatus}</span> to{' '}
           <span className="font-semibold">{toStatus}</span>.
         </p>
         {typeof note === 'string' && note ? (
-          <p className="text-sm text-slate-500">Note: {note}</p>
+          <p className="text-sm text-on-surface-muted">Note: {note}</p>
         ) : null}
       </div>
     );
   }
 
   if (event.eventType === 'APPLICATION_CREATED') {
-    return <p className="text-sm text-slate-700">Application was created.</p>;
+    return <p className="text-sm text-on-surface-variant">Application was created.</p>;
   }
 
   return (
-    <p className="text-sm text-slate-700">
+    <p className="text-sm text-on-surface-variant">
       Event data: {JSON.stringify(event.eventData ?? {})}
     </p>
   );
@@ -98,31 +99,37 @@ export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEvent
   }
 
   return (
-    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
+    <section className="space-y-4 rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
       <div>
-        <h2 className="text-lg font-semibold text-slate-950">Application events</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-on-surface">Application events</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">
           Events are ordered by newest first.
         </p>
       </div>
 
-      <div className="space-y-4">
-        {events.map((event) => (
-          <div key={event.id} className="rounded-xl border border-slate-200 p-4">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold text-slate-950">
-                  {event.eventType}
-                </p>
-                <p className="mt-1 text-xs text-slate-500">ID: {event.id}</p>
+      <div className="relative space-y-5">
+        <div className="absolute top-4 bottom-4 left-4 w-px bg-outline" aria-hidden />
+        {events.map((event) => {
+          const Icon = eventIcon(event.eventType);
+          return (
+            <div key={event.id} className="relative flex gap-4 pl-0">
+              <div className="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container ring-4 ring-surface-lowest">
+                <Icon className="size-4" />
               </div>
-              <p className="text-xs font-medium text-slate-500">
-                {formatDate(event.createdAt)}
-              </p>
+              <div className="min-w-0 flex-1 rounded-xl border border-outline bg-surface-variant p-4">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="inline-flex w-fit rounded-full bg-primary-container px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-on-primary-container">
+                    {event.eventType.replaceAll('_', ' ')}
+                  </span>
+                  <p className="text-xs font-medium text-on-surface-muted">
+                    {formatDateTime(event.createdAt)}
+                  </p>
+                </div>
+                <div className="mt-2">{renderEventDescription(event)}</div>
+              </div>
             </div>
-            <div className="mt-3">{renderEventDescription(event)}</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

@@ -71,16 +71,16 @@ export function ApplicationEditForm({ applicationId }: ApplicationEditFormProps)
       <EmptyState
         title={errorMessage ? 'Failed to load application' : 'Application not found'}
         description={errorMessage ?? 'The application could not be found.'}
-        action={<button type="button" onClick={() => void loadApplication()} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">Try again</button>}
+        action={<button type="button" onClick={() => void loadApplication()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
       />
     );
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-      <div className="border-b border-slate-200 px-6 py-5">
-        <h2 className="text-lg font-semibold text-slate-950">Edit application</h2>
-        <p className="mt-1 text-sm text-slate-500">
+    <section className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
+      <div className="border-b border-outline px-6 py-5">
+        <h2 className="text-lg font-semibold text-on-surface">Edit application</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">
           Update application source and notes. Status changes stay on the detail page status form.
         </p>
       </div>
@@ -88,47 +88,47 @@ export function ApplicationEditForm({ applicationId }: ApplicationEditFormProps)
       <form onSubmit={(event) => { event.preventDefault(); void handleSubmit(); }} className="space-y-6 px-6 py-6">
         <div className="grid gap-5 md:grid-cols-2">
           <label className="space-y-2">
-            <span className="text-sm font-medium text-slate-700">Source</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Source</span>
             <input
               value={source}
               onChange={(event) => setSource(event.target.value)}
               disabled={isSaving}
               placeholder="LinkedIn, Referral, Job Board..."
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+              className="h-11 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             />
           </label>
 
-          <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Linked records</p>
-            <p className="mt-1 text-sm text-slate-700">Candidate: {application.candidate?.fullName || application.candidateId}</p>
-            <p className="mt-1 text-sm text-slate-700">JD: {application.jobDescription?.title || application.jobDescriptionId}</p>
+          <div className="rounded-xl border border-outline bg-surface-variant px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Linked records</p>
+            <p className="mt-1 text-sm text-on-surface-variant">Candidate: {application.candidate?.fullName || application.candidateId}</p>
+            <p className="mt-1 text-sm text-on-surface-variant">JD: {application.jobDescription?.title || application.jobDescriptionId}</p>
           </div>
         </div>
 
         <label className="space-y-2">
-          <span className="text-sm font-medium text-slate-700">Notes</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Notes</span>
           <textarea
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
             disabled={isSaving}
             rows={8}
             placeholder="Internal application notes..."
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-lg border border-outline bg-surface-lowest px-3 py-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           />
         </label>
 
-        <div className="flex justify-end gap-3 border-t border-slate-200 pt-5">
+        <div className="flex justify-end gap-3 border-t border-outline pt-5">
           <button
             type="button"
             onClick={() => router.push(`/applications/${applicationId}`)}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled"
           >
             {isSaving ? 'Saving...' : 'Save changes'}
           </button>
