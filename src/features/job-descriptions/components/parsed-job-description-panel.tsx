@@ -7,9 +7,9 @@ type ParsedJobDescriptionPanelProps = {
 export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPanelProps) {
   if (!parsedData) {
     return (
-      <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-6">
-        <h2 className="text-lg font-semibold text-slate-950">Parsed JD Data</h2>
-        <p className="mt-2 text-sm text-slate-500">
+      <section className="rounded-2xl border border-dashed border-outline bg-surface-lowest p-6">
+        <h2 className="text-lg font-semibold text-on-surface">Parsed JD Data</h2>
+        <p className="mt-2 text-sm text-on-surface-muted">
           Parsed data is not available yet. Click Parse JD to extract structured data from the raw job description text.
         </p>
       </section>
@@ -17,10 +17,10 @@ export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPa
   }
 
   return (
-    <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+    <section className="space-y-5 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
       <div>
-        <h2 className="text-lg font-semibold text-slate-950">Parsed JD Data</h2>
-        <p className="mt-1 text-sm text-slate-500">Structured data returned by the AI Service parser.</p>
+        <h2 className="text-lg font-semibold text-on-surface">Parsed JD Data</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">Structured data returned by the AI Service parser.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -31,24 +31,27 @@ export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPa
         <InfoCard label="Education" value={parsedData.education_requirement ?? 'Not detected'} className="md:col-span-2" />
       </div>
 
-      <ListSection title="Responsibilities" items={parsedData.responsibilities} />
-      <ListSection title="Requirements" items={parsedData.requirements} />
-      <ListSection title="Nice to have" items={parsedData.nice_to_have} />
+      <div className="grid gap-5 md:grid-cols-3">
+        <ListSection title="Responsibilities" items={parsedData.responsibilities} />
+        <ListSection title="Requirements" items={parsedData.requirements} />
+        <ListSection title="Nice to have" items={parsedData.nice_to_have} />
+      </div>
+
       <SkillSection title="Required skills" skills={parsedData.required_skills} />
       <SkillSection title="Preferred skills" skills={parsedData.preferred_skills} />
 
       <div>
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Domain keywords</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">Domain keywords</h3>
         {parsedData.domain_keywords.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {parsedData.domain_keywords.map((keyword) => (
-              <span key={keyword} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+              <span key={keyword} className="rounded-full bg-surface-variant px-3 py-1 text-xs font-semibold text-on-surface-variant">
                 {keyword}
               </span>
             ))}
           </div>
         ) : (
-          <p className="mt-2 text-sm text-slate-500">No domain keywords detected.</p>
+          <p className="mt-2 text-sm text-on-surface-muted">No domain keywords detected.</p>
         )}
       </div>
     </section>
@@ -59,9 +62,9 @@ type InfoCardProps = { label: string; value: string; className?: string };
 
 function InfoCard({ label, value, className }: InfoCardProps) {
   return (
-    <div className={`rounded-xl border border-slate-200 bg-slate-50 p-4 ${className ?? ''}`}>
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-2 text-sm font-medium text-slate-900">{value}</p>
+    <div className={`rounded-xl border border-outline bg-surface-variant p-4 ${className ?? ''}`}>
+      <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{label}</p>
+      <p className="mt-2 text-sm font-medium text-on-surface">{value}</p>
     </div>
   );
 }
@@ -69,15 +72,15 @@ function InfoCard({ label, value, className }: InfoCardProps) {
 function ListSection({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{title}</h3>
       {items.length > 0 ? (
         <ul className="mt-3 space-y-2">
           {items.map((item) => (
-            <li key={item} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">{item}</li>
+            <li key={item} className="rounded-xl border border-outline bg-surface-lowest px-4 py-3 text-sm text-on-surface-variant">{item}</li>
           ))}
         </ul>
       ) : (
-        <p className="mt-2 text-sm text-slate-500">No {title.toLowerCase()} detected.</p>
+        <p className="mt-2 text-sm text-on-surface-muted">No {title.toLowerCase()} detected.</p>
       )}
     </div>
   );
@@ -86,17 +89,17 @@ function ListSection({ title, items }: { title: string; items: string[] }) {
 function SkillSection({ title, skills }: { title: string; skills: ParsedJobSkill[] }) {
   return (
     <div>
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{title}</h3>
       {skills.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {skills.map((skill) => (
-            <span key={`${skill.normalized_name ?? skill.name}-${skill.name}`} className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-100">
+            <span key={`${skill.normalized_name ?? skill.name}-${skill.name}`} className="rounded-full border border-primary/20 bg-primary-container px-3 py-1 text-xs font-semibold text-on-primary-container">
               {skill.name} · {skill.normalized_name ?? 'not normalized'} · {skill.is_core ? 'core' : 'optional'}
             </span>
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-sm text-slate-500">No {title.toLowerCase()} detected.</p>
+        <p className="mt-2 text-sm text-on-surface-muted">No {title.toLowerCase()} detected.</p>
       )}
     </div>
   );

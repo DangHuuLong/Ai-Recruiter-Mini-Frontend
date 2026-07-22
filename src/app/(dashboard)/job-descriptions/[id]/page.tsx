@@ -9,9 +9,5 @@ type PageProps = {
 export default async function JobDescriptionDetailPage({ params }: PageProps) {
   const { id } = await params;
 
-  return (
-    <div className="max-w-6xl">
-      <JobDescriptionDetail id={id} />
-    </div>
-  );
+  return <JobDescriptionDetail id={id} />;
 }

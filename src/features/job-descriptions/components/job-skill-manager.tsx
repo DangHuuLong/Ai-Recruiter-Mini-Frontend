@@ -119,46 +119,46 @@ export function JobSkillManager({ jobDescriptionId, skills, onSkillsChange }: Jo
   const preferredSkills = skills.filter((skill) => skill.type === 'PREFERRED');
 
   return (
-    <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-card">
+    <section className="space-y-5 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
       <div>
-        <h2 className="text-lg font-semibold text-slate-950">Job Skills</h2>
-        <p className="mt-1 text-sm text-slate-500">Review parsed skills or manage skills manually for matching and scoring.</p>
+        <h2 className="text-lg font-semibold text-on-surface">Job Skills</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">Review parsed skills or manage skills manually for matching and scoring.</p>
       </div>
 
-      <form onSubmit={(event) => { event.preventDefault(); void handleSubmit(); }} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <form onSubmit={(event) => { event.preventDefault(); void handleSubmit(); }} className="rounded-2xl border border-outline bg-surface-variant p-4">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <label htmlFor="skillName" className="mb-1 block text-sm font-medium text-slate-800">Skill name</label>
-            <input id="skillName" value={formValues.name} onChange={(event) => updateField('name', event.target.value)} disabled={isSubmitting} placeholder="NestJS" className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
-            {errors.name ? <p className="mt-1 text-xs text-red-600">{errors.name}</p> : null}
+            <label htmlFor="skillName" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Skill name</label>
+            <input id="skillName" value={formValues.name} onChange={(event) => updateField('name', event.target.value)} disabled={isSubmitting} placeholder="NestJS" className="h-10 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30" />
+            {errors.name ? <p className="mt-1.5 text-xs font-medium text-error">{errors.name}</p> : null}
           </div>
           <div>
-            <label htmlFor="normalizedName" className="mb-1 block text-sm font-medium text-slate-800">Normalized name</label>
-            <input id="normalizedName" value={formValues.normalizedName ?? ''} onChange={(event) => updateField('normalizedName', event.target.value)} disabled={isSubmitting} placeholder="nestjs" className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
-            {errors.normalizedName ? <p className="mt-1 text-xs text-red-600">{errors.normalizedName}</p> : null}
+            <label htmlFor="normalizedName" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Normalized name</label>
+            <input id="normalizedName" value={formValues.normalizedName ?? ''} onChange={(event) => updateField('normalizedName', event.target.value)} disabled={isSubmitting} placeholder="nestjs" className="h-10 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30" />
+            {errors.normalizedName ? <p className="mt-1.5 text-xs font-medium text-error">{errors.normalizedName}</p> : null}
           </div>
           <div>
-            <label htmlFor="skillType" className="mb-1 block text-sm font-medium text-slate-800">Type</label>
-            <select id="skillType" value={formValues.type} onChange={(event) => updateField('type', event.target.value)} disabled={isSubmitting} className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100">
+            <label htmlFor="skillType" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Type</label>
+            <select id="skillType" value={formValues.type} onChange={(event) => updateField('type', event.target.value)} disabled={isSubmitting} className="h-10 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30">
               <option value="REQUIRED">Required</option>
               <option value="PREFERRED">Preferred</option>
             </select>
           </div>
           <div>
-            <label htmlFor="weightHint" className="mb-1 block text-sm font-medium text-slate-800">Weight</label>
-            <input id="weightHint" type="number" step="0.1" min="0" max="1" value={formValues.weightHint as number} onChange={(event) => updateField('weightHint', Number(event.target.value))} disabled={isSubmitting} className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
-            {errors.weightHint ? <p className="mt-1 text-xs text-red-600">{errors.weightHint}</p> : null}
+            <label htmlFor="weightHint" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Weight</label>
+            <input id="weightHint" type="number" step="0.1" min="0" max="1" value={formValues.weightHint as number} onChange={(event) => updateField('weightHint', Number(event.target.value))} disabled={isSubmitting} className="h-10 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30" />
+            {errors.weightHint ? <p className="mt-1.5 text-xs font-medium text-error">{errors.weightHint}</p> : null}
           </div>
         </div>
 
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <label className="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
-            <input type="checkbox" checked={formValues.isCore} onChange={(event) => updateField('isCore', event.target.checked)} disabled={isSubmitting} className="h-4 w-4 rounded border-slate-300 text-blue-600" />
+          <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-on-surface-variant">
+            <input type="checkbox" checked={formValues.isCore} onChange={(event) => updateField('isCore', event.target.checked)} disabled={isSubmitting} className="h-4 w-4 rounded border-outline text-primary" />
             Mark as core skill
           </label>
           <div className="flex gap-2">
-            {editingSkillId ? <button type="button" onClick={resetForm} disabled={isSubmitting} className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:bg-white">Cancel edit</button> : null}
-            <button type="submit" disabled={isSubmitting} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300">
+            {editingSkillId ? <button type="button" onClick={resetForm} disabled={isSubmitting} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-lowest">Cancel edit</button> : null}
+            <button type="submit" disabled={isSubmitting} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled">
               {isSubmitting ? 'Saving...' : editingSkillId ? 'Update skill' : 'Add skill'}
             </button>
           </div>
@@ -182,26 +182,26 @@ type SkillGroupProps = {
 function SkillGroup({ title, skills, deletingSkillId, onEdit, onDelete }: SkillGroupProps) {
   return (
     <div>
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{title}</h3>
       {skills.length > 0 ? (
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {skills.map((skill) => (
-            <div key={skill.id} className="rounded-xl border border-slate-200 bg-white p-4">
+            <div key={skill.id} className="rounded-xl border border-outline bg-surface-lowest p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-slate-950">{skill.name}</p>
-                  <p className="mt-1 text-xs text-slate-500">{skill.normalizedName || 'Not normalized'}</p>
+                  <p className="text-sm font-semibold text-on-surface">{skill.name}</p>
+                  <p className="mt-1 text-xs text-on-surface-muted">{skill.normalizedName || 'Not normalized'}</p>
                 </div>
                 <div className="flex flex-wrap justify-end gap-1">
-                  <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${skill.type === 'REQUIRED' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>{skill.type}</span>
-                  {skill.isCore ? <span className="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-700">CORE</span> : null}
+                  <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${skill.type === 'REQUIRED' ? 'bg-error-container text-error' : 'bg-warning-container text-on-surface'}`}>{skill.type}</span>
+                  {skill.isCore ? <span className="rounded-full bg-primary-container px-2 py-1 text-[11px] font-semibold text-on-primary-container">CORE</span> : null}
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
-                <p className="text-xs text-slate-500">Weight: {skill.weightHint ?? 'N/A'}</p>
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-outline pt-3">
+                <p className="text-xs text-on-surface-muted">Weight: {skill.weightHint ?? 'N/A'}</p>
                 <div className="flex gap-3">
-                  <button type="button" onClick={() => onEdit(skill)} className="text-xs font-semibold text-blue-600 hover:text-blue-700">Edit</button>
-                  <button type="button" onClick={() => onDelete(skill)} disabled={deletingSkillId === skill.id} className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:text-red-300">
+                  <button type="button" onClick={() => onEdit(skill)} className="cursor-pointer text-xs font-semibold text-primary hover:underline">Edit</button>
+                  <button type="button" onClick={() => onDelete(skill)} disabled={deletingSkillId === skill.id} className="cursor-pointer text-xs font-semibold text-error hover:underline disabled:cursor-not-allowed disabled:text-disabled">
                     {deletingSkillId === skill.id ? 'Deleting...' : 'Delete'}
                   </button>
                 </div>
@@ -210,7 +210,7 @@ function SkillGroup({ title, skills, deletingSkillId, onEdit, onDelete }: SkillG
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-sm text-slate-500">No {title.toLowerCase()} yet.</p>
+        <p className="mt-2 text-sm text-on-surface-muted">No {title.toLowerCase()} yet.</p>
       )}
     </div>
   );
