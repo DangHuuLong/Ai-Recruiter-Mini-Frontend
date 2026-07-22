@@ -18,19 +18,19 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-card',
+        'flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-outline bg-surface-lowest p-8 text-center shadow-card',
         className,
       )}
     >
-      <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100">
-        <span className="text-2xl font-semibold text-blue-600">○</span>
+      <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-container ring-1 ring-outline">
+        <span className="text-2xl font-semibold text-on-primary-container">○</span>
       </div>
 
       <div className="max-w-md space-y-2">
-        <h3 className="text-base font-semibold text-slate-950">{title}</h3>
+        <h3 className="text-base font-semibold text-on-surface">{title}</h3>
 
         {description ? (
-          <p className="text-sm leading-6 text-slate-600">{description}</p>
+          <p className="text-sm leading-6 text-on-surface-variant">{description}</p>
         ) : null}
       </div>
 

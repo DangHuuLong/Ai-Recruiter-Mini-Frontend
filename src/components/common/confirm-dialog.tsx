@@ -37,22 +37,22 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
     >
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
+      <div className="w-full max-w-md rounded-2xl border border-outline bg-surface-lowest p-6 shadow-panel">
         <div className="space-y-2">
           <h2
             id="confirm-dialog-title"
-            className="text-xl font-semibold tracking-tight text-slate-950"
+            className="text-xl font-semibold tracking-tight text-on-surface"
           >
             {title}
           </h2>
 
           {description ? (
-            <p className="text-sm leading-6 text-slate-600">{description}</p>
+            <p className="text-sm leading-6 text-on-surface-variant">{description}</p>
           ) : null}
         </div>
 
@@ -63,7 +63,7 @@ export function ConfirmDialog({
             type="button"
             disabled={isLoading}
             onClick={onCancel}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline bg-surface-lowest px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-variant disabled:cursor-not-allowed disabled:opacity-60"
           >
             {cancelLabel}
           </button>
@@ -73,9 +73,9 @@ export function ConfirmDialog({
             disabled={isLoading}
             onClick={onConfirm}
             className={cn(
-              'inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60',
-              variant === 'danger' && 'bg-red-600 hover:bg-red-700',
-              variant === 'warning' && 'bg-amber-600 hover:bg-amber-700',
+              'inline-flex h-10 cursor-pointer items-center justify-center rounded-xl px-4 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60',
+              variant === 'danger' && 'bg-error hover:bg-error/90',
+              variant === 'warning' && 'bg-warning hover:bg-warning/90',
             )}
           >
             {isLoading ? 'Processing...' : confirmLabel}

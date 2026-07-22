@@ -20,18 +20,18 @@ export function DetailSection({
   return (
     <section
       className={cn(
-        'rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6',
+        'rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card sm:p-6',
         className,
       )}
     >
-      <div className="mb-5 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-5 flex flex-col gap-3 border-b border-outline pb-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-950">
+          <h2 className="text-lg font-semibold tracking-tight text-on-surface">
             {title}
           </h2>
 
           {description ? (
-            <p className="text-sm leading-6 text-slate-600">{description}</p>
+            <p className="text-sm leading-6 text-on-surface-variant">{description}</p>
           ) : null}
         </div>
 

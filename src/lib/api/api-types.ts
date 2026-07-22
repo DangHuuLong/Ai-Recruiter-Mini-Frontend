@@ -48,3 +48,12 @@ export type RequestOptions = Omit<RequestInit, 'body'> & {
   body?: unknown;
   onUploadProgress?: (progress: UploadProgress) => void;
 };
+
+// Shared per-id success/failure shape returned by bulk endpoints (e.g. POST
+// /candidates/bulk-delete, /job-descriptions/bulk-deactivate,
+// /evaluation-configs/bulk-delete) — each item in the array either succeeded with
+// its resulting data, or failed with an error message, so one bad id doesn't
+// block the rest of the batch.
+export type BulkOperationResultItem<T> =
+  | { id: string; success: true; data: T }
+  | { id: string; success: false; error: string };
