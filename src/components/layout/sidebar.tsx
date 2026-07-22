@@ -13,7 +13,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-outline bg-surface-lowest lg:flex lg:flex-col">
+    <aside className="hidden min-h-dvh w-72 shrink-0 border-r border-outline bg-surface-lowest lg:flex lg:flex-col">
       <div className="flex h-20 items-center border-b border-outline px-5">
         <Link href={ROUTES.DASHBOARD} className="flex items-center gap-3">
           <span className="relative flex size-11 shrink-0 items-center justify-center rounded-xl border border-outline bg-surface-lowest">
