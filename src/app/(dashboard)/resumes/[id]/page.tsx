@@ -12,7 +12,7 @@ export default async function ResumeDetailPage({
   const { id } = await params;
 
   return (
-    <div className="max-w-6xl space-y-6">
+    <div className="space-y-6">
       <ResumeDetail resumeId={id} />
     </div>
   );

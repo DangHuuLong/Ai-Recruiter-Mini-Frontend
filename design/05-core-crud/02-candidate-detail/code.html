@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Candidate Detail - RecruitAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=Geist:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f7f9fb",
+                        "on-secondary-fixed": "#0f0069",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#000000",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed": "#131b2e",
+                        "inverse-primary": "#bec6e0",
+                        "on-primary-container": "#7c839b",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary": "#000000",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "surface-variant": "#e0e3e5",
+                        "secondary-container": "#645efb",
+                        "on-surface": "#191c1e",
+                        "surface-tint": "#565e74",
+                        "secondary": "#4b41e1",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#fffbff",
+                        "tertiary-container": "#0b1c30",
+                        "primary-container": "#131b2e",
+                        "surface-dim": "#d8dadc",
+                        "on-background": "#191c1e",
+                        "background": "#f7f9fb",
+                        "on-surface-variant": "#45464d",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container": "#eceef0",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-fixed": "#e2dfff",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "outline-variant": "#c6c6cd",
+                        "outline": "#76777d",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary-container": "#75859d",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "container-max": "1440px",
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "2xl": "48px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "code-id": ["Geist"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "code-id": ["12px", {"lineHeight": "1", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #f7f9fb; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="bg-surface-container-lowest border-r border-outline-variant h-screen w-64 fixed left-0 top-0 flex flex-col p-md z-50">
+<div class="flex items-center gap-sm mb-xl px-sm">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[20px]">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-md text-[18px] font-bold text-primary leading-tight">RecruitAI</h1>
+<p class="text-on-primary-container text-[10px] font-label-caps uppercase tracking-wider">Expert Partner</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container font-semibold rounded-lg scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-body-md">Jobs</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md">Interviews</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-body-md">Analytics</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md flex flex-col gap-xs">
+<button class="w-full bg-primary text-on-primary py-md px-lg rounded-lg font-semibold flex items-center justify-center gap-sm mb-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">add</span>
+                New Requisition
+            </button>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Help</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Top App Bar Shell -->
+<header class="bg-surface border-b border-outline-variant shadow-sm docked full-width top-0 sticky z-40 flex justify-between items-center h-16 px-gutter ml-64 w-[calc(100%-16rem)]">
+<div class="flex items-center gap-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-secondary">search</span>
+<input class="bg-surface-container-low border border-outline-variant rounded-full py-1.5 pl-10 pr-4 w-64 focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all" placeholder="Quick search candidates..." type="text"/>
+</div>
+<nav class="flex gap-lg">
+<a class="font-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Talent Pool</a>
+<a class="font-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Pipeline</a>
+<a class="font-label-caps text-on-surface-variant hover:text-on-surface transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex gap-md border-r border-outline-variant pr-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">history</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">help</span></button>
+</div>
+<div class="flex items-center gap-md cursor-pointer hover:opacity-80 transition-opacity">
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a corporate recruiter in a modern office setting. The person has a friendly but expert expression. The lighting is soft and professional, fitting a high-end corporate aesthetic with a blurred tech office background featuring deep navy and clean white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_XAOGgQ-fOklCcDhqUq-7OyH4CooKSQq9S2aAz0SHunQMhJrcv3jpXvZkQOg4jkjDuggBet4voISBGc6NgzThv_q-XMHVx2u-64B3cWDyoXocKYgUqXLOWapQK8SzF7nMPRJifCtmt6hl-deOOt2jyajO_aBYnufIJnH5WHLZa0R1FKXnlG4bW0uhVhWRjpOop4GcKkpVMZVdCCiAlLLbUGsbN1bSq3zMKRolFdrLXTJ_bWkZsyqymIgRyylZhl3mljd8p3n2ceI"/>
+<span class="font-label-caps text-on-surface">M. Rodriguez</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-gutter max-w-container-max mx-auto">
+<!-- Navigation Back -->
+<div class="mb-lg fade-in">
+<a class="inline-flex items-center gap-xs text-on-surface-variant hover:text-secondary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-body-md font-semibold">Back to list</span>
+</a>
+</div>
+<!-- Header Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl shadow-sm mb-xl fade-in" style="animation-delay: 0.1s">
+<div class="flex justify-between items-start">
+<div class="flex gap-xl items-center">
+<div class="w-24 h-24 rounded-2xl bg-primary-container flex items-center justify-center overflow-hidden border-2 border-secondary-container/20">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist portrait of a professional woman named Sarah Mitchell. She is dressed in smart business casual attire. The photography is crisp, high-resolution, with a subtle blue-toned gradient background that matches the expert partner brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDafFxt8Z6QdANbx_Qfm5YkTP8_S8b2fKkwqNDuFOCcXQAu73DddZhP6dmuqgRHaBdepBJwCsGSz5lqOvExJ5Ch_s5ov4TndsQ7PQkrfn7uTYJkuSePkvZvMq5GOv4JG4U9b_RGz9_D7w7qzWGzFHrFXxX5hkrEOAiMGxofIgELSwfCtRB0OnCLyHkUads-IauuuJciois-anInfeOEFXuZSYVsIsNbiKQ03PSuzVNolyzFIz7rzhFlV2LIcQB9lFwzgeWqwRuwQgo"/>
+</div>
+<div>
+<div class="flex items-center gap-md mb-xs">
+<h2 class="font-headline-lg text-primary">Sarah Mitchell</h2>
+<span class="bg-secondary-container/10 text-secondary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                Top Match
+                            </span>
+</div>
+<p class="text-on-surface-variant font-body-lg">Senior Full Stack Engineer • 8+ Years Experience</p>
+<div class="flex gap-md mt-md">
+<button class="bg-secondary text-on-secondary py-2 px-lg rounded-lg font-semibold flex items-center gap-sm hover:brightness-110 transition-all shadow-md">
+<span class="material-symbols-outlined">mail</span>
+                                Contact Candidate
+                            </button>
+<button class="border border-outline-variant text-on-surface-variant py-2 px-lg rounded-lg font-semibold flex items-center gap-sm hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-caps text-on-surface-variant mb-xs">AI MATCH SCORE</p>
+<div class="text-[48px] font-black text-secondary leading-none">94<span class="text-[24px]">%</span></div>
+<p class="text-xs text-on-primary-container font-medium mt-1">Ready for Interview</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout for Sections -->
+<div class="bento-grid mb-xl">
+<!-- Basic Information -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm fade-in" style="animation-delay: 0.2s">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary">person</span>
+<h3 class="font-headline-md text-[18px]">Basic Information</h3>
+</div>
+<div class="grid grid-cols-2 gap-y-md">
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Full Name</p>
+<p class="font-body-md font-semibold">Sarah Mitchell</p>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Location</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">location_on</span>
+<p class="font-body-md font-semibold">San Francisco, CA</p>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Work Authorization</p>
+<p class="font-body-md font-semibold">US Citizen</p>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Notice Period</p>
+<p class="font-body-md font-semibold">2 Weeks</p>
+</div>
+</div>
+</div>
+<!-- Contact Information -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm fade-in" style="animation-delay: 0.3s">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary">contact_mail</span>
+<h3 class="font-headline-md text-[18px]">Contact Information</h3>
+</div>
+<div class="grid grid-cols-2 gap-y-md">
+<div class="col-span-2">
+<p class="font-label-caps text-on-surface-variant mb-1">Email</p>
+<p class="font-body-md font-semibold text-secondary flex items-center gap-2">
+                            sarah.mitchell@expertdev.io
+                            <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-primary">content_copy</span>
+</p>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Phone</p>
+<p class="font-body-md font-semibold">+1 (555) 012-3456</p>
+</div>
+<div>
+<p class="font-label-caps text-on-surface-variant mb-1">Preferred Time</p>
+<p class="font-body-md font-semibold">Morning (PST)</p>
+</div>
+</div>
+</div>
+<!-- Online Profiles -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm fade-in" style="animation-delay: 0.4s">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary">share</span>
+<h3 class="font-headline-md text-[18px]">Online Profiles</h3>
+</div>
+<div class="flex flex-col gap-md">
+<a class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors border border-transparent hover:border-outline-variant group" href="#">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-secondary">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</div>
+<span class="font-body-md font-medium">LinkedIn</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">open_in_new</span>
+</a>
+<a class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors border border-transparent hover:border-outline-variant group" href="#">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-secondary">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</div>
+<span class="font-body-md font-medium">GitHub</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">open_in_new</span>
+</a>
+<div class="flex items-center justify-between p-sm rounded-lg opacity-50 grayscale">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</div>
+<span class="font-body-md font-medium">Portfolio</span>
+</div>
+<span class="text-xs font-label-caps italic">Not provided</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Resumes Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden fade-in" style="animation-delay: 0.5s">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">description</span>
+<h3 class="font-headline-md text-[18px]">Resumes</h3>
+</div>
+<button class="text-secondary font-semibold font-body-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">upload_file</span>
+                    Upload New
+                </button>
+</div>
+<!-- Resume Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-lg py-md font-label-caps text-on-surface-variant">Resume ID</th>
+<th class="px-lg py-md font-label-caps text-on-surface-variant">File Name</th>
+<th class="px-lg py-md font-label-caps text-on-surface-variant">Uploaded Date</th>
+<th class="px-lg py-md font-label-caps text-on-surface-variant">Parse Status</th>
+<th class="px-lg py-md font-label-caps text-on-surface-variant text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-lg py-md font-code-id text-secondary">RES-101</td>
+<td class="px-lg py-md font-body-sm font-medium">Sarah_Mitchell_Senior_Fullstack.pdf</td>
+<td class="px-lg py-md font-body-sm text-on-surface-variant">Oct 12, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                    Parsed
+                                </span>
+</td>
+<td class="px-lg py-md text-right">
+<a class="text-secondary font-semibold hover:text-on-secondary-fixed-variant transition-colors" href="#">View detail</a>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-lg py-md font-code-id text-secondary">RES-102</td>
+<td class="px-lg py-md font-body-sm font-medium">Cover_Letter_RecruitAI.docx</td>
+<td class="px-lg py-md font-body-sm text-on-surface-variant">Oct 14, 2023</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                                    Processing
+                                </span>
+</td>
+<td class="px-lg py-md text-right">
+<a class="text-secondary font-semibold hover:text-on-secondary-fixed-variant transition-colors" href="#">View detail</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Empty State (Hidden for this demo) -->
+<div class="hidden flex flex-col items-center justify-center p-2xl text-center" id="empty-resumes">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center text-on-surface-variant mb-lg">
+<span class="material-symbols-outlined text-[32px]">folder_off</span>
+</div>
+<h4 class="font-headline-md text-primary mb-xs">No resumes linked yet</h4>
+<p class="text-on-surface-variant font-body-md mb-xl max-w-sm">
+                    Upload a resume to let our AI analyze skills and generate a candidate match score.
+                </p>
+<button class="bg-primary text-on-primary py-md px-2xl rounded-lg font-semibold shadow-md hover:brightness-110 transition-all">
+                    Upload Resume
+                </button>
+</div>
+</section>
+<!-- Experience Preview Card (Contextual Bento Item) -->
+<section class="mt-xl grid grid-cols-3 gap-xl fade-in" style="animation-delay: 0.6s">
+<div class="col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">stars</span>
+<h3 class="font-headline-md text-[18px]">AI Insights &amp; Summary</h3>
+</div>
+<span class="text-xs font-label-caps text-on-primary-container bg-primary-container px-2 py-1 rounded">Updated 2m ago</span>
+</div>
+<div class="relative p-md rounded-lg border-l-4 border-secondary bg-surface-container-low/50">
+<p class="font-body-md text-on-surface leading-relaxed">
+                        Sarah demonstrates exceptional proficiency in <strong class="text-secondary">React, Node.js, and AWS architecture</strong>. Her tenure at Meta suggests high scalability expertise. She is particularly strong in system design and leading cross-functional teams. Note: Salary expectations are slightly above the median for this role.
+                    </p>
+</div>
+<div class="mt-md grid grid-cols-3 gap-md">
+<div class="p-md rounded-lg bg-surface border border-outline-variant">
+<p class="font-label-caps text-on-surface-variant mb-1">Architecture</p>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 95%"></div>
+</div>
+</div>
+<div class="p-md rounded-lg bg-surface border border-outline-variant">
+<p class="font-label-caps text-on-surface-variant mb-1">Team Leadership</p>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 82%"></div>
+</div>
+</div>
+<div class="p-md rounded-lg bg-surface border border-outline-variant">
+<p class="font-label-caps text-on-surface-variant mb-1">AI/ML Integration</p>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary text-on-primary rounded-xl p-lg shadow-xl flex flex-col justify-between overflow-hidden relative group">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-secondary opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+<div>
+<h3 class="font-headline-md text-[18px] mb-md relative z-10">Next Action</h3>
+<p class="font-body-sm opacity-80 mb-xl relative z-10">RecruitAI recommends scheduling the technical deep dive based on recent skill parsing.</p>
+</div>
+<button class="w-full bg-on-primary text-primary font-bold py-md rounded-lg hover:bg-secondary-container hover:text-on-secondary-container transition-all relative z-10">
+                    Schedule Interview
+                </button>
+</div>
+</section>
+</main>
+<script>
+        // Micro-interaction: Resume table row hover effect and notification simulation
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                console.log('Row clicked:', row.cells[0].innerText);
+            });
+        });
+
+        // Simple script to toggle empty state for demonstration if desired
+        function toggleEmptyState(isEmpty) {
+            const table = document.querySelector('table');
+            const emptyState = document.getElementById('empty-resumes');
+            if (isEmpty) {
+                table.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                table.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+        }
+    </script>
+</body></html>

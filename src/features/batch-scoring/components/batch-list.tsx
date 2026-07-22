@@ -1,18 +1,104 @@
 'use client';
 
-import { PlusIcon } from 'lucide-react';
+import { EyeIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
+import {
+  ActionIconButton,
+  DataTable,
+  type DataTableColumn,
+  type DataTableSort,
+} from '@/components/common';
 import { ROUTES } from '@/config/routes.config';
 import {
   MOCK_BATCHES,
   STATUS_CLASSES,
   STATUS_LABELS,
+  type MockBatchSummary,
+  type ScoringBatchStatus,
 } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
+import { sortMock } from '@/lib/utils/mock-delay';
 import { cn } from '@/lib/utils/cn';
 import { formatDate } from '@/lib/utils/format-date';
 
+const STATUS_FILTER_OPTIONS = (Object.keys(STATUS_LABELS) as ScoringBatchStatus[]).map((status) => ({
+  label: STATUS_LABELS[status],
+  value: status,
+}));
+
+function buildColumns(status: ScoringBatchStatus | ''): DataTableColumn<MockBatchSummary>[] {
+  return [
+    {
+      key: 'name',
+      header: 'Batch name',
+      sortKey: 'name',
+      render: (batch) => (
+        <Link href={`${ROUTES.BATCH_SCORING}/${batch.id}`} className="font-semibold text-primary hover:underline">
+          {batch.name}
+        </Link>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      filter: { key: 'status', options: STATUS_FILTER_OPTIONS, activeValue: status },
+      render: (batch) => (
+        <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', STATUS_CLASSES[batch.status])}>
+          {STATUS_LABELS[batch.status]}
+        </span>
+      ),
+    },
+    {
+      key: 'progress',
+      header: 'Progress',
+      render: (batch) => (
+        <p className="text-on-surface-variant">
+          {batch.completedPairCount}/{batch.totalPairCount} pairs
+        </p>
+      ),
+    },
+    {
+      key: 'cvs',
+      header: 'CVs',
+      sortKey: 'totalCvCount',
+      render: (batch) => <p className="text-on-surface-variant">{batch.totalCvCount}</p>,
+    },
+    {
+      key: 'jds',
+      header: 'JDs',
+      sortKey: 'totalJdCount',
+      render: (batch) => <p className="text-on-surface-variant">{batch.totalJdCount}</p>,
+    },
+    {
+      key: 'createdAt',
+      header: 'Created',
+      sortKey: 'createdAt',
+      render: (batch) => <p className="whitespace-nowrap text-on-surface-variant">{formatDate(batch.createdAt)}</p>,
+    },
+    {
+      key: 'action',
+      header: 'Action',
+      className: 'text-right',
+      render: (batch) => (
+        <div className="flex justify-end">
+          <ActionIconButton href={`${ROUTES.BATCH_SCORING}/${batch.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+        </div>
+      ),
+    },
+  ];
+}
+
 export function BatchList() {
+  const [status, setStatus] = useState<ScoringBatchStatus | ''>('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
+
+  const visibleBatches = useMemo(() => {
+    let filtered = MOCK_BATCHES;
+    if (status) filtered = filtered.filter((batch) => batch.status === status);
+    return sortMock(filtered, sort?.key, sort?.order);
+  }, [status, sort]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -39,64 +125,16 @@ export function BatchList() {
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
-          <table className="w-full border-collapse text-sm">
-            <thead className="bg-surface-variant">
-              <tr>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Batch name
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Status
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Progress
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  CVs
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  JDs
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Created
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-outline">
-              {MOCK_BATCHES.map((batch) => (
-                <tr key={batch.id} className="transition-colors hover:bg-surface-variant/60">
-                  <td className="px-5 py-4">
-                    <Link
-                      href={`${ROUTES.BATCH_SCORING}/${batch.id}`}
-                      className="font-semibold text-primary hover:underline"
-                    >
-                      {batch.name}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={cn(
-                        'rounded-full px-2.5 py-1 text-xs font-semibold',
-                        STATUS_CLASSES[batch.status],
-                      )}
-                    >
-                      {STATUS_LABELS[batch.status]}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">
-                    {batch.completedPairCount}/{batch.totalPairCount} pairs
-                  </td>
-                  <td className="px-5 py-4 text-on-surface-variant">{batch.totalCvCount}</td>
-                  <td className="px-5 py-4 text-on-surface-variant">{batch.totalJdCount}</td>
-                  <td className="px-5 py-4 whitespace-nowrap text-on-surface-variant">
-                    {formatDate(batch.createdAt)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={visibleBatches}
+          columns={buildColumns(status)}
+          getRowKey={(batch) => batch.id}
+          sort={sort}
+          onSortChange={(key, order) => setSort({ key, order })}
+          onFilterChange={(key, value) => {
+            if (key === 'status') setStatus(value as ScoringBatchStatus | '');
+          }}
+        />
       )}
     </div>
   );

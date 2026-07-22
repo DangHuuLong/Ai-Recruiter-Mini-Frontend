@@ -66,7 +66,7 @@ export type JobDescriptionQuery = {
   search?: string;
   isActive?: boolean;
   parseStatus?: ParseStatus;
-  sortBy?: 'createdAt' | 'updatedAt' | 'title';
+  sortBy?: 'createdAt' | 'updatedAt' | 'title' | 'location' | 'employmentType';
   sortOrder?: 'asc' | 'desc';
 };
 

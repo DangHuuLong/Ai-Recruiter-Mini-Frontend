@@ -1,51 +1,72 @@
 'use client';
 
+import { ClipboardListIcon, EyeIcon, FileTextIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { ConfirmDialog, DataTable, ListControls, type DataTableColumn } from '@/components/common';
+import {
+  ActionIconButton,
+  AvatarChip,
+  ConfirmDialog,
+  DataTable,
+  ListControls,
+  type DataTableColumn,
+  type DataTableSort,
+  type DataTableSortOrder,
+} from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { deleteApplication, getApplications } from '@/features/applications/api/application.api';
 import { ApplicationStatusBadge } from '@/features/applications/components/application-status-badge';
-import type { Application } from '@/features/applications/types/application.type';
+import type { Application, ApplicationQuery, ApplicationStatus } from '@/features/applications/types/application.type';
 import type { PaginationMeta } from '@/lib/api/api-types';
+import { formatDateTime } from '@/lib/utils/format-date';
 
 const PAGE_SIZE = 10;
 
-const formatDate = (value?: string | null) => {
-  if (!value) {
-    return 'Not recorded';
-  }
+const STATUS_FILTER_OPTIONS = [
+  { label: 'Draft', value: 'DRAFT' },
+  { label: 'Applied', value: 'APPLIED' },
+  { label: 'Screening', value: 'SCREENING' },
+  { label: 'Shortlisted', value: 'SHORTLISTED' },
+  { label: 'Interviewing', value: 'INTERVIEWING' },
+  { label: 'Offer', value: 'OFFER' },
+  { label: 'Hired', value: 'HIRED' },
+  { label: 'Rejected', value: 'REJECTED' },
+  { label: 'Withdrawn', value: 'WITHDRAWN' },
+];
 
-  return new Intl.DateTimeFormat('en', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
-};
-
-function buildApplicationColumns(onDelete: (application: Application) => void): DataTableColumn<Application>[] {
+function buildApplicationColumns(
+  status: ApplicationStatus | '',
+  onDelete: (application: Application) => void,
+): DataTableColumn<Application>[] {
   return [
     {
       key: 'application',
       header: 'Application',
-      render: (application) => (
-        <div>
-          <p className="text-sm font-semibold text-slate-950">
-            {application.candidate?.fullName || application.candidateId}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">ID: {application.id}</p>
-        </div>
-      ),
+      sortKey: 'candidate.fullName',
+      render: (application) => {
+        const candidateName = application.candidate?.fullName || application.candidateId;
+        return (
+          <div className="flex items-center gap-3">
+            <AvatarChip name={candidateName} seed={application.candidateId} size="sm" />
+            <div>
+              <p className="text-sm font-semibold text-on-surface">{candidateName}</p>
+              <p className="font-mono text-xs text-on-surface-muted">{application.id}</p>
+            </div>
+          </div>
+        );
+      },
     },
     {
       key: 'job',
       header: 'Job description',
+      sortKey: 'jobDescription.title',
       render: (application) => (
         <div>
-          <p className="text-sm font-medium text-slate-800">
+          <p className="text-sm font-medium text-on-surface">
             {application.jobDescription?.title || application.jobDescriptionId}
           </p>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-on-surface-muted">
             {application.jobDescription?.companyName || 'Company not provided'}
           </p>
         </div>
@@ -54,23 +75,30 @@ function buildApplicationColumns(onDelete: (application: Application) => void): 
     {
       key: 'resume',
       header: 'Resume',
+      sortKey: 'resume.fileAsset.fileName',
       render: (application) => (
-        <p className="max-w-xs truncate text-sm text-slate-600">
-          {application.resume?.fileAsset?.fileName || application.resumeId}
-        </p>
+        <Link
+          href={`/resumes/${application.resumeId}`}
+          className="flex max-w-xs items-center gap-1.5 truncate text-sm text-primary hover:underline"
+        >
+          <FileTextIcon className="size-3.5 shrink-0" />
+          <span className="truncate">{application.resume?.fileAsset?.fileName || application.resumeId}</span>
+        </Link>
       ),
     },
     {
       key: 'status',
       header: 'Status',
+      filter: { key: 'status', options: STATUS_FILTER_OPTIONS, activeValue: status },
       render: (application) => <ApplicationStatusBadge status={application.status} />,
     },
     {
       key: 'appliedAt',
       header: 'Applied at',
+      sortKey: 'appliedAt',
       render: (application) => (
-        <p className="whitespace-nowrap text-sm text-slate-600">
-          {formatDate(application.appliedAt)}
+        <p className="whitespace-nowrap text-sm text-on-surface-variant">
+          {application.appliedAt ? formatDateTime(application.appliedAt) : 'Not recorded'}
         </p>
       ),
     },
@@ -79,16 +107,19 @@ function buildApplicationColumns(onDelete: (application: Application) => void): 
       header: 'Action',
       className: 'text-right',
       render: (application) => (
-        <div className="flex flex-wrap justify-end gap-3">
-          <Link href={`/applications/${application.id}`} className="text-sm font-semibold text-blue-600 transition hover:text-blue-700">
-            View
-          </Link>
-          <Link href={`/applications/${application.id}/edit`} className="text-sm font-semibold text-slate-600 transition hover:text-slate-900">
-            Edit
-          </Link>
-          <button type="button" onClick={() => onDelete(application)} className="text-sm font-semibold text-red-600 transition hover:text-red-700">
-            Delete
-          </button>
+        <div className="flex flex-wrap items-center justify-end gap-1">
+          <ActionIconButton href={`/applications/${application.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+          <ActionIconButton
+            href={`/applications/${application.id}/edit`}
+            icon={<PencilIcon className="size-4" />}
+            label="Edit"
+          />
+          <ActionIconButton
+            icon={<Trash2Icon className="size-4" />}
+            label="Delete"
+            variant="danger"
+            onClick={() => onDelete(application)}
+          />
         </div>
       ),
     },
@@ -99,6 +130,8 @@ export function ApplicationList() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<ApplicationStatus | ''>('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -109,7 +142,14 @@ export function ApplicationList() {
     try {
       setIsLoading(true);
       setErrorMessage(null);
-      const response = await getApplications({ page, limit: PAGE_SIZE, search });
+      const response = await getApplications({
+        page,
+        limit: PAGE_SIZE,
+        search,
+        status: status || undefined,
+        sortBy: sort?.key as ApplicationQuery['sortBy'],
+        sortOrder: sort?.order,
+      });
       setApplications(response.data);
       setMeta(response.meta);
     } catch (error) {
@@ -123,7 +163,19 @@ export function ApplicationList() {
 
   useEffect(() => {
     void loadApplications();
-  }, [page, search]);
+  }, [page, search, status, sort]);
+
+  const handleSortChange = (key: string, order: DataTableSortOrder) => {
+    setSort({ key, order });
+    setPage(1);
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'status') {
+      setStatus(value as ApplicationStatus | '');
+      setPage(1);
+    }
+  };
 
   const handleDeleteApplication = async () => {
     if (!applicationToDelete) return;
@@ -152,16 +204,21 @@ export function ApplicationList() {
       <EmptyState
         title="Failed to load applications"
         description={errorMessage}
-        action={<button type="button" onClick={() => void loadApplications()} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">Try again</button>}
+        action={<button type="button" onClick={() => void loadApplications()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
       />
     );
   }
 
   return (
     <section className="space-y-4">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-950">Application list</h2>
-        <p className="mt-1 text-sm text-slate-500">{meta.total} application{meta.total === 1 ? '' : 's'} found.</p>
+      <div className="flex items-center gap-4 rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
+          <ClipboardListIcon className="size-6" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-on-surface-variant">Total applications</p>
+          <p className="text-2xl font-bold text-on-surface">{meta.total}</p>
+        </div>
       </div>
 
       <ListControls
@@ -180,10 +237,17 @@ export function ApplicationList() {
         <EmptyState
           title="No applications found"
           description="Create an application or adjust your search keyword."
-          action={<Link href="/applications/new" className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">Create Application</Link>}
+          action={<Link href="/applications/new" className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Create Application</Link>}
         />
       ) : (
-        <DataTable data={applications} columns={buildApplicationColumns(setApplicationToDelete)} getRowKey={(application) => application.id} />
+        <DataTable
+          data={applications}
+          columns={buildApplicationColumns(status, setApplicationToDelete)}
+          getRowKey={(application) => application.id}
+          sort={sort}
+          onSortChange={handleSortChange}
+          onFilterChange={handleFilterChange}
+        />
       )}
 
       <ConfirmDialog

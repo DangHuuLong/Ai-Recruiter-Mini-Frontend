@@ -1,9 +1,11 @@
 'use client';
 
+import { Code2Icon, GlobeIcon, LinkIcon, MailIcon, MapPinIcon, PhoneIcon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
 import { showToast } from '@/components/feedback/toast';
+import { Input } from '@/components/ui/input';
 import { useCreateCandidate } from '@/features/candidates/hooks/use-create-candidate';
 import { useCandidateListStore } from '@/features/candidates/stores/candidate-list.store';
 import {
@@ -90,13 +92,13 @@ export function CandidateForm() {
   };
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-      <div className="border-b border-slate-200 px-6 py-5">
-        <h2 className="text-lg font-semibold text-slate-950">
+    <section className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
+      <div className="border-b border-outline px-6 py-5">
+        <h2 className="text-lg font-semibold text-on-surface">
           Candidate information
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-on-surface-muted">
           Create a candidate profile before uploading resumes or creating
           applications.
         </p>
@@ -111,178 +113,87 @@ export function CandidateForm() {
       >
         <div className="grid gap-5 md:grid-cols-2">
           <div className="md:col-span-2">
-            <label
-              htmlFor="fullName"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              Full name
-            </label>
-
-            <input
+            <Input
               id="fullName"
+              label="Full name"
+              icon={<UserIcon className="size-4" />}
               value={formValues.fullName}
               onChange={(event) => updateField('fullName', event.target.value)}
               disabled={isCreating}
               placeholder="Nguyen Van A"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+              error={errors.fullName}
             />
-
-            {errors.fullName ? (
-              <p className="mt-1 text-xs text-red-600">{errors.fullName}</p>
-            ) : null}
           </div>
 
-          <div>
-            <label
-              htmlFor="primaryEmail"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              Email
-            </label>
+          <Input
+            id="primaryEmail"
+            label="Email"
+            icon={<MailIcon className="size-4" />}
+            value={formValues.primaryEmail ?? ''}
+            onChange={(event) => updateField('primaryEmail', event.target.value)}
+            disabled={isCreating}
+            placeholder="candidate@example.com"
+            error={errors.primaryEmail}
+          />
 
-            <input
-              id="primaryEmail"
-              value={formValues.primaryEmail ?? ''}
-              onChange={(event) =>
-                updateField('primaryEmail', event.target.value)
-              }
-              disabled={isCreating}
-              placeholder="candidate@example.com"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
+          <Input
+            id="primaryPhone"
+            label="Phone"
+            icon={<PhoneIcon className="size-4" />}
+            value={formValues.primaryPhone ?? ''}
+            onChange={(event) => updateField('primaryPhone', event.target.value)}
+            disabled={isCreating}
+            placeholder="0900000001"
+            error={errors.primaryPhone}
+          />
 
-            {errors.primaryEmail ? (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.primaryEmail}
-              </p>
-            ) : null}
-          </div>
+          <Input
+            id="linkedinUrl"
+            label="LinkedIn URL"
+            icon={<LinkIcon className="size-4" />}
+            value={formValues.linkedinUrl ?? ''}
+            onChange={(event) => updateField('linkedinUrl', event.target.value)}
+            disabled={isCreating}
+            placeholder="https://linkedin.com/in/candidate"
+            error={errors.linkedinUrl}
+          />
 
-          <div>
-            <label
-              htmlFor="primaryPhone"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              Phone
-            </label>
+          <Input
+            id="githubUrl"
+            label="GitHub URL"
+            icon={<Code2Icon className="size-4" />}
+            value={formValues.githubUrl ?? ''}
+            onChange={(event) => updateField('githubUrl', event.target.value)}
+            disabled={isCreating}
+            placeholder="https://github.com/candidate"
+            error={errors.githubUrl}
+          />
 
-            <input
-              id="primaryPhone"
-              value={formValues.primaryPhone ?? ''}
-              onChange={(event) =>
-                updateField('primaryPhone', event.target.value)
-              }
-              disabled={isCreating}
-              placeholder="0900000001"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
+          <Input
+            id="portfolioUrl"
+            label="Portfolio URL"
+            icon={<GlobeIcon className="size-4" />}
+            value={formValues.portfolioUrl ?? ''}
+            onChange={(event) => updateField('portfolioUrl', event.target.value)}
+            disabled={isCreating}
+            placeholder="https://candidate.dev"
+            error={errors.portfolioUrl}
+          />
 
-            {errors.primaryPhone ? (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.primaryPhone}
-              </p>
-            ) : null}
-          </div>
-
-          <div>
-            <label
-              htmlFor="linkedinUrl"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              LinkedIn URL
-            </label>
-
-            <input
-              id="linkedinUrl"
-              value={formValues.linkedinUrl ?? ''}
-              onChange={(event) =>
-                updateField('linkedinUrl', event.target.value)
-              }
-              disabled={isCreating}
-              placeholder="https://linkedin.com/in/candidate"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
-
-            {errors.linkedinUrl ? (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.linkedinUrl}
-              </p>
-            ) : null}
-          </div>
-
-          <div>
-            <label
-              htmlFor="githubUrl"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              GitHub URL
-            </label>
-
-            <input
-              id="githubUrl"
-              value={formValues.githubUrl ?? ''}
-              onChange={(event) => updateField('githubUrl', event.target.value)}
-              disabled={isCreating}
-              placeholder="https://github.com/candidate"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
-
-            {errors.githubUrl ? (
-              <p className="mt-1 text-xs text-red-600">{errors.githubUrl}</p>
-            ) : null}
-          </div>
-
-          <div>
-            <label
-              htmlFor="portfolioUrl"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              Portfolio URL
-            </label>
-
-            <input
-              id="portfolioUrl"
-              value={formValues.portfolioUrl ?? ''}
-              onChange={(event) =>
-                updateField('portfolioUrl', event.target.value)
-              }
-              disabled={isCreating}
-              placeholder="https://candidate.dev"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
-
-            {errors.portfolioUrl ? (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.portfolioUrl}
-              </p>
-            ) : null}
-          </div>
-
-          <div>
-            <label
-              htmlFor="location"
-              className="mb-1 block text-sm font-medium text-slate-800"
-            >
-              Location
-            </label>
-
-            <input
-              id="location"
-              value={formValues.location ?? ''}
-              onChange={(event) => updateField('location', event.target.value)}
-              disabled={isCreating}
-              placeholder="Ho Chi Minh City"
-              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-            />
-
-            {errors.location ? (
-              <p className="mt-1 text-xs text-red-600">{errors.location}</p>
-            ) : null}
-          </div>
+          <Input
+            id="location"
+            label="Location"
+            icon={<MapPinIcon className="size-4" />}
+            value={formValues.location ?? ''}
+            onChange={(event) => updateField('location', event.target.value)}
+            disabled={isCreating}
+            placeholder="Ho Chi Minh City"
+            error={errors.location}
+          />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-500">
+        <div className="flex flex-col gap-4 border-t border-outline pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-on-surface-muted">
             The candidate profile will be used for resumes, applications, and
             evaluations.
           </p>
@@ -290,7 +201,7 @@ export function CandidateForm() {
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
             <Link
               href="/candidates"
-              className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
             >
               Cancel
             </Link>
@@ -298,7 +209,7 @@ export function CandidateForm() {
             <button
               type="submit"
               disabled={isCreating}
-              className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-blue-300"
+              className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover focus:outline-none focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-disabled"
             >
               {isCreating ? 'Creating...' : 'Create candidate'}
             </button>

@@ -1,56 +1,22 @@
 'use client';
 
+import { UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
-import { DetailPageLayout, DetailSection } from '@/components/common';
+import { DetailItem, DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { ResumeParsedData } from '@/features/resumes/components/resume-parsed-data';
 import { useParseResume } from '@/features/resumes/hooks/use-parse-resume';
 import { useResumeDetail } from '@/features/resumes/hooks/use-resume-detail';
-import type {
-  DetailItemProps,
-  DetailLinkItemProps,
-  ResumeDetailProps,
-} from '@/features/resumes/types/resume-detail-ui.type';
-import { getDisplayValue } from '@/lib/utils/display-value.util';
+import type { ResumeDetailProps } from '@/features/resumes/types/resume-detail-ui.type';
 
-function DetailItem({ label, value }: DetailItemProps) {
-  return (
-    <div className="min-w-0">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-1 break-words text-sm font-medium text-slate-900">
-        {getDisplayValue(value ? String(value) : null)}
-      </p>
-    </div>
-  );
-}
-
-function DetailLinkItem({ label, href }: DetailLinkItemProps) {
-  return (
-    <div className="min-w-0">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      {href ? (
-        <a
-          href={href}
-          className="mt-1 block max-w-full break-words text-sm font-semibold text-blue-600 transition hover:text-blue-700 hover:underline"
-        >
-          {href}
-        </a>
-      ) : (
-        <p className="mt-1 text-sm font-medium text-slate-900">
-          {getDisplayValue(href)}
-        </p>
-      )}
-    </div>
-  );
-}
+const PARSE_STATUS_CLASSES: Record<string, string> = {
+  PENDING: 'bg-surface-variant text-on-surface-variant',
+  PROCESSING: 'bg-info/15 text-info',
+  SUCCESS: 'bg-success-container text-success',
+  FAILED: 'bg-error-container text-error',
+};
 
 export function ResumeDetail({ resumeId }: ResumeDetailProps) {
   const { resume, isLoading, errorMessage, refetchResume } =
@@ -106,7 +72,7 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
             onClick={() => {
               void refetchResume();
             }}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
             Try again
           </button>
@@ -123,7 +89,7 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
         action={
           <Link
             href="/resumes"
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
             Back to Resumes
           </Link>
@@ -154,35 +120,62 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
               description: 'Parsed CV data is now available on this resume.',
             });
           }}
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled"
         >
           {parseButtonLabel}
         </button>
       }
     >
-      <DetailSection
-        title="Resume information"
-        description="Core information for this resume record."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          <DetailItem label="Resume ID" value={resume.id} />
-          <DetailItem label="Candidate ID" value={resume.candidateId} />
-          <DetailItem label="Parse status" value={resume.parseStatus} />
-          <DetailItem label="File asset ID" value={resume.fileAssetId} />
+      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
+            Resume information
+          </p>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <DetailItem label="Resume ID" value={resume.id} />
+            <DetailItem label="Candidate ID" value={resume.candidateId} />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Parse status</p>
+              <span
+                className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${PARSE_STATUS_CLASSES[resume.parseStatus] ?? 'bg-surface-variant text-on-surface-variant'}`}
+              >
+                {resume.parseStatus}
+              </span>
+            </div>
+            <DetailItem label="File asset ID" value={resume.fileAssetId} />
+          </div>
         </div>
-      </DetailSection>
+
+        <Link
+          href={`/candidates/${resume.candidateId}`}
+          className="group flex cursor-pointer items-center gap-3 rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card transition hover:border-primary"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+            <UserIcon className="size-5" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Linked candidate</p>
+            <p className="font-mono text-sm font-semibold text-primary group-hover:underline">{resume.candidateId}</p>
+          </div>
+        </Link>
+      </div>
 
       <DetailSection
         title="Parse status"
         description="Track CV parsing and retry if the parsing pipeline fails."
       >
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div className="rounded-2xl border border-outline bg-surface-variant p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-950">
-                Current status: {resume.parseStatus}
+              <p className="flex items-center gap-2 text-sm font-semibold text-on-surface">
+                Current status:
+                <span
+                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${PARSE_STATUS_CLASSES[resume.parseStatus] ?? 'bg-surface-variant text-on-surface-variant'}`}
+                >
+                  {resume.parseStatus}
+                </span>
               </p>
-              <p className="mt-1 text-sm text-slate-600">
+              <p className="mt-1 text-sm text-on-surface-variant">
                 {isParseRunning
                   ? 'Parsing is running. Parsed data will appear after completion.'
                   : resume.parseStatus === 'SUCCESS'
@@ -194,29 +187,17 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
             </div>
 
             {isParseRunning ? (
-              <span className="inline-flex h-9 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 px-4 text-sm font-semibold text-blue-700">
+              <span className="inline-flex h-9 items-center justify-center rounded-xl border border-outline bg-primary-container px-4 text-sm font-semibold text-on-primary-container">
                 Loading...
               </span>
             ) : null}
           </div>
 
           {(parseErrorMessage || resume.parsingError) && (
-            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="mt-4 rounded-xl border border-error/30 bg-error-container px-4 py-3 text-sm text-error">
               {parseErrorMessage ?? resume.parsingError}
             </div>
           )}
-        </div>
-      </DetailSection>
-
-      <DetailSection
-        title="Linked candidate"
-        description="Candidate profile associated with this resume."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          <DetailLinkItem
-            label="Candidate detail"
-            href={`/candidates/${resume.candidateId}`}
-          />
         </div>
       </DetailSection>
 
@@ -225,7 +206,7 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
         description="Readable CV data grouped by profile, skills, work history, education, projects, certifications, and languages."
       >
         {isParseRunning ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="rounded-2xl border border-outline bg-surface-lowest p-5">
             <LoadingState
               title="Parsing CV..."
               description="Please wait while the system extracts and structures this CV."
@@ -234,7 +215,7 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
         ) : resume.parsedData ? (
           <ResumeParsedData parsedData={resume.parsedData} />
         ) : (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-on-surface-variant">
             No parsed data is available yet.
           </p>
         )}

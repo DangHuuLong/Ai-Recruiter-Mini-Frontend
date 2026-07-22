@@ -7,7 +7,7 @@ type SkeletonProps = {
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={cn('animate-pulse rounded-xl bg-slate-200', className)}
+      className={cn('animate-pulse rounded-xl bg-surface-variant', className)}
       aria-hidden="true"
     />
   );
@@ -15,7 +15,7 @@ export function Skeleton({ className }: SkeletonProps) {
 
 export function TableSkeleton() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
+    <div className="rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card">
       <Skeleton className="h-11 w-full rounded-xl" />
 
       <div className="mt-3 space-y-2">
@@ -29,7 +29,7 @@ export function TableSkeleton() {
 
 export function CardSkeleton() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
+    <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
       <div className="space-y-3">
         <Skeleton className="h-5 w-1/3 rounded-lg" />
         <Skeleton className="h-4 w-full rounded-lg" />

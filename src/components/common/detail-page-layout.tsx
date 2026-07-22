@@ -24,12 +24,12 @@ export function DetailPageLayout({
 }: DetailPageLayoutProps) {
   return (
     <div className={cn('space-y-6', className)}>
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
+      <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card sm:p-6">
         <div className="space-y-4">
           {backHref ? (
             <Link
               href={backHref}
-              className="inline-flex items-center text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+              className="inline-flex cursor-pointer items-center text-sm font-semibold text-primary transition hover:text-primary-hover"
             >
               ← {backLabel}
             </Link>
@@ -37,12 +37,12 @@ export function DetailPageLayout({
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-3xl space-y-2">
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+              <h1 className="text-2xl font-bold text-on-surface">
                 {title}
               </h1>
 
               {description ? (
-                <p className="text-sm leading-6 text-slate-600">
+                <p className="text-sm leading-6 text-on-surface-variant">
                   {description}
                 </p>
               ) : null}

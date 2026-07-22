@@ -1,5 +1,6 @@
 'use client';
 
+import { RefreshCwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { showToast } from '@/components/feedback';
@@ -52,21 +53,21 @@ export function ApplicationStatusForm({
   };
 
   return (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-card">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-950">Update status</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Changing the status creates an application event when the value changes.
-        </p>
+    <div className="space-y-4 rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
+      <div className="flex items-center gap-2">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-primary-container text-on-primary-container">
+          <RefreshCwIcon className="size-4" />
+        </div>
+        <h2 className="text-lg font-semibold text-on-surface">Update status</h2>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[220px_1fr_auto] lg:items-end">
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-slate-700">Status</span>
+      <div className="space-y-4">
+        <label className="block space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">New status</span>
           <select
             value={status}
             onChange={(event) => setStatus(event.target.value as ApplicationStatus)}
-            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           >
             {APPLICATION_STATUSES.map((applicationStatus) => (
               <option key={applicationStatus} value={applicationStatus}>
@@ -76,13 +77,14 @@ export function ApplicationStatusForm({
           </select>
         </label>
 
-        <label className="space-y-2">
-          <span className="text-sm font-medium text-slate-700">Status note</span>
-          <input
+        <label className="block space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Status note</span>
+          <textarea
             value={note}
             onChange={(event) => setNote(event.target.value)}
-            placeholder="Moved to screening after initial review"
-            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            placeholder="Reason for change..."
+            rows={3}
+            className="w-full rounded-lg border border-outline bg-surface-lowest px-3 py-2.5 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           />
         </label>
 
@@ -92,10 +94,12 @@ export function ApplicationStatusForm({
             void handleUpdateStatus();
           }}
           disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? 'Updating...' : 'Update'}
+          {isSubmitting ? 'Updating...' : 'Update Status'}
         </button>
+
+        <p className="text-xs text-on-surface-muted">Changing the status logs a permanent timeline event.</p>
       </div>
     </div>
   );

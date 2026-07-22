@@ -1,54 +1,22 @@
 'use client';
 
+import { IdCardIcon, Share2Icon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
-import { DetailPageLayout, DetailSection } from '@/components/common';
+import { DetailItem, DetailLinkItem, DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { useCandidateDetail } from '@/features/candidates/hooks/use-candidate-detail';
-import type {
-  CandidateDetailProps,
-  DetailItemProps,
-  DetailLinkItemProps,
-} from '@/features/candidates/types/candidate-detail-ui.type';
-import { getDisplayValue } from '@/lib/utils/display-value.util';
+import type { CandidateDetailProps } from '@/features/candidates/types/candidate-detail-ui.type';
 import { CandidateResumeList } from '@/features/candidates/components/candidate-resume-list';
 
-function DetailItem({ label, value }: DetailItemProps) {
+function InfoCardHeader({ icon: Icon, title }: { icon: typeof UserIcon; title: string }) {
   return (
-    <div className="min-w-0">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-1 break-words text-sm font-medium text-slate-900">
-        {getDisplayValue(value)}
-      </p>
-    </div>
-  );
-}
-
-function DetailLinkItem({ label, href }: DetailLinkItemProps) {
-  return (
-    <div className="min-w-0">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      {href ? (
-        <a
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 block max-w-full break-words text-sm font-semibold text-blue-600 transition hover:text-blue-700 hover:underline"
-        >
-          {href}
-        </a>
-      ) : (
-        <p className="mt-1 text-sm font-medium text-slate-900">
-          {getDisplayValue(href)}
-        </p>
-      )}
+    <div className="mb-4 flex items-center gap-2">
+      <div className="flex size-8 items-center justify-center rounded-lg bg-primary-container text-on-primary-container">
+        <Icon className="size-4" />
+      </div>
+      <h2 className="text-sm font-semibold text-on-surface">{title}</h2>
     </div>
   );
 }
@@ -87,7 +55,7 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
             onClick={() => {
               void refetchCandidate();
             }}
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
             Try again
           </button>
@@ -104,7 +72,7 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
         action={
           <Link
             href="/candidates"
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
             Back to Candidates
           </Link>
@@ -120,36 +88,32 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
       backHref="/candidates"
       backLabel="Back to Candidates"
     >
-      <DetailSection
-        title="Basic information"
-        description="Core candidate profile information."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          <DetailItem label="Full name" value={candidate.fullName} />
-          <DetailItem label="Location" value={candidate.location} />
+      <div className="grid gap-5 md:grid-cols-3">
+        <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
+          <InfoCardHeader icon={UserIcon} title="Basic information" />
+          <div className="space-y-4">
+            <DetailItem label="Full name" value={candidate.fullName} />
+            <DetailItem label="Location" value={candidate.location} />
+          </div>
         </div>
-      </DetailSection>
 
-      <DetailSection
-        title="Contact information"
-        description="Primary contact channels for this candidate."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          <DetailItem label="Email" value={candidate.primaryEmail} />
-          <DetailItem label="Phone" value={candidate.primaryPhone} />
+        <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
+          <InfoCardHeader icon={IdCardIcon} title="Contact information" />
+          <div className="space-y-4">
+            <DetailItem label="Email" value={candidate.primaryEmail} />
+            <DetailItem label="Phone" value={candidate.primaryPhone} />
+          </div>
         </div>
-      </DetailSection>
 
-      <DetailSection
-        title="Online profiles"
-        description="Candidate profile links collected during candidate creation."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          <DetailLinkItem label="LinkedIn" href={candidate.linkedinUrl} />
-          <DetailLinkItem label="GitHub" href={candidate.githubUrl} />
-          <DetailLinkItem label="Portfolio" href={candidate.portfolioUrl} />
+        <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
+          <InfoCardHeader icon={Share2Icon} title="Online profiles" />
+          <div className="space-y-4">
+            <DetailLinkItem label="LinkedIn" href={candidate.linkedinUrl} />
+            <DetailLinkItem label="GitHub" href={candidate.githubUrl} />
+            <DetailLinkItem label="Portfolio" href={candidate.portfolioUrl} />
+          </div>
         </div>
-      </DetailSection>
+      </div>
 
       <DetailSection
         title="Resumes"

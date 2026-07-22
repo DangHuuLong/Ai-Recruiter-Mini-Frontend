@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
+import { Input } from '@/components/ui/input';
 import { updateResume } from '@/features/resumes/api/resume.api';
 import { useResumeDetail } from '@/features/resumes/hooks/use-resume-detail';
 
@@ -57,33 +58,38 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
       <EmptyState
         title={errorMessage ? 'Failed to load resume' : 'Resume not found'}
         description={errorMessage ?? 'The resume record could not be found.'}
-        action={<button type="button" onClick={() => void refetchResume()} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">Try again</button>}
+        action={<button type="button" onClick={() => void refetchResume()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
       />
     );
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card">
-      <div className="border-b border-slate-200 px-6 py-5">
-        <h2 className="text-lg font-semibold text-slate-950">Edit resume metadata</h2>
-        <p className="mt-1 text-sm text-slate-500">Update lightweight resume metadata without changing parsed CV content.</p>
+    <section className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
+      <div className="border-b border-outline px-6 py-5">
+        <h2 className="text-lg font-semibold text-on-surface">Edit resume metadata</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">Update lightweight resume metadata without changing parsed CV content.</p>
       </div>
 
       <form onSubmit={(event) => { event.preventDefault(); void handleSubmit(); }} className="space-y-6 px-6 py-6">
         <div className="grid gap-5 md:grid-cols-2">
-          <label className="space-y-2">
-            <span className="text-sm font-medium text-slate-700">Candidate ID</span>
-            <input value={candidateId} onChange={(event) => setCandidateId(event.target.value)} disabled={isSaving} className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
-          </label>
-          <label className="space-y-2">
-            <span className="text-sm font-medium text-slate-700">Parser version</span>
-            <input value={parserVersion} onChange={(event) => setParserVersion(event.target.value)} disabled={isSaving} placeholder="v1" className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100" />
-          </label>
+          <Input
+            label="Candidate ID"
+            value={candidateId}
+            onChange={(event) => setCandidateId(event.target.value)}
+            disabled={isSaving}
+          />
+          <Input
+            label="Parser version"
+            value={parserVersion}
+            onChange={(event) => setParserVersion(event.target.value)}
+            disabled={isSaving}
+            placeholder="v1"
+          />
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-slate-200 pt-5">
-          <Link href={`/resumes/${resumeId}`} className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Cancel</Link>
-          <button type="submit" disabled={isSaving} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300">
+        <div className="flex justify-end gap-3 border-t border-outline pt-5">
+          <Link href={`/resumes/${resumeId}`} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant">Cancel</Link>
+          <button type="submit" disabled={isSaving} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled">
             {isSaving ? 'Saving...' : 'Save changes'}
           </button>
         </div>

@@ -1,64 +1,105 @@
 'use client';
 
-import Link from 'next/link';
+import { EyeIcon, FileTextIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { ConfirmDialog, DataTable, ListControls, type DataTableColumn } from '@/components/common';
+import {
+  ActionIconButton,
+  ConfirmDialog,
+  DataTable,
+  ListControls,
+  type DataTableColumn,
+  type DataTableSort,
+  type DataTableSortOrder,
+} from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { deleteResume, getResumes } from '@/features/resumes/api/resume.api';
-import type { Resume } from '@/features/resumes/types/resume.type';
+import type { ParseStatus, Resume, ResumeQuery } from '@/features/resumes/types/resume.type';
 import type { PaginationMeta } from '@/lib/api/api-types';
+import { formatDate } from '@/lib/utils/format-date';
 
 const PAGE_SIZE = 10;
 
-const formatDate = (value?: string | null) => {
-  if (!value) return 'Not recorded';
-  return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(value));
+const PARSE_STATUS_CLASSES: Record<ParseStatus, string> = {
+  PENDING: 'bg-surface-variant text-on-surface-variant',
+  PROCESSING: 'bg-info/15 text-info',
+  SUCCESS: 'bg-success-container text-success',
+  FAILED: 'bg-error-container text-error',
 };
 
-function buildColumns(onDelete: (resume: Resume) => void): DataTableColumn<Resume>[] {
+const PARSE_STATUS_FILTER_OPTIONS = [
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Processing', value: 'PROCESSING' },
+  { label: 'Success', value: 'SUCCESS' },
+  { label: 'Failed', value: 'FAILED' },
+];
+
+function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) => void): DataTableColumn<Resume>[] {
   return [
     {
       key: 'resume',
       header: 'Resume',
+      sortKey: 'fileAsset.fileName',
       render: (resume) => (
-        <div>
-          <p className="text-sm font-semibold text-slate-950">
-            {resume.fileAsset?.fileName || resume.id}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">ID: {resume.id}</p>
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-variant text-on-surface-variant">
+            <FileTextIcon className="size-4" />
+          </div>
+          <div>
+            <p className="max-w-[200px] truncate text-sm font-semibold text-on-surface">
+              {resume.fileAsset?.fileName || resume.id}
+            </p>
+            <p className="font-mono text-xs text-on-surface-muted">{resume.id}</p>
+          </div>
         </div>
       ),
     },
     {
       key: 'candidate',
       header: 'Candidate',
-      render: (resume) => <p className="text-sm text-slate-600">{resume.candidateId}</p>,
+      sortKey: 'candidateId',
+      render: (resume) => <p className="font-mono text-xs text-on-surface-variant">{resume.candidateId}</p>,
     },
     {
       key: 'status',
       header: 'Parse Status',
-      render: (resume) => <p className="text-sm font-semibold text-slate-700">{resume.parseStatus}</p>,
+      filter: { key: 'parseStatus', options: PARSE_STATUS_FILTER_OPTIONS, activeValue: parseStatus },
+      render: (resume) => (
+        <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${PARSE_STATUS_CLASSES[resume.parseStatus]}`}>
+          {resume.parseStatus}
+        </span>
+      ),
     },
     {
       key: 'parser',
       header: 'Parser',
-      render: (resume) => <p className="text-sm text-slate-600">{resume.parserVersion || 'Not provided'}</p>,
+      sortKey: 'parserVersion',
+      render: (resume) => <p className="text-sm text-on-surface-variant">{resume.parserVersion || 'Not provided'}</p>,
     },
     {
       key: 'updatedAt',
       header: 'Updated',
-      render: (resume) => <p className="whitespace-nowrap text-sm text-slate-600">{formatDate(resume.updatedAt)}</p>,
+      sortKey: 'updatedAt',
+      render: (resume) => (
+        <p className="whitespace-nowrap text-sm text-on-surface-variant">
+          {resume.updatedAt ? formatDate(resume.updatedAt) : 'Not recorded'}
+        </p>
+      ),
     },
     {
       key: 'action',
       header: 'Action',
       className: 'text-right',
       render: (resume) => (
-        <div className="flex flex-wrap justify-end gap-3">
-          <Link href={`/resumes/${resume.id}`} className="text-sm font-semibold text-blue-600 transition hover:text-blue-700">View</Link>
-          <Link href={`/resumes/${resume.id}/edit`} className="text-sm font-semibold text-slate-600 transition hover:text-slate-900">Edit</Link>
-          <button type="button" onClick={() => onDelete(resume)} className="text-sm font-semibold text-red-600 transition hover:text-red-700">Delete</button>
+        <div className="flex flex-wrap items-center justify-end gap-1">
+          <ActionIconButton href={`/resumes/${resume.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+          <ActionIconButton href={`/resumes/${resume.id}/edit`} icon={<PencilIcon className="size-4" />} label="Edit" />
+          <ActionIconButton
+            icon={<Trash2Icon className="size-4" />}
+            label="Delete"
+            variant="danger"
+            onClick={() => onDelete(resume)}
+          />
         </div>
       ),
     },
@@ -69,6 +110,8 @@ export function ResumeList() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
+  const [parseStatus, setParseStatus] = useState<ParseStatus | ''>('');
+  const [sort, setSort] = useState<DataTableSort | null>({ key: 'createdAt', order: 'desc' });
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -79,7 +122,14 @@ export function ResumeList() {
     try {
       setIsLoading(true);
       setErrorMessage(null);
-      const response = await getResumes({ page, limit: PAGE_SIZE, search, sortBy: 'createdAt', sortOrder: 'desc' });
+      const response = await getResumes({
+        page,
+        limit: PAGE_SIZE,
+        search,
+        parseStatus: parseStatus || undefined,
+        sortBy: (sort?.key as ResumeQuery['sortBy']) ?? 'createdAt',
+        sortOrder: sort?.order ?? 'desc',
+      });
       setResumes(response.data);
       setMeta(response.meta);
     } catch (error) {
@@ -93,7 +143,19 @@ export function ResumeList() {
 
   useEffect(() => {
     void loadResumes();
-  }, [page, search]);
+  }, [page, search, parseStatus, sort]);
+
+  const handleSortChange = (key: string, order: DataTableSortOrder) => {
+    setSort({ key, order });
+    setPage(1);
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'parseStatus') {
+      setParseStatus(value as ParseStatus | '');
+      setPage(1);
+    }
+  };
 
   const handleDelete = async () => {
     if (!resumeToDelete) return;
@@ -122,7 +184,7 @@ export function ResumeList() {
       <EmptyState
         title="Failed to load resumes"
         description={errorMessage}
-        action={<button type="button" onClick={() => void loadResumes()} className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">Try again</button>}
+        action={<button type="button" onClick={() => void loadResumes()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
       />
     );
   }
@@ -130,8 +192,8 @@ export function ResumeList() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-slate-950">Resume list</h2>
-        <p className="mt-1 text-sm text-slate-500">{meta.total} resume record{meta.total === 1 ? '' : 's'} found.</p>
+        <h2 className="text-lg font-semibold text-on-surface">Resume list</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">{meta.total} resume record{meta.total === 1 ? '' : 's'} found.</p>
       </div>
 
       <ListControls
@@ -149,7 +211,14 @@ export function ResumeList() {
       {resumes.length === 0 ? (
         <EmptyState title="No resumes found" description="Upload a resume or adjust your search keyword." />
       ) : (
-        <DataTable data={resumes} columns={buildColumns(setResumeToDelete)} getRowKey={(resume) => resume.id} />
+        <DataTable
+          data={resumes}
+          columns={buildColumns(parseStatus, setResumeToDelete)}
+          getRowKey={(resume) => resume.id}
+          sort={sort}
+          onSortChange={handleSortChange}
+          onFilterChange={handleFilterChange}
+        />
       )}
 
       <ConfirmDialog

@@ -14,6 +14,7 @@ export const apiEndpoints = {
     detail: (id: string) => `/candidates/${id}`,
     update: (id: string) => `/candidates/${id}`,
     delete: (id: string) => `/candidates/${id}`,
+    bulkDelete: '/candidates/bulk-delete',
     applications: (id: string) => `/candidates/${id}/applications`,
   },
 
@@ -35,6 +36,7 @@ export const apiEndpoints = {
     detail: (id: string) => `/job-descriptions/${id}`,
     update: (id: string) => `/job-descriptions/${id}`,
     delete: (id: string) => `/job-descriptions/${id}`,
+    bulkDeactivate: '/job-descriptions/bulk-deactivate',
     parse: (id: string) => `/job-descriptions/${id}/parse`,
     parsedData: (id: string) => `/job-descriptions/${id}/parsed-data`,
     skills: (id: string) => `/job-descriptions/${id}/skills`,

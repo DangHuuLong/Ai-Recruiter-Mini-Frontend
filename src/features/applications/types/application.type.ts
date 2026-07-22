@@ -84,7 +84,14 @@ export type ApplicationQuery = {
   jobDescriptionId?: string;
   resumeId?: string;
   status?: ApplicationStatus;
-  sortBy?: 'createdAt' | 'updatedAt' | 'appliedAt' | 'lastActivityAt';
+  sortBy?:
+    | 'createdAt'
+    | 'updatedAt'
+    | 'appliedAt'
+    | 'lastActivityAt'
+    | 'candidate.fullName'
+    | 'jobDescription.title'
+    | 'resume.fileAsset.fileName';
   sortOrder?: 'asc' | 'desc';
 };
 

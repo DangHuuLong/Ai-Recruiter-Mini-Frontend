@@ -1,14 +1,135 @@
 'use client';
 
-import { PlusIcon, StarIcon } from 'lucide-react';
+import { PencilIcon, PlusIcon, StarIcon, Trash2Icon } from 'lucide-react';
 import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
+import {
+  ActionIconButton,
+  BulkActionBar,
+  ConfirmDialog,
+  DataTable,
+  type DataTableColumn,
+  type DataTableSort,
+} from '@/components/common';
 import { showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
-import { MOCK_EVALUATION_CONFIGS } from '@/features/evaluation-configs/mock/evaluation-config-mock-data';
+import {
+  MOCK_EVALUATION_CONFIGS,
+  type MockEvaluationConfig,
+} from '@/features/evaluation-configs/mock/evaluation-config-mock-data';
+import { sortMock } from '@/lib/utils/mock-delay';
 import { formatDate } from '@/lib/utils/format-date';
 
+const DEFAULT_FILTER_OPTIONS = [
+  { label: 'Default', value: 'true' },
+  { label: 'Not default', value: 'false' },
+];
+
+function buildColumns(
+  isDefaultFilter: string,
+  onDelete: (config: MockEvaluationConfig) => void,
+): DataTableColumn<MockEvaluationConfig>[] {
+  return [
+    {
+      key: 'name',
+      header: 'Config name',
+      sortKey: 'name',
+      render: (config) => (
+        <div>
+          <p className="font-semibold text-on-surface">{config.name}</p>
+          {config.description ? (
+            <p className="mt-0.5 max-w-sm truncate text-xs text-on-surface-muted">{config.description}</p>
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      key: 'scope',
+      header: 'Scope',
+      render: (config) => (
+        <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
+          {config.jobDescriptionTitle ?? 'Organization default'}
+        </span>
+      ),
+    },
+    {
+      key: 'isDefault',
+      header: 'Default',
+      filter: { key: 'isDefault', options: DEFAULT_FILTER_OPTIONS, activeValue: isDefaultFilter },
+      render: (config) =>
+        config.isDefault ? (
+          <StarIcon className="size-4 fill-warning text-warning" />
+        ) : (
+          <span className="text-on-surface-muted">—</span>
+        ),
+    },
+    {
+      key: 'updatedAt',
+      header: 'Last updated',
+      sortKey: 'updatedAt',
+      render: (config) => (
+        <p className="whitespace-nowrap text-on-surface-variant">{formatDate(config.updatedAt)}</p>
+      ),
+    },
+    {
+      key: 'action',
+      header: 'Actions',
+      className: 'text-right',
+      render: (config) => (
+        <div className="flex flex-wrap items-center justify-end gap-1">
+          <ActionIconButton
+            href={`${ROUTES.EVALUATION_CONFIGS}/${config.id}/edit`}
+            icon={<PencilIcon className="size-4" />}
+            label="Edit"
+          />
+          <ActionIconButton
+            icon={<Trash2Icon className="size-4" />}
+            label="Delete"
+            variant="danger"
+            onClick={() => onDelete(config)}
+          />
+        </div>
+      ),
+    },
+  ];
+}
+
 export function EvaluationConfigList() {
+  const [configs, setConfigs] = useState<MockEvaluationConfig[]>(MOCK_EVALUATION_CONFIGS);
+  const [isDefaultFilter, setIsDefaultFilter] = useState('');
+  const [sort, setSort] = useState<DataTableSort | null>(null);
+  const [configToDelete, setConfigToDelete] = useState<MockEvaluationConfig | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkConfirmOpen, setIsBulkConfirmOpen] = useState(false);
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'isDefault') setIsDefaultFilter(value);
+  };
+
+  const visibleConfigs = useMemo(() => {
+    let filtered = configs;
+    if (isDefaultFilter) {
+      filtered = filtered.filter((config) => String(config.isDefault) === isDefaultFilter);
+    }
+    return sortMock(filtered, sort?.key, sort?.order);
+  }, [configs, isDefaultFilter, sort]);
+
+  const handleDelete = () => {
+    if (!configToDelete) return;
+    setConfigs((current) => current.filter((config) => config.id !== configToDelete.id));
+    showToast.success('Config deleted', { description: configToDelete.name });
+    setConfigToDelete(null);
+  };
+
+  const handleBulkDelete = () => {
+    const count = selectedIds.size;
+    setConfigs((current) => current.filter((config) => !selectedIds.has(config.id)));
+    showToast.success(`${count} config${count === 1 ? '' : 's'} deleted successfully`);
+    setSelectedIds(new Set());
+    setIsBulkConfirmOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -27,75 +148,44 @@ export function EvaluationConfigList() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
-        <table className="w-full border-collapse text-sm">
-          <thead className="bg-surface-variant">
-            <tr>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Config name
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Scope
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Default
-              </th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Last updated
-              </th>
-              <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-outline">
-            {MOCK_EVALUATION_CONFIGS.map((config) => (
-              <tr key={config.id} className="transition-colors hover:bg-surface-variant/60">
-                <td className="px-5 py-4">
-                  <p className="font-semibold text-on-surface">{config.name}</p>
-                  {config.description ? (
-                    <p className="mt-0.5 max-w-sm truncate text-xs text-on-surface-muted">
-                      {config.description}
-                    </p>
-                  ) : null}
-                </td>
-                <td className="px-5 py-4">
-                  <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-                    {config.jobDescriptionTitle ?? 'Organization default'}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
-                  {config.isDefault ? (
-                    <StarIcon className="size-4 fill-warning text-warning" />
-                  ) : (
-                    <span className="text-on-surface-muted">—</span>
-                  )}
-                </td>
-                <td className="px-5 py-4 whitespace-nowrap text-on-surface-variant">
-                  {formatDate(config.updatedAt)}
-                </td>
-                <td className="px-5 py-4">
-                  <div className="flex justify-end gap-3">
-                    <Link
-                      href={`${ROUTES.EVALUATION_CONFIGS}/${config.id}/edit`}
-                      className="cursor-pointer text-sm font-semibold text-primary hover:underline"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => showToast.success('Config deleted', { description: config.name })}
-                      className="cursor-pointer text-sm font-semibold text-error hover:underline"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <BulkActionBar count={selectedIds.size} onClear={() => setSelectedIds(new Set())}>
+        <button
+          type="button"
+          onClick={() => setIsBulkConfirmOpen(true)}
+          className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-error px-4 text-sm font-semibold text-on-primary transition hover:opacity-90"
+        >
+          <Trash2Icon className="size-4" />
+          Delete selected
+        </button>
+      </BulkActionBar>
+
+      <DataTable
+        data={visibleConfigs}
+        columns={buildColumns(isDefaultFilter, setConfigToDelete)}
+        getRowKey={(config) => config.id}
+        sort={sort}
+        onSortChange={(key, order) => setSort({ key, order })}
+        onFilterChange={handleFilterChange}
+        selection={{ selectedIds, onChange: setSelectedIds }}
+      />
+
+      <ConfirmDialog
+        open={Boolean(configToDelete)}
+        title="Delete config?"
+        description="This action removes the evaluation config. Existing evaluations that used it keep their recorded scores."
+        confirmLabel="Delete config"
+        onCancel={() => setConfigToDelete(null)}
+        onConfirm={handleDelete}
+      />
+
+      <ConfirmDialog
+        open={isBulkConfirmOpen}
+        title={`Delete ${selectedIds.size} config${selectedIds.size === 1 ? '' : 's'}?`}
+        description="This action removes the selected evaluation configs. Existing evaluations that used them keep their recorded scores."
+        confirmLabel="Delete selected"
+        onCancel={() => setIsBulkConfirmOpen(false)}
+        onConfirm={handleBulkDelete}
+      />
     </div>
   );
 }
