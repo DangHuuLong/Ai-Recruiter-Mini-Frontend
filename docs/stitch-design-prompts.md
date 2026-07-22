@@ -1,10 +1,10 @@
 # Prompt thiết kế giao diện bằng Stitch (AI UI design tool)
 
-> Dán lần lượt từng prompt bên dưới vào Stitch, **theo đúng thứ tự 0 → 9**. Prompt 0 thiết lập style guide chung — mọi prompt sau nên nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
+> Dán lần lượt từng prompt bên dưới vào Stitch, **theo đúng thứ tự 0 → 14**. Prompt 0 thiết lập style guide chung — mọi prompt sau nên nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
 
 ## Bối cảnh
 
-Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hiện đã build xong: Candidates, Resumes, Job Descriptions, Applications, Auth login. Chưa có UI cho: Organization/Auth đầy đủ (register, verify email, forgot/reset password), Enterprise Batch Scoring (ma trận CV×JD), các trang quản trị nội bộ (Evaluation Configs, User management, Audit log, Interview Question bank), và luồng Public ẩn danh. Bộ prompt dưới đây nhắm vào đúng 4 mảng thiếu này, với **hướng thiết kế lại hoàn toàn** (không giữ style Tailwind mặc định hiện tại).
+Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hiện đã build xong: Candidates, Resumes, Job Descriptions, Applications, Evaluations, Auth login, Enterprise Batch Scoring, Admin/Dev Tools, luồng Public. Prompt 0–9 (bên dưới) đã phủ Auth/Batch Scoring/Admin/Public. Prompt 10–14 (mới thêm) nhắm vào 5 khu vực CRUD lõi (Candidates/Resumes/Job Descriptions/Applications/Evaluations) — các màn này build **trước** đợt redesign, vừa được restyle lại đúng token màu (`surface`/`primary`/`outline`...) nhưng bố cục vẫn là layout Tailwind mặc định (table đơn giản, card trắng phẳng, không có điểm nhấn thị giác) — cần Stitch thiết kế lại bố cục/thị giác cho đẹp và có chiều sâu hơn, **giữ nguyên cấu trúc dữ liệu/field đã liệt kê** vì đây là API thật, không phải mock.
 
 ## Danh sách màn hình
 
@@ -26,6 +26,11 @@ Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hi�
 | 14 | Interview Question bank | Nội bộ (role DEV) |
 | 15 | Public landing + tạo batch ẩn danh | Public |
 | 16 | Public batch matrix (chỉ xem) | Public |
+| 17 | Candidates — danh sách + chi tiết + tạo/sửa | CRUD lõi |
+| 18 | Resumes — danh sách + upload + chi tiết (parsed CV) + sửa | CRUD lõi |
+| 19 | Job Descriptions — danh sách + chi tiết (raw/parsed/skills) + tạo/sửa | CRUD lõi |
+| 20 | Applications — danh sách + chi tiết (status/events) + tạo/sửa | CRUD lõi |
+| 21 | Evaluations — danh sách + kết quả chấm điểm AI + tạo mới | CRUD lõi — màn hình phân tích trung tâm |
 
 ---
 
@@ -218,9 +223,117 @@ A read-only version of the matrix view from the authenticated product (same heat
 
 ---
 
+## Prompt 10 — Core CRUD: Candidates
+
+```
+Design the "Candidates" screens for AI Recruiter's authenticated dashboard, using the established design system and app shell (this lives under a "Recruiting" section in the sidebar). Candidates are the root entity — every resume, application, and evaluation links back to one.
+
+LIST VIEW
+Title "Candidates", "Create Candidate" button top-right. Search bar (searches name/email/phone/location) + pagination below the table, matching the app's standard list pattern. Table columns: Candidate (name + a small monospace ID below it), Email, Phone, Location, row actions (View, Edit, Delete with confirmation). Empty state for a brand-new organization inviting the recruiter to create the first candidate profile.
+
+DETAIL VIEW
+Header card: candidate full name as the page title, a back link to the list. Three content sections below: "Basic information" (Full name, Location as a 2-column key-value grid), "Contact information" (Email, Phone), "Online profiles" (LinkedIn/GitHub/Portfolio — each rendered as a clickable link when present, or "Not provided" when empty), and a "Resumes" section showing a compact table of resume records linked to this candidate (resume ID, parse status badge, a "View detail" link per row), with an empty state ("No resumes linked yet — Upload Resume" CTA) if none exist.
+
+CREATE / EDIT FORM
+A single-column form inside a card: Full name (required), Email, Phone, LinkedIn URL, GitHub URL, Portfolio URL, Location. Cancel + Submit buttons at the bottom, with a small helper note ("This profile will be used for resumes, applications, and evaluations").
+
+Design goal: this is the single most-visited screen in the app (recruiters live in the candidate list) — give the list view real visual polish (avatar-style initials chip per row, subtle hover state, comfortable row height) rather than a plain flat table.
+```
+
+---
+
+## Prompt 11 — Core CRUD: Resumes
+
+```
+Design the "Resumes" screens for AI Recruiter's authenticated dashboard, using the established design system and app shell ("Recruiting" section). This is where CV files are uploaded and their AI-parsed structured data is reviewed.
+
+LIST VIEW
+Title "Resumes". An "Upload CV" panel sits above the list (see below), then the resume table: search bar + pagination, columns: Resume (file name or ID), Candidate ID, Parse Status (badge: PENDING/PROCESSING/SUCCESS/FAILED), Parser version, Updated date, row actions (View, Edit, Delete).
+
+UPLOAD PANEL
+A card with a candidate-ID input and a drag-and-drop file dropzone (PDF/DOCX, shows the chosen file name once selected, a max-size hint like "up to 5 MB"), an upload-progress bar that appears once submitted (percentage + status label: Uploading → Processing → Completed/Failed), and an "Upload CV" submit button.
+
+DETAIL VIEW — the richest screen in this set
+Header: back link, "Resume detail" title, a "Parse CV" / "Retry parse" action button (disabled + spinner while running). Sections below: "Resume information" (Resume ID, Candidate ID, Parse status, File asset ID as a 4-column info-card grid), "Parse status" card (current status line + explanatory sentence that changes per status + an error message box when parsing failed), "Linked candidate" (a link to the candidate detail page), and the centerpiece — "Parsed CV Profile": a series of icon-labeled sub-sections rendered as cards: Personal information (name/email/phone/location as a 2-col grid), Professional summary (paragraph), Technical skills (compact colored tag chips, each with a small icon badge showing the skill's initials, an optional category label), Experience (a card per role: title, company/duration subtitle, description paragraph, technology tags), Education (a card per entry: institution + degree/field, a year-range pill top-right, description), Projects (same card pattern as Experience), Certifications and Languages (two side-by-side simple bulleted-card lists). Design each of these 7 sub-sections with a consistent card language (small icon chip + title + description in the section header) so the whole parsed-data screen reads as one coherent "CV report" rather than a stack of unrelated boxes.
+
+EDIT FORM
+A lightweight metadata-only form (this does NOT re-parse the CV): Candidate ID, Parser version. Cancel + Save changes.
+
+Design goal: the Parsed CV Profile section is effectively an information-dense "report" — invest the most visual craft here (icon language, card rhythm, skill-tag styling) since it's the screen recruiters spend the most time reading.
+```
+
+---
+
+## Prompt 12 — Core CRUD: Job Descriptions
+
+```
+Design the "Job Descriptions" screens for AI Recruiter's authenticated dashboard, using the established design system and app shell ("Recruiting" section).
+
+LIST VIEW
+Title "Job Descriptions", "Create JD" button top-right. Search bar + pagination. Table columns: Job Description (title + company name + an Active/Inactive tag underneath), Location, Type (employment type + seniority, stacked), Parse Status (badge), Skills (count), Updated date, row actions (View, Edit, Deactivate [amber text, only shown when active], Delete).
+
+DETAIL VIEW — three stacked sections
+1. Header card: back link, JD title as page heading, company · location subtitle, a row of status/type badges (parse status + employment type + seniority as neutral pills), an inline error message box if the last parse failed, and a "Parse JD" action button top-right.
+2. "Raw JD Text" card: shows the parser version used, and the full original job posting text in a scrollable monospace/code-style block.
+3. "Parsed JD Data" card (shown once parsed, otherwise a dashed empty-state card prompting to click Parse JD): a top row of info cards (Parsed Title, Seniority, Employment Type, Minimum Experience, Education — as a small grid), then three bulleted list sections (Responsibilities, Requirements, Nice to have), two skill-tag sections (Required skills, Preferred skills — each skill tag shows name · normalized name · core/optional), and a "Domain keywords" tag cloud.
+4. "Job Skills" manager card below: an inline add/edit form (skill name, normalized name, type dropdown Required/Preferred, weight number input, "mark as core" checkbox, Add/Update button) followed by two skill-card grids grouped by "Required skills" and "Preferred skills" — each card shows the skill name, a type badge (color-coded by required vs preferred), a CORE badge when applicable, the weight, and Edit/Delete row actions.
+
+CREATE / EDIT FORM
+Fields: Title (required), Company, Department, Location, Employment Type, Seniority (as a 2-column grid), then a large "Raw JD Text" textarea (required) with a helper note that this text can be parsed later to extract structured data.
+
+Design goal: this screen mixes structured metadata, freeform raw text, AI-parsed output, and manual skill curation — use clear visual hierarchy (distinct card treatments) so a recruiter can tell at a glance which parts are "what I typed" vs "what the AI extracted" vs "what I'm manually managing".
+```
+
+---
+
+## Prompt 13 — Core CRUD: Applications
+
+```
+Design the "Applications" screens for AI Recruiter's authenticated dashboard, using the established design system and app shell ("Recruiting" section). An application links one candidate + one of their resumes + one job description, and tracks a hiring-pipeline status through its lifecycle.
+
+LIST VIEW
+Title "Applications", "Create Application" button top-right. Search bar + pagination. Table columns: Application (candidate name + a small ID below), Job description (title + company subtitle), Resume (file name, truncated), Status (a colored pill for one of 9 values — DRAFT, APPLIED, SCREENING, SHORTLISTED, INTERVIEWING, OFFER, HIRED, REJECTED, WITHDRAWN — design a clear color progression: neutral for Draft, brand-primary for early funnel stages, an "in review" accent for Shortlisted/Interviewing, amber for Offer, green for Hired, red for Rejected, muted gray for Withdrawn), Applied at (date+time), row actions (View, Edit, Delete).
+
+DETAIL VIEW
+Header card: candidate name as title, "Candidate application for [JD title]" subtitle, the status pill and a prominent "Create evaluation" button top-right. Below: an 8-item info-card grid (Candidate ID, Resume ID, Job Description ID, Applied at, Source, Last activity, Evaluation count, Event count). Then a 3-column row of linked-record cards — Candidate (name, email, "View candidate" link), Resume (file name, parse status, "View resume" link), Job description (title, company, "View JD" link). A Notes card if notes exist. Below the header card: a separate "Update status" card (status dropdown + a status-note text input + Update button, with a small note that changing status logs a timeline event) and an "Application events" card showing a reverse-chronological timeline (each entry: event type label, a relative/absolute timestamp, and a description — e.g. "Status changed from APPLIED to SCREENING. Note: ...").
+
+CREATE FORM
+Three dependent dropdowns in a row: Candidate → Resume (populated only after a candidate is picked, shows a loading state while fetching, and a warning note if the candidate has no resumes yet) → Job description (only active JDs listed). Below that: Source and Notes text inputs. Cancel + Create Application buttons.
+
+EDIT FORM
+A lighter form: Source input + a read-only "Linked records" info card (candidate/JD, non-editable) + Notes textarea. Status changes are intentionally NOT part of this form (they live on the detail page's status-update card).
+
+Design goal: the 9-status pipeline is the visual backbone of this whole feature — get the status pill color scale right first, since it's reused across the list, detail header, and status-update form.
+```
+
+---
+
+## Prompt 14 — Core CRUD: Evaluations (AI scoring result)
+
+```
+Design the "Evaluations" screens for AI Recruiter's authenticated dashboard, using the established design system and app shell ("Recruiting" section). An evaluation is the AI-generated scoring result for one application (one candidate × one job description) — this is the analytical payoff screen of the whole product for a single candidate, distinct from the bulk Batch Matrix feature.
+
+LIST VIEW
+Title "Evaluations", "New evaluation" button top-right. A single filter control (Status dropdown: All / Pending / Processing / Completed / Failed — there is intentionally no free-text search here, only status filtering) + pagination below the table. Table columns: Candidate, Job description (truncated), Status (badge: neutral Pending, blue/info Processing, green Completed, red Failed), Overall score (bold number out of 100, or a dash if not yet scored), Created date, a View row action. Empty state prompting to create the first evaluation from an application.
+
+DETAIL VIEW — the hero analytical screen
+Header card: a large circular score badge (0–100, prominent brand-primary color) on the left, next to it the candidate name as title, "[JD title] · Status [STATUS]" subtitle, and "Started [time] · Completed [time]" caption. Top-right actions: "View application" button, and — only when status is FAILED — a "Retry evaluation" button plus a red error-message banner below the header showing the failure reason.
+Below the header, in order: a 2-column row of "Summary" and "Skill gap summary" cards (paragraph text each), an "Explanation" card (paragraph), a "Score breakdown" card listing each scoring criterion (Skills Match, Experience Relevance, Project Relevance, Education/Certification, Keyword/Domain Alignment) as a row with the criterion name, "Weight X% · Contribution Y" caption, a bold percentage on the right, a horizontal progress bar below, and an optional reason paragraph + bulleted evidence list.
+Then a 2-column "Matched skills" / "Missing skills" section (each skill shown as a card: name + normalized name, an importance badge, an optional note, and a bulleted evidence list) — matched should read positively (green accents), missing should read as a gap to address (red/amber accents) without feeling alarming. A "Related skills" section appears below only when applicable.
+Then an "Evidence" card showing the raw evidence data as a formatted, syntax-highlighted-style code block (this is a technical/debug view, keep it visually de-emphasized compared to the sections above).
+Finally an "Interview questions" card: a numbered list of AI-generated questions, each in its own sub-card with a "Question N" label, the question text prominent, a row of small tags (category / linked skill / difficulty), and a rationale paragraph.
+
+CREATE FORM
+A single-field form inside a card: an "Application" dropdown listing candidate name · JD title · current status per option, plus a "Selected application" summary card that appears once one is picked (candidate name + JD title). A helper note explains scoring runs asynchronously and the user will be redirected to the evaluation detail page. Cancel + "Create evaluation" buttons.
+
+Design goal: the score breakdown and matched/missing skills sections are what a recruiter reads first — make the big score badge and the per-criterion progress bars the strongest visual anchors on the page, with the raw JSON evidence block deliberately the least visually prominent element (it's a technical fallback, not the headline).
+```
+
+---
+
 ## Sau khi có kết quả từ Stitch
 
 1. Dán Prompt 0 trước, xác nhận style guide hợp lý (đúng tinh thần B2B, không quá "consumer app") trước khi dùng làm nền cho các prompt sau.
-2. Dán lần lượt Prompt 1 → 9, nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
-3. Ưu tiên review kỹ Prompt 3 (Matrix) trước — đây là màn hình lõi khác biệt nhất, nên lặp lại nhiều lần nếu heatmap/interaction chưa ổn.
-4. Sau khi có bộ thiết kế ưng ý: map thành component thật trong dự án theo đúng convention hiện có (`api/`+`components/`+`hooks/`+`types/`+`validations/` mỗi feature module, dùng lại `apiClient`/`DataTable`/`ConfirmDialog`/`showToast` sẵn có).
+2. Dán lần lượt Prompt 1 → 14, nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
+3. Ưu tiên review kỹ Prompt 3 (Matrix) và Prompt 14 (Evaluation detail) trước — đây là 2 màn hình phân tích trung tâm, nên lặp lại nhiều lần nếu bố cục/heatmap/hierarchy chưa ổn.
+4. Sau khi có bộ thiết kế ưng ý: map thành component thật trong dự án theo đúng convention hiện có (`api/`+`components/`+`hooks/`+`types/`+`validations/` mỗi feature module, dùng lại `apiClient`/`DataTable`/`ConfirmDialog`/`showToast` sẵn có). Với Prompt 10–14 đặc biệt lưu ý: đây là màn hình API thật, khi code lại chỉ đổi phần UI/layout — **giữ nguyên toàn bộ hooks/api calls/logic hiện có**, không tự ý đổi field hay hành vi.
