@@ -17,7 +17,7 @@ export interface CandidateQuery {
   page?: number;
   limit?: number;
   search?: string;
-  sortBy?: 'createdAt' | 'updatedAt' | 'fullName';
+  sortBy?: 'createdAt' | 'updatedAt' | 'fullName' | 'primaryEmail' | 'primaryPhone' | 'location';
   sortOrder?: 'asc' | 'desc';
 }
 
