@@ -10,6 +10,7 @@ import {
   STATUS_LABELS,
 } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
 import { cn } from '@/lib/utils/cn';
+import { formatDate } from '@/lib/utils/format-date';
 
 export function BatchList() {
   return (
@@ -89,7 +90,7 @@ export function BatchList() {
                   <td className="px-5 py-4 text-on-surface-variant">{batch.totalCvCount}</td>
                   <td className="px-5 py-4 text-on-surface-variant">{batch.totalJdCount}</td>
                   <td className="px-5 py-4 whitespace-nowrap text-on-surface-variant">
-                    {new Date(batch.createdAt).toLocaleDateString()}
+                    {formatDate(batch.createdAt)}
                   </td>
                 </tr>
               ))}

@@ -26,10 +26,14 @@ export const ROUTES = {
   BATCH_SCORING_CREATE: '/batch-scoring/new',
 
   EVALUATION_CONFIGS: '/evaluation-configs',
+  EVALUATION_CONFIG_CREATE: '/evaluation-configs/new',
 
   USERS: '/users',
 
   AUDIT_LOG: '/audit-log',
 
   INTERVIEW_QUESTIONS: '/interview-questions',
+  INTERVIEW_QUESTION_CREATE: '/interview-questions/new',
+  INTERVIEW_QUESTIONS_BULK_CREATE: '/interview-questions/bulk-create',
+  INTERVIEW_QUESTIONS_SEARCH_TEST: '/interview-questions/test-retrieval',
 } as const;

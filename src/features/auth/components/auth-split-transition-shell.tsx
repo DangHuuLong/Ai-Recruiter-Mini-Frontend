@@ -50,7 +50,7 @@ export function AuthSplitTransitionShell({ children }: AuthSplitTransitionShellP
   return (
     <main
       className={cn(
-        'no-scrollbar flex h-screen overflow-y-auto bg-surface',
+        'no-scrollbar flex h-dvh overflow-y-auto bg-surface',
         mode === 'register' ? 'flex-row-reverse' : 'flex-row',
       )}
     >
