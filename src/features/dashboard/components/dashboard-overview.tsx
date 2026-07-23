@@ -14,17 +14,15 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { AvatarChip } from '@/components/common';
+import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import { ApplicationStatusBadge } from '@/features/applications/components/application-status-badge';
 import {
-  getApplicationFunnel,
-  getBatchesInProgress,
-  getDashboardKpis,
-  getRecentActivity,
-  getRecentEvaluations,
-  getSkillGapHighlights,
+  loadDashboardOverview,
+  type DashboardOverviewData,
 } from '@/features/dashboard/utils/dashboard-stats.util';
 import { STATUS_LABELS } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
 import { formatRelativeTime } from '@/lib/utils/format-date';
@@ -44,12 +42,54 @@ const QUICK_ACTIONS = [
 ];
 
 export function DashboardOverview() {
-  const kpis = getDashboardKpis();
-  const funnel = getApplicationFunnel();
-  const recentEvaluations = getRecentEvaluations();
-  const batchesInProgress = getBatchesInProgress();
-  const skillGap = getSkillGapHighlights();
-  const recentActivity = getRecentActivity();
+  const [data, setData] = useState<DashboardOverviewData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const load = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const overview = await loadDashboardOverview();
+      setData(overview);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load dashboard data';
+      setErrorMessage(message);
+      showToast.error('Failed to load dashboard data', { description: message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  if (isLoading && !data) {
+    return <LoadingState title="Loading dashboard..." description="Please wait while your dashboard data is being loaded." />;
+  }
+
+  if (errorMessage && !data) {
+    return (
+      <EmptyState
+        title="Failed to load dashboard"
+        description={errorMessage}
+        action={
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
+          >
+            Try again
+          </button>
+        }
+      />
+    );
+  }
+
+  if (!data) return null;
+
+  const { kpis, funnel, recentEvaluations, batchesInProgress, skillGap, recentActivity } = data;
 
   const applicationsTrend =
     kpis.applicationsLastMonth > 0
@@ -87,16 +127,8 @@ export function DashboardOverview() {
             </div>
             <p className="text-sm font-semibold text-on-surface-variant">Active Job Descriptions</p>
           </div>
-          <p className="mt-3 text-3xl font-bold text-on-surface">
-            {kpis.activeJobDescriptions}
-            <span className="text-base font-normal text-on-surface-muted"> / {kpis.totalJobDescriptions} total</span>
-          </p>
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-variant">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${kpis.totalJobDescriptions ? (kpis.activeJobDescriptions / kpis.totalJobDescriptions) * 100 : 0}%` }}
-            />
-          </div>
+          <p className="mt-3 text-3xl font-bold text-on-surface">{kpis.activeJobDescriptions}</p>
+          <p className="mt-1 text-xs text-on-surface-muted">Currently open for applications</p>
         </div>
 
         <div className="rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card">
