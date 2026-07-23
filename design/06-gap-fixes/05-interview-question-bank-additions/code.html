@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Question Bank | RecruitAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=Geist:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f7f9fb",
+                    "inverse-surface": "#2d3133",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#3323cc",
+                    "on-tertiary-container": "#75859d",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary-fixed": "#0f0069",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container": "#eceef0",
+                    "tertiary-fixed": "#d3e4fe",
+                    "secondary": "#4b41e1",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-fixed-dim": "#c3c0ff",
+                    "tertiary": "#000000",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-error": "#ffffff",
+                    "on-background": "#191c1e",
+                    "primary": "#000000",
+                    "surface-variant": "#e0e3e5",
+                    "on-surface": "#191c1e",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#7c839b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "on-surface-variant": "#45464d",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#bec6e0",
+                    "primary-container": "#131b2e",
+                    "outline-variant": "#c6c6cd",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-fixed": "#e2dfff",
+                    "on-primary-fixed": "#131b2e",
+                    "tertiary-container": "#0b1c30",
+                    "secondary-container": "#645efb",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "outline": "#76777d",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "2xl": "48px",
+                    "md": "16px",
+                    "container-max": "1440px",
+                    "sm": "8px",
+                    "base": "4px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "code-id": ["Geist"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code-id": ["12px", {"lineHeight": "1", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        .ai-glow {
+            position: relative;
+        }
+        .ai-glow::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(45deg, #4b41e1, #645efb, #dae2fd);
+            z-index: -1;
+            border-radius: inherit;
+            opacity: 0.3;
+        }
+
+        .similarity-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        .similarity-fill {
+            height: 100%;
+            background: #4b41e1;
+            transition: width 1s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Sidebar (Shared Component) -->
+<aside class="flex flex-col h-full p-md bg-surface-container-lowest border-r border-outline-variant h-screen w-64 fixed left-0 top-0 z-50">
+<div class="mb-xl px-2">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">RecruitAI</h1>
+<p class="text-on-surface-variant text-body-sm">Expert Partner</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+                Candidates
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+                Jobs
+            </a>
+<!-- Active Tab: Interviews/Question Bank -->
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container font-semibold rounded-lg scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+                Interviews
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto space-y-4 pt-md border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary py-2.5 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                New Requisition
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-body-sm" href="#">
+<span class="material-symbols-outlined">help</span> Help
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg text-body-sm" href="#">
+<span class="material-symbols-outlined">logout</span> Logout
+                </a>
+</div>
+</div>
+</aside>
+<!-- Header (Shared Component) -->
+<header class="flex justify-between items-center h-16 px-gutter ml-64 w-[calc(100%-16rem)] bg-surface border-b border-outline-variant sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container border border-outline-variant rounded-full text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary/20" placeholder="Global Search..." type="text"/>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface" href="#">Talent Pool</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface" href="#">Pipeline</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a recruitment manager in a modern office setting. High-quality corporate photography, soft side lighting, minimalist white background with a hint of architectural detail. The person is smiling confidently, dressed in contemporary business casual attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnuq_vIKUsSshAlzyx_Q93y5gmMkM0IV7_xYHje_lx7SN95PWNH_lotc6GUlkLLMdDqwzto31gNx7ijTnfwUfzr3NUymWj2h40Ep3SMblREof3PY3fP4aNlDQkw4L12rVnCl7DlWEfCy_2xEvAp2uLhimZEdvlvj0p90tutoMfBbmEbJ8_H6U2GehKpmtM0NWF957drDlOuHPTP_O1SM9_XUUsDYYqYRkaXPg6W5KEfPXClThu4rE-wsKsechneBEogy3PB6j-ekg"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 p-lg flex gap-lg min-h-[calc(100vh-4rem)]">
+<!-- Left: Question Bank Table -->
+<div class="flex-1 space-y-lg max-w-[calc(100%-400px)]">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Question Bank</h2>
+<p class="text-on-surface-variant">Curate and manage your intelligent interview repository.</p>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-semibold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+                    New question
+                </button>
+</div>
+<!-- Filters -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-wrap gap-md items-center">
+<div class="flex-1 min-w-[200px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">filter_list</span>
+<input class="w-full pl-10 pr-4 py-2 bg-transparent border-none focus:ring-0 text-body-sm" placeholder="Search questions..." type="text"/>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<select class="bg-transparent border-none text-body-sm focus:ring-0 text-on-surface-variant pr-8">
+<option>Occupation Family</option>
+<option>Engineering</option>
+<option>Product</option>
+<option>Design</option>
+</select>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<select class="bg-transparent border-none text-body-sm focus:ring-0 text-on-surface-variant pr-8">
+<option>Specialization</option>
+<option>Frontend</option>
+<option>Backend</option>
+<option>DevOps</option>
+</select>
+</div>
+<!-- Table Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-4 font-label-caps text-label-caps text-on-surface-variant">Question</th>
+<th class="px-lg py-4 font-label-caps text-label-caps text-on-surface-variant">Occupation</th>
+<th class="px-lg py-4 font-label-caps text-label-caps text-on-surface-variant">Complexity</th>
+<th class="px-lg py-4 font-label-caps text-label-caps text-on-surface-variant">Status</th>
+<th class="px-lg py-4 font-label-caps text-label-caps text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-4 max-w-xs">
+<div class="truncate text-body-sm text-on-surface font-medium" title="Explain the difference between optimistic and pessimistic locking in a distributed database.">
+                                    Explain the difference between optimistic and pessimistic locking...
+                                </div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-sm font-semibold">Engineering</span>
+<span class="text-[12px] text-on-surface-variant">Backend</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded text-[11px] font-bold uppercase tracking-wider">Advanced</span>
+</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-secondary-container"></span>
+<span class="text-[12px] text-on-surface-variant">Success</span>
+</div>
+</td>
+<td class="px-lg py-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant" title="Re-embed">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant" title="Approve">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</button>
+<button class="p-1.5 hover:bg-error-container hover:text-on-error-container rounded text-error" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-4 max-w-xs">
+<div class="truncate text-body-sm text-on-surface font-medium" title="How would you optimize the critical rendering path for a React application?">
+                                    How would you optimize the critical rendering path for a React...
+                                </div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-sm font-semibold">Engineering</span>
+<span class="text-[12px] text-on-surface-variant">Frontend</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant rounded text-[11px] font-bold uppercase tracking-wider">Mid-Level</span>
+</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+<span class="text-[12px] text-on-surface-variant">Pending</span>
+</div>
+</td>
+<td class="px-lg py-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">refresh</span></button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">check_circle</span></button>
+<button class="p-1.5 hover:bg-error-container hover:text-on-error-container rounded text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-4 max-w-xs">
+<div class="truncate text-body-sm text-on-surface font-medium" title="What are the main differences between a microservices and monolithic architecture?">
+                                    What are the main differences between a microservices and...
+                                </div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-sm font-semibold">Engineering</span>
+<span class="text-[12px] text-on-surface-variant">Architect</span>
+</div>
+</td>
+<td class="px-lg py-4">
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant rounded text-[11px] font-bold uppercase tracking-wider">Mid-Level</span>
+</td>
+<td class="px-lg py-4">
+<div class="flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-error"></span>
+<span class="text-[12px] text-on-surface-variant">Failed</span>
+</div>
+</td>
+<td class="px-lg py-4 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">refresh</span></button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">check_circle</span></button>
+<button class="p-1.5 hover:bg-error-container hover:text-on-error-container rounded text-error"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-lg py-4 bg-surface-container-low flex justify-between items-center">
+<span class="text-[12px] text-on-surface-variant">Showing 3 of 142 questions</span>
+<div class="flex gap-2">
+<button class="p-1 rounded hover:bg-surface-container-highest disabled:opacity-30" disabled=""><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 rounded hover:bg-surface-container-highest"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Test Retrieval Tool Panel -->
+<aside class="w-[380px] space-y-lg sticky top-lg h-fit">
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-lg p-lg overflow-hidden relative">
+<div class="absolute top-0 right-0 p-4">
+<span class="material-symbols-outlined text-secondary/20 scale-[2.5] opacity-50">smart_toy</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-1">Test Retrieval</h3>
+<p class="text-body-sm text-on-surface-variant mb-lg">Verify question matching or generate new AI-powered prompts.</p>
+<div class="space-y-md">
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">Query Text</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all outline-none resize-none" placeholder="Describe the role or specific technical concept..." rows="3"></textarea>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">Family</label>
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary">
+<option>Engineering</option>
+<option>Product</option>
+</select>
+</div>
+<div>
+<label class="block text-label-caps font-label-caps text-on-surface-variant mb-2">Spec.</label>
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary">
+<option>Backend</option>
+<option>Frontend</option>
+</select>
+</div>
+</div>
+<div class="space-y-sm pt-2">
+<button class="w-full py-2.5 px-4 bg-surface-variant text-on-surface-variant rounded-lg font-semibold hover:bg-outline-variant transition-colors text-body-sm">
+                            Search Bank
+                        </button>
+<button class="w-full py-2.5 px-4 bg-secondary text-on-secondary rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-body-sm ai-glow">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            Search + Generate if needed
+                        </button>
+<p class="text-[11px] text-on-surface-variant leading-relaxed px-1">
+                            Search only queries the existing bank; Search + Generate will author new AI questions if match strength is low.
+                        </p>
+</div>
+</div>
+</section>
+<!-- Results Section (Dynamic appearance) -->
+<section class="space-y-md">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">manage_search</span>
+                    Top Existing Matches
+                </h4>
+<div class="space-y-sm">
+<!-- Result Item 1 -->
+<div class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant shadow-sm hover:border-secondary transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-body-sm font-semibold truncate flex-1">Database Sharding &amp; Partitioning</span>
+<span class="text-[10px] font-bold text-secondary">98% MATCH</span>
+</div>
+<div class="similarity-bar mb-2">
+<div class="similarity-fill" style="width: 98%;"></div>
+</div>
+<p class="text-[12px] text-on-surface-variant line-clamp-2 italic">"How would you design a sharding strategy for a write-heavy social media application?"</p>
+</div>
+<!-- Result Item 2 -->
+<div class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant shadow-sm opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-body-sm font-semibold truncate flex-1">ACID Compliance in SQL</span>
+<span class="text-[10px] font-bold text-on-surface-variant">74% MATCH</span>
+</div>
+<div class="similarity-bar mb-2">
+<div class="similarity-fill bg-outline" style="width: 74%;"></div>
+</div>
+</div>
+</div>
+<!-- Generated Divider -->
+<div class="flex items-center gap-3 py-2">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<span class="font-label-caps text-[10px] tracking-widest text-on-tertiary-container uppercase">Newly generated — pending review</span>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<!-- AI Generated Pending Review -->
+<div class="bg-surface-container-lowest p-md rounded-lg border-2 border-dashed border-secondary-container bg-opacity-50 relative group">
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified</span> AI
+                         </span>
+<span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full">PENDING</span>
+</div>
+<p class="text-body-sm font-medium mt-6 mb-3 pr-12">"Compare CAP Theorem implications when choosing between Cassandra and DynamoDB for global replication."</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<button class="text-secondary hover:underline text-[12px] font-semibold">Edit</button>
+<button class="text-error hover:underline text-[12px] font-semibold">Discard</button>
+</div>
+<button class="bg-secondary px-3 py-1 text-on-secondary text-[12px] font-bold rounded hover:opacity-90 flex items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                             Approve
+                         </button>
+</div>
+</div>
+</section>
+</aside>
+</main>
+<!-- Success Message (Toast Mockup) -->
+<div class="fixed bottom-lg right-lg transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toast">
+<div class="bg-inverse-surface text-inverse-on-surface px-lg py-md rounded-xl shadow-2xl flex items-center gap-md">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+<p class="text-body-sm">Question successfully added to bank.</p>
+</div>
+</div>
+<script>
+        // Micro-interactions and subtle effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    // Visual feedback for clicking a row
+                    row.classList.add('bg-secondary-fixed-dim');
+                    setTimeout(() => row.classList.remove('bg-secondary-fixed-dim'), 200);
+                });
+            });
+
+            // Simulate a search trigger
+            const searchBtn = document.querySelector('.ai-glow');
+            if(searchBtn) {
+                searchBtn.addEventListener('click', () => {
+                    searchBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Generating...';
+                    setTimeout(() => {
+                        searchBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: \'FILL\' 1;">auto_awesome</span> Search + Generate if needed';
+                        // Show toast
+                        const toast = document.getElementById('toast');
+                        toast.classList.remove('translate-y-24', 'opacity-0');
+                        setTimeout(() => {
+                            toast.classList.add('translate-y-24', 'opacity-0');
+                        }, 3000);
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body></html>
