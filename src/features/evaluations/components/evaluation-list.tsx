@@ -39,7 +39,6 @@ function buildColumns(status: EvaluationStatus | ''): DataTableColumn<Evaluation
     {
       key: 'candidate',
       header: 'Candidate',
-      sortKey: 'application.candidate.fullName',
       render: (evaluation) => {
         const candidateName = evaluation.application?.candidate?.fullName || evaluation.applicationId;
         return (
@@ -56,7 +55,6 @@ function buildColumns(status: EvaluationStatus | ''): DataTableColumn<Evaluation
     {
       key: 'job',
       header: 'Job description',
-      sortKey: 'application.jobDescription.title',
       render: (evaluation) => (
         <p className="max-w-xs truncate text-sm text-on-surface-variant">
           {evaluation.application?.jobDescription?.title || 'Not available'}
