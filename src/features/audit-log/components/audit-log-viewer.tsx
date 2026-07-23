@@ -2,46 +2,37 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { CopyIcon, EyeIcon, XIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   ActionIconButton,
   DataTable,
+  ListControls,
   type DataTableColumn,
-  type DataTableSort,
 } from '@/components/common';
-import { showToast } from '@/components/feedback';
-import {
-  ACTION_CLASSES,
-  AUDIT_RESOURCE_TYPES,
-  MOCK_AUDIT_LOGS,
-  type MockAuditLog,
-} from '@/features/audit-log/mock/audit-log-mock-data';
-import { MOCK_USERS } from '@/features/users/mock/user-mock-data';
-import { sortMock } from '@/lib/utils/mock-delay';
+import { EmptyState, LoadingState, showToast } from '@/components/feedback';
+import { getAuditLogs } from '@/features/audit-log/api/audit-log.api';
+import { ACTION_CLASSES, AUDIT_RESOURCE_TYPES, type AuditLog } from '@/features/audit-log/types/audit-log.type';
+import { getUsers } from '@/features/users/api/user.api';
+import type { User } from '@/features/users/types/user.type';
+import type { PaginationMeta } from '@/lib/api/api-types';
 import { cn } from '@/lib/utils/cn';
 import { formatDateTime } from '@/lib/utils/format-date';
 
+const PAGE_SIZE = 20;
+
 const RESOURCE_TYPE_FILTER_OPTIONS = AUDIT_RESOURCE_TYPES.map((type) => ({ label: type, value: type }));
-
-const ACTOR_FILTER_OPTIONS = MOCK_USERS.map((user) => ({
-  label: user.fullName ?? user.email,
-  value: user.id,
-}));
-
-const ACTION_FILTER_OPTIONS = Object.keys(ACTION_CLASSES).map((action) => ({ label: action, value: action }));
 
 function buildColumns(
   resourceType: string,
   actorUserId: string,
-  action: string,
-  onViewDetails: (log: MockAuditLog) => void,
-): DataTableColumn<MockAuditLog>[] {
+  actorOptions: { label: string; value: string }[],
+  onViewDetails: (log: AuditLog) => void,
+): DataTableColumn<AuditLog>[] {
   return [
     {
       key: 'timestamp',
       header: 'Timestamp',
-      sortKey: 'createdAt',
       render: (log) => (
         <p className="whitespace-nowrap text-on-surface-variant">{formatDateTime(log.createdAt)}</p>
       ),
@@ -49,13 +40,12 @@ function buildColumns(
     {
       key: 'actor',
       header: 'Actor',
-      filter: { key: 'actorUserId', options: ACTOR_FILTER_OPTIONS, activeValue: actorUserId },
+      filter: { key: 'actorUserId', options: actorOptions, activeValue: actorUserId },
       render: (log) => <p className="text-on-surface">{log.actor?.fullName ?? log.actor?.email ?? '—'}</p>,
     },
     {
       key: 'action',
       header: 'Status',
-      filter: { key: 'action', options: ACTION_FILTER_OPTIONS, activeValue: action },
       render: (log) => (
         <span
           className={cn(
@@ -92,27 +82,82 @@ function buildColumns(
 }
 
 export function AuditLogViewer() {
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [resourceType, setResourceType] = useState('');
   const [actorUserId, setActorUserId] = useState('');
-  const [action, setAction] = useState('');
-  const [sort, setSort] = useState<DataTableSort | null>(null);
-  const [selectedLog, setSelectedLog] = useState<MockAuditLog | null>(null);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
+  const [actors, setActors] = useState<User[]>([]);
 
-  const filtered = useMemo(() => {
-    const result = MOCK_AUDIT_LOGS.filter((log) => {
-      if (resourceType && log.resourceType !== resourceType) return false;
-      if (actorUserId && log.actor?.id !== actorUserId) return false;
-      if (action && log.action !== action) return false;
-      return true;
-    });
-    return sortMock(result, sort?.key, sort?.order);
-  }, [resourceType, actorUserId, action, sort]);
+  const loadLogs = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const response = await getAuditLogs({
+        page,
+        limit: PAGE_SIZE,
+        resourceType: resourceType || undefined,
+        actorUserId: actorUserId || undefined,
+      });
+      setLogs(response.data);
+      setMeta(response.meta);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load audit log';
+      setErrorMessage(message);
+      showToast.error('Failed to load audit log', { description: message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, resourceType, actorUserId]);
+
+  useEffect(() => {
+    getUsers({ limit: 100, sortBy: 'fullName', sortOrder: 'asc' })
+      .then((response) => setActors(response.data))
+      .catch(() => setActors([]));
+  }, []);
+
+  const actorOptions = actors.map((user) => ({ label: user.fullName ?? user.email, value: user.id }));
 
   const handleFilterChange = (key: string, value: string) => {
-    if (key === 'resourceType') setResourceType(value);
-    if (key === 'actorUserId') setActorUserId(value);
-    if (key === 'action') setAction(value);
+    if (key === 'resourceType') {
+      setResourceType(value);
+      setPage(1);
+    }
+    if (key === 'actorUserId') {
+      setActorUserId(value);
+      setPage(1);
+    }
   };
+
+  if (isLoading && logs.length === 0) {
+    return <LoadingState title="Loading audit log..." description="Please wait while the audit trail is being loaded." />;
+  }
+
+  if (errorMessage && logs.length === 0) {
+    return (
+      <EmptyState
+        title="Failed to load audit log"
+        description={errorMessage}
+        action={
+          <button
+            type="button"
+            onClick={() => void loadLogs()}
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
+          >
+            Try again
+          </button>
+        }
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -123,7 +168,9 @@ export function AuditLogViewer() {
         </p>
       </div>
 
-      {filtered.length === 0 ? (
+      <ListControls pagination={{ ...meta, onPageChange: setPage }} />
+
+      {logs.length === 0 ? (
         <div className="rounded-2xl border border-outline bg-surface-lowest p-12 text-center shadow-card">
           <p className="text-sm font-semibold text-on-surface">No audit history yet</p>
           <p className="mt-1 text-sm text-on-surface-variant">
@@ -132,11 +179,9 @@ export function AuditLogViewer() {
         </div>
       ) : (
         <DataTable
-          data={filtered}
-          columns={buildColumns(resourceType, actorUserId, action, setSelectedLog)}
+          data={logs}
+          columns={buildColumns(resourceType, actorUserId, actorOptions, setSelectedLog)}
           getRowKey={(log) => log.id}
-          sort={sort}
-          onSortChange={(key, order) => setSort({ key, order })}
           onFilterChange={handleFilterChange}
         />
       )}

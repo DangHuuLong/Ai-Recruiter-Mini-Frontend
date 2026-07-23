@@ -1,16 +1,16 @@
 // Composes dashboard data from the real list endpoints of every restored feature module —
 // there is no dedicated dashboard/analytics endpoint on the backend (confirmed by auditing
-// all controllers), so this aggregates real records client-side instead. Candidates/Job
-// Descriptions/Applications/Evaluations are fetched live; Batch Scoring and Audit Log are
-// still mocked (not yet restored) so those two stay on their in-memory mock arrays.
+// all controllers), so this aggregates real records client-side instead. Batch Scoring is
+// still mocked (not yet restored) so that one widget stays on its in-memory mock array.
 import { getCandidates } from '@/features/candidates/api/candidate.api';
 import { getJobDescriptions } from '@/features/job-descriptions/api/job-description.api';
 import { getApplications } from '@/features/applications/api/application.api';
 import { APPLICATION_STATUSES, type Application, type ApplicationStatus } from '@/features/applications/types/application.type';
 import { getEvaluations, getEvaluationSkills } from '@/features/evaluations/api/evaluation.api';
 import type { Evaluation } from '@/features/evaluations/types/evaluation.type';
+import { getAuditLogs } from '@/features/audit-log/api/audit-log.api';
+import type { AuditLog } from '@/features/audit-log/types/audit-log.type';
 import { MOCK_BATCHES, type MockBatchSummary } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
-import { MOCK_AUDIT_LOGS } from '@/features/audit-log/mock/audit-log-mock-data';
 
 export type DashboardKpis = {
   totalCandidates: number;
@@ -40,7 +40,7 @@ export type DashboardOverviewData = {
   recentEvaluations: Evaluation[];
   batchesInProgress: MockBatchSummary[];
   skillGap: SkillGapEntry[];
-  recentActivity: typeof MOCK_AUDIT_LOGS;
+  recentActivity: AuditLog[];
 };
 
 // Applications don't have a month-range filter on the backend, so month-over-month counts
@@ -50,6 +50,7 @@ const RECENT_EVALUATIONS_LIMIT = 3;
 const EVALUATIONS_SCORE_WINDOW_SIZE = 20;
 const SKILL_GAP_SAMPLE_SIZE = 10;
 const SKILL_GAP_TOP_N = 3;
+const RECENT_ACTIVITY_LIMIT = 5;
 
 function countApplicationsInMonth(applications: Application[], year: number, month: number): number {
   return applications.filter((application) => {
@@ -98,6 +99,7 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
     funnel,
     completedEvaluationsResponse,
     recentEvaluationsResponse,
+    recentActivityResponse,
   ] = await Promise.all([
     getCandidates({ limit: 1 }),
     getJobDescriptions({ limit: 1 }),
@@ -110,6 +112,7 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
       sortOrder: 'desc',
     }),
     getEvaluations({ limit: RECENT_EVALUATIONS_LIMIT, sortBy: 'createdAt', sortOrder: 'desc' }),
+    getAuditLogs({ limit: RECENT_ACTIVITY_LIMIT }),
   ]);
 
   const completedScores = completedEvaluationsResponse.data
@@ -136,9 +139,6 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
   const batchesInProgress = MOCK_BATCHES.filter(
     (batch) => batch.status === 'PARSING' || batch.status === 'SCORING',
   );
-  const recentActivity = [...MOCK_AUDIT_LOGS]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
 
   return {
     kpis,
@@ -146,6 +146,6 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
     recentEvaluations: recentEvaluationsResponse.data,
     batchesInProgress,
     skillGap,
-    recentActivity,
+    recentActivity: recentActivityResponse.data,
   };
 }
