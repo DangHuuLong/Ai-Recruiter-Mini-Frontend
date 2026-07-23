@@ -1,6 +1,15 @@
 'use client';
 
-import { CheckIcon, FlaskConicalIcon, PencilIcon, PlusIcon, Trash2Icon, UploadIcon } from 'lucide-react';
+import {
+  CheckIcon,
+  FlaskConicalIcon,
+  Loader2Icon,
+  PencilIcon,
+  PlusIcon,
+  RefreshCwIcon,
+  Trash2Icon,
+  UploadIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
@@ -28,7 +37,7 @@ import {
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
 } from '@/features/interview-questions/mock/interview-question-taxonomy';
-import { sortMock } from '@/lib/utils/mock-delay';
+import { mockDelay, sortMock } from '@/lib/utils/mock-delay';
 import { cn } from '@/lib/utils/cn';
 
 const OCCUPATION_FAMILY_FILTER_OPTIONS = (Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map(
@@ -48,7 +57,9 @@ function buildColumns(
   occupationFamily: OccupationFamily | '',
   qualityGateStatus: QuestionQualityGateStatus | '',
   source: InterviewQuestionSource | '',
+  reembeddingId: string | null,
   onApprove: (question: MockInterviewQuestion) => void,
+  onReembed: (question: MockInterviewQuestion) => void,
   onDelete: (question: MockInterviewQuestion) => void,
 ): DataTableColumn<MockInterviewQuestion>[] {
   return [
@@ -123,6 +134,18 @@ function buildColumns(
             />
           ) : null}
           <ActionIconButton
+            icon={
+              reembeddingId === question.id ? (
+                <Loader2Icon className="size-4 animate-spin" />
+              ) : (
+                <RefreshCwIcon className="size-4" />
+              )
+            }
+            label="Re-embed"
+            disabled={reembeddingId !== null}
+            onClick={() => onReembed(question)}
+          />
+          <ActionIconButton
             href={`${ROUTES.INTERVIEW_QUESTIONS}/${question.id}/edit`}
             icon={<PencilIcon className="size-4" />}
             label="Edit"
@@ -147,6 +170,7 @@ export function InterviewQuestionList() {
   const [qualityGateStatus, setQualityGateStatus] = useState<QuestionQualityGateStatus | ''>('');
   const [source, setSource] = useState<InterviewQuestionSource | ''>('');
   const [sort, setSort] = useState<DataTableSort | null>(null);
+  const [reembeddingId, setReembeddingId] = useState<string | null>(null);
 
   const specializationOptions = getSpecializationsFor(occupationFamily);
 
@@ -181,6 +205,16 @@ export function InterviewQuestionList() {
   const handleDelete = (question: MockInterviewQuestion) => {
     setQuestions((current) => current.filter((q) => q.id !== question.id));
     showToast.success('Question deleted');
+  };
+
+  const handleReembed = async (question: MockInterviewQuestion) => {
+    try {
+      setReembeddingId(question.id);
+      await mockDelay(700);
+      showToast.success('Embedding recomputed', { description: question.questionText });
+    } finally {
+      setReembeddingId(null);
+    }
   };
 
   return (
@@ -260,7 +294,15 @@ export function InterviewQuestionList() {
       ) : (
         <DataTable
           data={filtered}
-          columns={buildColumns(occupationFamily, qualityGateStatus, source, handleApprove, handleDelete)}
+          columns={buildColumns(
+            occupationFamily,
+            qualityGateStatus,
+            source,
+            reembeddingId,
+            handleApprove,
+            (question) => void handleReembed(question),
+            handleDelete,
+          )}
           getRowKey={(question) => question.id}
           sort={sort}
           onSortChange={(key, order) => setSort({ key, order })}

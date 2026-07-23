@@ -222,3 +222,9 @@ export function getEnablersFor(family: OccupationFamily | '', specialization: st
   const entry = INTERVIEW_QUESTION_TAXONOMY[family].find((e) => e.specialization === specialization);
   return entry?.enablers ?? [];
 }
+
+export function getBusinessContextsFor(family: OccupationFamily | '', specialization: string): string[] {
+  if (!family) return [];
+  const entry = INTERVIEW_QUESTION_TAXONOMY[family].find((e) => e.specialization === specialization);
+  return entry?.businessContexts ?? [];
+}

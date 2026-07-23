@@ -1,10 +1,18 @@
 # Prompt thiết kế giao diện bằng Stitch (AI UI design tool)
 
-> Dán lần lượt từng prompt bên dưới vào Stitch, **theo đúng thứ tự 0 → 14**. Prompt 0 thiết lập style guide chung — mọi prompt sau nên nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
+> Dán lần lượt từng prompt bên dưới vào Stitch, **theo đúng thứ tự 0 → 19**. Prompt 0 thiết lập style guide chung — mọi prompt sau nên nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
 
 ## Bối cảnh
 
-Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hiện đã build xong: Candidates, Resumes, Job Descriptions, Applications, Evaluations, Auth login, Enterprise Batch Scoring, Admin/Dev Tools, luồng Public. Prompt 0–9 (bên dưới) đã phủ Auth/Batch Scoring/Admin/Public. Prompt 10–14 (mới thêm) nhắm vào 5 khu vực CRUD lõi (Candidates/Resumes/Job Descriptions/Applications/Evaluations) — các màn này build **trước** đợt redesign, vừa được restyle lại đúng token màu (`surface`/`primary`/`outline`...) nhưng bố cục vẫn là layout Tailwind mặc định (table đơn giản, card trắng phẳng, không có điểm nhấn thị giác) — cần Stitch thiết kế lại bố cục/thị giác cho đẹp và có chiều sâu hơn, **giữ nguyên cấu trúc dữ liệu/field đã liệt kê** vì đây là API thật, không phải mock.
+Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hiện đã build xong: Candidates, Resumes, Job Descriptions, Applications, Evaluations, Auth login, Enterprise Batch Scoring, Admin/Dev Tools, luồng Public. Prompt 0–9 (bên dưới) đã phủ Auth/Batch Scoring/Admin/Public. Prompt 10–14 nhắm vào 5 khu vực CRUD lõi (Candidates/Resumes/Job Descriptions/Applications/Evaluations) — các màn này build **trước** đợt redesign, vừa được restyle lại đúng token màu (`surface`/`primary`/`outline`...) nhưng bố cục vẫn là layout Tailwind mặc định (table đơn giản, card trắng phẳng, không có điểm nhấn thị giác) — cần Stitch thiết kế lại bố cục/thị giác cho đẹp và có chiều sâu hơn, **giữ nguyên cấu trúc dữ liệu/field đã liệt kê** vì đây là API thật, không phải mock.
+
+Prompt 15 (mới thêm) nhắm vào trang `/dashboard` — trang này hiện là **placeholder dựng từ đầu dự án, 100% dữ liệu giả** (`kpis`/`jobs`/`pipeline` hard-code thẳng trong component, không gọi API nào), và **backend hiện chưa có endpoint tổng hợp riêng cho dashboard** (`GET /dashboard` không tồn tại — đã rà soát toàn bộ 15 controller của backend để xác nhận). Tuy vậy, dựa vào Prisma schema + các endpoint list/count đã có sẵn (`GET /applications`, `/evaluations`, `/scoring-batches`, `/audit-logs`, `/candidates`, `/job-descriptions`), có thể suy ra chính xác dashboard nên hiển thị số liệu thật gì — không cần bảng mới, chỉ cần tổng hợp phía frontend (hoặc 1 aggregate endpoint mới sau này). Prompt 15 mô tả đúng những số liệu **đã có thật** trong hệ thống, không bịa KPI.
+
+Prompt 16–19 (mới thêm) vá 4 lỗ hổng UI phát hiện được khi rà lại toàn bộ API backend so với các trang FE hiện có (API có sẵn nhưng chưa có UI nào gọi tới):
+- **Prompt 16**: Resume Detail chưa có cách xem/tải file CV thật (`GET /files/:id/download-url` tồn tại nhưng chưa dùng ở đâu, trang chỉ hiện `fileAssetId` dạng text).
+- **Prompt 17**: Candidate Detail thiếu phần "Applications" (`GET /candidates/:id/applications` tồn tại nhưng chưa dùng — trang chỉ hiện Resumes liên kết, không hiện các Application/Job đã ứng tuyển).
+- **Prompt 18**: chưa có trang "My Profile" tự xem/sửa hồ sơ bản thân (`GET /users/me` mọi role đăng nhập đều gọi được, nhưng chỉ ADMIN sửa được người khác qua trang Users hiện tại — **không có endpoint đổi mật khẩu khi đã đăng nhập**, chỉ có luồng Forgot Password ẩn danh, nên màn hình này không thiết kế phần đổi mật khẩu).
+- **Prompt 19**: Interview Question Bank chưa có nút gọi `POST /interview-questions/:id/reembed`, và công cụ "Test Retrieval" (Prompt 8) chưa phân biệt `POST /search` (đọc thuần) với `POST /search-or-generate` (có AI fallback sinh câu hỏi mới khi kết quả tìm được quá ít/thiếu liên quan).
 
 ## Danh sách màn hình
 
@@ -31,6 +39,11 @@ Frontend (`Ai-Recruiter-Mini-Frontend`, Next.js 16 + React 19 + Tailwind v4) hi�
 | 19 | Job Descriptions — danh sách + chi tiết (raw/parsed/skills) + tạo/sửa | CRUD lõi |
 | 20 | Applications — danh sách + chi tiết (status/events) + tạo/sửa | CRUD lõi |
 | 21 | Evaluations — danh sách + kết quả chấm điểm AI + tạo mới | CRUD lõi — màn hình phân tích trung tâm |
+| 22 | Dashboard (Overview) — trang đầu tiên sau khi login | Tổng hợp — chưa có API riêng, số liệu suy ra từ schema |
+| 23 | Resume Detail — bổ sung xem/tải file CV | Vá lỗ hổng UI |
+| 24 | Candidate Detail — bổ sung phần Applications | Vá lỗ hổng UI |
+| 25 | My Profile (tự xem/sửa hồ sơ bản thân) | Vá lỗ hổng UI — màn hình mới |
+| 26 | Interview Question Bank — bổ sung Re-embed + Search/Search-or-generate | Vá lỗ hổng UI |
 
 ---
 
@@ -331,9 +344,110 @@ Design goal: the score breakdown and matched/missing skills sections are what a 
 
 ---
 
+## Prompt 15 — Dashboard (Overview)
+
+```
+Design the "Dashboard" (Overview) screen for AI Recruiter's authenticated app — the first page a recruiter, hiring manager, or admin sees after login, using the established design system and app shell. This replaces a placeholder page that currently shows fake, invented numbers unrelated to any real data. Every metric described below maps to a real, existing field in the product's data model (Candidates, Job Descriptions, Applications, Evaluations, Scoring Batches, Audit Log) — do not invent additional KPIs beyond what's listed.
+
+TOP: KPI stat row (4-5 tiles)
+- Total Candidates (count)
+- Active Job Descriptions (count where Active, shown alongside the total)
+- Applications this month (count, optionally with a small trend vs. last month)
+- Evaluations completed + average overall score (0-100)
+Each tile: label, large bold number, optional small trend indicator, clickable through to the relevant list page filtered appropriately (e.g. "Active Job Descriptions" links to Job Descriptions pre-filtered to Active).
+
+APPLICATION PIPELINE / FUNNEL
+A horizontal funnel or stacked bar showing the count of Applications at each status: Draft, Applied, Screening, Shortlisted, Interviewing, Offer, Hired, Rejected, Withdrawn (reuse the same status badge colors already established elsewhere in the product for these exact statuses). This is the single most important "at a glance" visual on the page — a recruiter should immediately see where candidates are getting stuck in the pipeline.
+
+RECENT EVALUATIONS
+A compact list/card of the most recently completed evaluations: candidate name, job description title, overall score (small colored badge or ring, reusing the score-ring pattern from the Evaluation detail screen), status, and a "View" link. Give any FAILED evaluations needing retry a distinct visual treatment (e.g. a red accent + retry icon) so they stand out as needing attention.
+
+SCORING BATCHES IN PROGRESS
+A small section (empty-state if none) listing any Scoring Batch currently Parsing or Scoring: batch name, a progress bar (completed/total pairs), link through to the batch detail page. Recently completed batches can also appear here, visually de-emphasized.
+
+SKILL GAP HIGHLIGHTS
+A compact ranked list of the most frequently missing skills across recent evaluations/scoring batches (reuse the skill-gap-summary visual pattern already used on the Batch Scoring feature) — lets a recruiter spot systemic gaps across their current candidate pool without opening a specific batch.
+
+RECENT ACTIVITY (admin-relevant, can be a smaller side panel)
+A short activity feed pulling from the same event types shown in the Audit Log (delete, bulk-delete, deactivate, cancel, promote, user role change) — timestamp, actor name, action, resource — as a lightweight trust/accountability signal, not a full audit log. Link through to "View full audit log".
+
+QUICK ACTIONS
+A row or small panel of shortcut buttons to the most common creation flows: "Add candidate", "Create job description", "New application", "Start batch scoring".
+
+Design goal: this is an "at a glance" overview page, not a deep-analytics page — the KPI row and the Application funnel should be the strongest visual anchors, every other section stays compact and scannable (link through to the relevant full list/detail page rather than replicating its depth here). Match the calm, trustworthy B2B tone established in Prompt 0 — no gamified progress rings or celebratory confetti-style elements, even for positive metrics like the Hired count.
+```
+
+---
+
+## Prompt 16 — Resume Detail addition: view/download the CV file
+
+```
+This is an addition to the existing "Resume Detail" screen for AI Recruiter (the same screen from the Candidates/Resumes core-CRUD set — reuse its established layout, don't redesign the whole screen). The product can generate a time-limited signed download URL for the candidate's original uploaded CV file, but the current design never surfaced any way to actually open or download it — recruiters could see metadata about the file but never read the real document.
+
+Design just the addition: in the "Resume information" card (the one showing Resume ID / Candidate ID / Parse status / File asset ID), replace the plain "File asset ID" text row with a small file-preview row: a file-type icon (PDF/DOCX), the original file name if known (fall back to the file asset ID if not), and two actions — a primary "View CV" button that opens the file in a new tab, and a secondary "Download" icon button. Since the download link expires after a short time, design a loading state on the button while a fresh link is being requested (spinner + "Preparing file..."), and an inline error state for when the file can't be retrieved (e.g. it was deleted) — a small warning-colored inline message next to the button rather than a full-page error, since the rest of the resume detail page (parsed data, etc.) should still be usable even if the raw file itself is unavailable.
+
+Design goal: this should feel like a natural, low-emphasis part of the existing info card — a file preview affordance, not a new prominent section — since the parsed CV data below it remains the main content recruiters read.
+```
+
+---
+
+## Prompt 17 — Candidate Detail addition: Applications section
+
+```
+This is an addition to the existing "Candidate Detail" screen for AI Recruiter (same screen as the core-CRUD Candidates set — reuse its established layout of stacked info sections, don't redesign the whole screen). The screen currently shows Basic information / Contact information / Online profiles / a "Resumes" section listing linked resume records — but never shows which job descriptions this candidate has actually applied to, even though that data exists.
+
+Design just the addition: a new "Applications" section, styled consistently with the existing "Resumes" section on the same page (same card language, positioned directly after it). A compact table/list of this candidate's applications: Job description title, Status (reuse the same status badge colors used everywhere else in the product for DRAFT/APPLIED/SCREENING/SHORTLISTED/INTERVIEWING/OFFER/HIRED/REJECTED/WITHDRAWN), Applied date, and a "View" link through to the full Application detail page. Empty state ("Not applied to any job description yet") when the candidate has no applications, matching the tone of the existing empty Resumes state.
+
+Design goal: a recruiter looking at a candidate profile should be able to answer "what has this person applied to, and where are they in the process" without leaving the page — keep this section scannable at a glance (it's a summary list, not the full Application detail).
+```
+
+---
+
+## Prompt 18 — My Profile (new screen)
+
+```
+Design a new "My Profile" screen for AI Recruiter's authenticated app, using the established design system and app shell — reachable from the user-menu in the top header (avatar/name/role badge/logout), which currently has no link to view one's own account. Every authenticated role (Admin, Recruiter, Hiring Manager, DEV) can reach this screen for themselves.
+
+LAYOUT
+A single centered card (similar width to the Evaluation create-form card, not full-width like a list page): a large avatar/initials circle at the top, full name as the heading, role shown as the same colored role badge used on the Users admin screen (Admin/Recruiter/Hiring Manager/DEV), and the organization name as a subtitle. Below that, a simple key-value section: Email (read-only), Full name (editable text field), Member since (joined date, read-only).
+
+EDITABLE STATE
+An "Edit" button toggles the Full name field into an editable input with Cancel/Save actions; email/role/organization/joined-date remain permanently read-only on this screen (they're either identity fields or admin-managed elsewhere). After saving, show a success toast ("Profile updated").
+
+IMPORTANT CONSTRAINT — no password change here
+There is intentionally no "change password" section on this screen — the product has no authenticated "change my password" endpoint yet, only an unauthenticated forgot-password email flow. Instead, include a small text note near the bottom: "Need to change your password? Log out and use the Forgot Password link on the login screen." — worded as a calm informational note, not an error.
+
+Design goal: this is a lightweight, low-frequency-visit screen — keep it simple and calm, a single focused card rather than a dashboard-style page with multiple sections.
+```
+
+---
+
+## Prompt 19 — Interview Question Bank additions: Re-embed action + Search vs Search-or-Generate
+
+```
+These are two additions to the existing "Interview Question Bank" screens for AI Recruiter (DEV role tool — reuse the established layout from that screen set, don't redesign the whole thing).
+
+ADDITION 1 — Re-embed row action
+The retrieval engine ranks questions by a vector embedding of their question text; the product can recompute and persist that embedding on demand (useful after an embedding-model upgrade, as a backfill tool). Add a small icon-only "Re-embed" action (a refresh/vector icon) to the row actions on the main list table, alongside the existing Edit/Delete/Approve actions — same icon-button-with-hover-tooltip style used elsewhere. On click, show a brief loading spinner on the icon itself, then a small success toast ("Embedding recomputed").
+
+ADDITION 2 — distinguish "Search" from "Search or Generate" on the Test Retrieval tool
+The existing Test Retrieval tool (query text + Occupation Family/Specialization selectors + a single "Search" button) actually needs to represent two different real actions: a pure read-only similarity search over existing approved questions, versus a search that falls back to generating brand-new AI-authored questions when the existing results are too few or too weakly related to the query. Replace the single "Search" button with two clearly distinct actions — e.g. a secondary "Search" button plus a primary "Search + Generate if needed" button (with a small sparkle/AI icon to signal the generative fallback) — and add a one-line helper caption under the buttons explaining the difference in plain language.
+
+Results layout: existing matched questions render exactly as before (ranked list, similarity score/bar per item). When the "Search + Generate if needed" action produces newly AI-generated questions, render them in a visually distinct sub-section below the existing results — a subtle divider, a small "Newly generated — pending review" label, each item shown with the same pending-review quality-gate badge/styling already used elsewhere in this tool, plus an inline "Approve" quick-action so the DEV reviewer can immediately promote a good one into the reusable question bank without leaving this screen.
+
+Design goal: a DEV user glancing at the results should immediately be able to tell "this came from the existing bank" apart from "this was just generated and needs my review" — the pending-review visual language already established for the main list (amber/warning accent) should carry over here rather than inventing a new treatment.
+```
+
+---
+
 ## Sau khi có kết quả từ Stitch
 
 1. Dán Prompt 0 trước, xác nhận style guide hợp lý (đúng tinh thần B2B, không quá "consumer app") trước khi dùng làm nền cho các prompt sau.
-2. Dán lần lượt Prompt 1 → 14, nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
-3. Ưu tiên review kỹ Prompt 3 (Matrix) và Prompt 14 (Evaluation detail) trước — đây là 2 màn hình phân tích trung tâm, nên lặp lại nhiều lần nếu bố cục/heatmap/hierarchy chưa ổn.
-4. Sau khi có bộ thiết kế ưng ý: map thành component thật trong dự án theo đúng convention hiện có (`api/`+`components/`+`hooks/`+`types/`+`validations/` mỗi feature module, dùng lại `apiClient`/`DataTable`/`ConfirmDialog`/`showToast` sẵn có). Với Prompt 10–14 đặc biệt lưu ý: đây là màn hình API thật, khi code lại chỉ đổi phần UI/layout — **giữ nguyên toàn bộ hooks/api calls/logic hiện có**, không tự ý đổi field hay hành vi.
+2. Dán lần lượt Prompt 1 → 19, nhắc Stitch "match the style guide from earlier" nếu thấy phong cách trôi giữa các lần tạo.
+3. Ưu tiên review kỹ Prompt 3 (Matrix), Prompt 14 (Evaluation detail), và Prompt 15 (Dashboard) trước — đây là các màn hình phân tích/tổng hợp trung tâm, nên lặp lại nhiều lần nếu bố cục/heatmap/hierarchy chưa ổn.
+4. Sau khi có bộ thiết kế ưng ý: map thành component thật trong dự án theo đúng convention hiện có (`api/`+`components/`+`hooks/`+`types/`+`validations/` mỗi feature module, dùng lại `apiClient`/`DataTable`/`ConfirmDialog`/`showToast` sẵn có).
+   - Prompt 10–14: đây là màn hình API thật, khi code lại chỉ đổi phần UI/layout — **giữ nguyên toàn bộ hooks/api calls/logic hiện có**, không tự ý đổi field hay hành vi.
+   - Prompt 15 (Dashboard): **chưa có API thật** — khi code lại cần tạo mock data trước (giống cách 5 khu vực CRUD lõi đã làm ở giai đoạn mock), không phải map vào hooks có sẵn.
+   - Prompt 16 (Resume file) và Prompt 17 (Candidate applications): **có API thật** (`GET /files/:id/download-url`, `GET /candidates/:id/applications`) — code thẳng vào hooks/api call thật, không cần mock.
+   - Prompt 18 (My Profile): `GET /users/me` là API thật (dùng ngay); phần sửa Full name cần xác nhận trước — nếu chưa chắc `PATCH /users/:id` cho phép user tự sửa tên mình khi không phải ADMIN, kiểm tra lại `UsersService` bên backend trước khi code, tránh giả định sai.
+   - Prompt 19 (Interview Question additions): `POST /interview-questions/:id/reembed` và `POST /interview-questions/search-or-generate` đều là API thật đã có sẵn — nhưng cả module `interview-questions` ở FE hiện vẫn theo pattern mock-import trực tiếp (không có `api/` riêng, xem `interview-question-list.tsx`) — cần quyết định có tách ra `api/interview-question.api.ts` thật khi wiring lại hay không, tuỳ phạm vi công việc lúc đó.

@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle2Icon, UploadIcon, XCircleIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
@@ -132,6 +133,13 @@ export function InterviewQuestionBulkCreate() {
 
   return (
     <div className="max-w-4xl space-y-6">
+      <Link
+        href={ROUTES.INTERVIEW_QUESTIONS}
+        className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
+      >
+        ← Back to Interview Question Bank
+      </Link>
+
       <div>
         <h1 className="text-2xl font-bold text-on-surface">Bulk create questions</h1>
         <p className="mt-1 text-sm text-on-surface-variant">

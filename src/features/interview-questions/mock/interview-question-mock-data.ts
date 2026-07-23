@@ -266,3 +266,10 @@ export const MOCK_INTERVIEW_QUESTIONS: MockInterviewQuestion[] = [
 export function getMockInterviewQuestion(id: string): MockInterviewQuestion | null {
   return MOCK_INTERVIEW_QUESTIONS.find((q) => q.id === id) ?? null;
 }
+
+let mockInterviewQuestionSequence = MOCK_INTERVIEW_QUESTIONS.length;
+
+export function nextMockInterviewQuestionId(): string {
+  mockInterviewQuestionSequence += 1;
+  return `iq-${mockInterviewQuestionSequence}`;
+}

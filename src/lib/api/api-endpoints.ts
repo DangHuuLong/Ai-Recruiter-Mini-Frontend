@@ -21,6 +21,7 @@ export const apiEndpoints = {
   files: {
     upload: '/files/upload',
     detail: (id: string) => `/files/${id}`,
+    downloadUrl: (id: string) => `/files/${id}/download-url`,
     delete: (id: string) => `/files/${id}`,
   },
 
@@ -67,5 +68,12 @@ export const apiEndpoints = {
     interviewQuestions: (id: string) => `/evaluations/${id}/interview-questions`,
     evidence: (id: string) => `/evaluations/${id}/evidence`,
     retry: (id: string) => `/evaluations/${id}/retry`,
+  },
+
+  users: {
+    list: '/users',
+    create: '/users',
+    me: '/users/me',
+    update: (id: string) => `/users/${id}`,
   },
 } as const;

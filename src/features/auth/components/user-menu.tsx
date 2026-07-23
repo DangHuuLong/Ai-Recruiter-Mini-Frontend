@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { ROUTES } from '@/config/routes.config';
@@ -34,14 +35,19 @@ export function UserMenu() {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="hidden text-right sm:block">
-        <p className="text-sm font-semibold text-on-surface">{user.fullName}</p>
-        <p className="text-xs text-on-surface-muted">{user.role}</p>
-      </div>
+      <Link
+        href={ROUTES.MY_PROFILE}
+        className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 transition hover:bg-surface-variant"
+      >
+        <div className="hidden text-right sm:block">
+          <p className="text-sm font-semibold text-on-surface">{user.fullName}</p>
+          <p className="text-xs text-on-surface-muted">{user.role}</p>
+        </div>
 
-      <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-primary">
-        {getInitials(user.fullName)}
-      </div>
+        <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-primary">
+          {getInitials(user.fullName)}
+        </div>
+      </Link>
 
       <button
         type="button"

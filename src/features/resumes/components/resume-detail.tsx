@@ -1,11 +1,12 @@
 'use client';
 
-import { UserIcon } from 'lucide-react';
+import { DownloadIcon, EyeIcon, FileTextIcon, Loader2Icon, UserIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DetailItem, DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
+import { getFileDownloadUrl } from '@/features/files/api/file.api';
 import { ResumeParsedData } from '@/features/resumes/components/resume-parsed-data';
 import { useParseResume } from '@/features/resumes/hooks/use-parse-resume';
 import { useResumeDetail } from '@/features/resumes/hooks/use-resume-detail';
@@ -23,6 +24,8 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
     useResumeDetail(resumeId);
   const { isParsing, parseErrorMessage, parseResume, resetParseError } =
     useParseResume(resumeId);
+  const [fileAction, setFileAction] = useState<'view' | 'download' | null>(null);
+  const [fileErrorMessage, setFileErrorMessage] = useState<string | null>(null);
 
   const isParseRunning = isParsing || resume?.parseStatus === 'PROCESSING';
   const canRetryParse = resume?.parseStatus === 'FAILED';
@@ -80,6 +83,31 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
       />
     );
   }
+
+  const handleOpenFile = async (mode: 'view' | 'download') => {
+    if (!resume) return;
+
+    try {
+      setFileAction(mode);
+      setFileErrorMessage(null);
+      const fileName = resume.fileAsset?.fileName || resume.fileAssetId;
+      const { url } = await getFileDownloadUrl(resume.fileAssetId, fileName);
+
+      if (mode === 'view') {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to prepare the file link.';
+      setFileErrorMessage(message);
+    } finally {
+      setFileAction(null);
+    }
+  };
 
   if (!resume) {
     return (
@@ -142,7 +170,36 @@ export function ResumeDetail({ resumeId }: ResumeDetailProps) {
                 {resume.parseStatus}
               </span>
             </div>
-            <DetailItem label="File asset ID" value={resume.fileAssetId} />
+            <div className="min-w-0 sm:col-span-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">CV file</p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <span className="flex min-w-0 items-center gap-2 rounded-xl border border-outline bg-surface-variant px-3 py-2 text-sm">
+                  <FileTextIcon className="size-4 shrink-0 text-on-surface-muted" />
+                  <span className="truncate text-on-surface">{resume.fileAsset?.fileName || resume.fileAssetId}</span>
+                </span>
+                <button
+                  type="button"
+                  disabled={fileAction !== null}
+                  onClick={() => void handleOpenFile('view')}
+                  className="inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-primary px-3 text-sm font-semibold text-on-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {fileAction === 'view' ? <Loader2Icon className="size-4 animate-spin" /> : <EyeIcon className="size-4" />}
+                  View CV
+                </button>
+                <button
+                  type="button"
+                  disabled={fileAction !== null}
+                  aria-label="Download CV"
+                  onClick={() => void handleOpenFile('download')}
+                  className="inline-flex size-9 cursor-pointer items-center justify-center rounded-xl border border-outline text-on-surface-variant transition hover:bg-surface-variant disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {fileAction === 'download' ? <Loader2Icon className="size-4 animate-spin" /> : <DownloadIcon className="size-4" />}
+                </button>
+              </div>
+              {fileErrorMessage ? (
+                <p className="mt-1.5 text-xs font-medium text-warning">{fileErrorMessage}</p>
+              ) : null}
+            </div>
           </div>
         </div>
 

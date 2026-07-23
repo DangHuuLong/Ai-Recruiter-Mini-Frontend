@@ -1,18 +1,32 @@
 'use client';
 
-import { SearchIcon } from 'lucide-react';
+import { CheckIcon, SearchIcon, SparklesIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
+import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/config/routes.config';
 import {
   MOCK_INTERVIEW_QUESTIONS,
+  QUALITY_GATE_CLASSES,
+  QUALITY_GATE_LABELS,
   QUESTION_TYPE_LABELS,
+  nextMockInterviewQuestionId,
+  type MockInterviewQuestion,
 } from '@/features/interview-questions/mock/interview-question-mock-data';
 import {
+  getBusinessContextsFor,
+  getEnablersFor,
   getSpecializationsFor,
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
 } from '@/features/interview-questions/mock/interview-question-taxonomy';
+import { mockDelay } from '@/lib/utils/mock-delay';
+
+const SIMILARITY_THRESHOLD = 0.55;
+const RESULT_LIMIT = 5;
+const GENERATE_COUNT = 3;
 
 type ResultRow = {
   id: string;
@@ -34,17 +48,52 @@ function fakeSimilarity(query: string, questionText: string): number {
   return Math.min(0.97, Math.max(0.35, base + seed / 100));
 }
 
+function buildGeneratedQuestion(
+  family: OccupationFamily,
+  specialization: string,
+  queryText: string,
+  index: number,
+): MockInterviewQuestion {
+  const enablers = getEnablersFor(family, specialization);
+  const businessContexts = getBusinessContextsFor(family, specialization);
+  const now = new Date().toISOString();
+
+  return {
+    id: nextMockInterviewQuestionId(),
+    questionText: `Based on "${queryText.trim()}" — describe how you'd approach this in a ${businessContexts[index % Math.max(businessContexts.length, 1)] ?? specialization} context.`,
+    occupationFamily: family,
+    specialization,
+    enablers: enablers.slice(0, 3),
+    businessContext: businessContexts[index % Math.max(businessContexts.length, 1)] ?? specialization,
+    competency: `${specialization} fundamentals`,
+    competencyType: 'HARD_SKILL',
+    assessmentTarget: 'APPLICATION',
+    experienceBucket: 'TWO_TO_FOUR',
+    autonomyLevel: 'WORKS_INDEPENDENTLY',
+    questionType: 'KNOWLEDGE_CHECK',
+    rubric: ['Covers the core concept clearly', 'Gives a concrete example or trade-off'],
+    source: 'AI_GENERATED',
+    qualityGateStatus: 'PENDING_REVIEW',
+    usageCount: 0,
+    lastUsedAt: null,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 export function InterviewQuestionSearchTest() {
   const [queryText, setQueryText] = useState('');
   const [occupationFamily, setOccupationFamily] = useState<OccupationFamily | ''>('');
   const [specialization, setSpecialization] = useState('');
   const [results, setResults] = useState<ResultRow[] | null>(null);
+  const [generated, setGenerated] = useState<MockInterviewQuestion[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
 
   const specializationOptions = getSpecializationsFor(occupationFamily);
+  const canSearch = Boolean(queryText.trim() && occupationFamily && specialization);
 
-  const handleSearch = () => {
-    if (!queryText.trim() || !occupationFamily || !specialization) return;
-
+  const rankPool = (): ResultRow[] => {
     const pool = MOCK_INTERVIEW_QUESTIONS.filter(
       (q) =>
         q.qualityGateStatus === 'APPROVED' &&
@@ -52,7 +101,7 @@ export function InterviewQuestionSearchTest() {
         q.specialization === specialization,
     );
 
-    const ranked = pool
+    return pool
       .map((q) => ({
         id: q.id,
         questionText: q.questionText,
@@ -61,13 +110,53 @@ export function InterviewQuestionSearchTest() {
         similarity: fakeSimilarity(queryText, q.questionText),
       }))
       .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, 5);
+      .slice(0, RESULT_LIMIT);
+  };
 
+  const handleSearch = () => {
+    if (!canSearch) return;
+    setGenerated([]);
+    setResults(rankPool());
+  };
+
+  const handleSearchOrGenerate = async () => {
+    if (!canSearch || !occupationFamily) return;
+
+    const ranked = rankPool();
     setResults(ranked);
+    setGenerated([]);
+
+    const topSimilarity = ranked[0]?.similarity ?? 0;
+    const isThin = ranked.length < RESULT_LIMIT || topSimilarity < SIMILARITY_THRESHOLD;
+
+    if (!isThin) return;
+
+    setIsGenerating(true);
+    await mockDelay(900);
+    const newQuestions = Array.from({ length: GENERATE_COUNT }, (_, index) =>
+      buildGeneratedQuestion(occupationFamily, specialization, queryText, index),
+    );
+    setGenerated(newQuestions);
+    setIsGenerating(false);
+  };
+
+  const handleApprove = (question: MockInterviewQuestion) => {
+    MOCK_INTERVIEW_QUESTIONS.push({ ...question, qualityGateStatus: 'APPROVED' });
+    setApprovedIds((current) => new Set(current).add(question.id));
+    showToast.success('Question approved', {
+      description: 'It now shows up in Search results for this bucket.',
+    });
   };
 
   return (
     <div className="max-w-3xl space-y-6">
+      <Link
+        href={ROUTES.INTERVIEW_QUESTIONS}
+        className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
+      >
+        ← Back to Interview Question Bank
+      </Link>
+
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-on-surface">Test retrieval</h1>
@@ -76,8 +165,8 @@ export function InterviewQuestionSearchTest() {
           </span>
         </div>
         <p className="mt-1 text-sm text-on-surface-variant">
-          Sanity-check how well the retrieval system ranks matches for a given query, before it&apos;s used by
-          the search-or-generate engine.
+          Sanity-check how well the retrieval system ranks matches for a given query, and preview the
+          AI-fallback generation used when the existing bank comes up thin.
         </p>
       </div>
 
@@ -137,15 +226,27 @@ export function InterviewQuestionSearchTest() {
           </div>
         </div>
 
-        <Button
-          type="button"
-          className="w-auto gap-2 px-4"
-          disabled={!queryText.trim() || !occupationFamily || !specialization}
-          onClick={handleSearch}
-        >
-          <SearchIcon className="size-4" />
-          Search
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="button" variant="secondary" className="w-auto gap-2 px-4" disabled={!canSearch} onClick={handleSearch}>
+            <SearchIcon className="size-4" />
+            Search
+          </Button>
+          <Button
+            type="button"
+            className="w-auto gap-2 px-4"
+            disabled={!canSearch || isGenerating}
+            onClick={() => void handleSearchOrGenerate()}
+          >
+            <SparklesIcon className="size-4" />
+            {isGenerating ? 'Generating...' : 'Search + Generate if needed'}
+          </Button>
+        </div>
+        <p className="text-xs text-on-surface-muted">
+          <span className="font-semibold">Search</span> only checks existing approved questions.{' '}
+          <span className="font-semibold">Search + Generate if needed</span> also asks the AI to draft new
+          candidate questions when the existing bank has too few strong matches — new questions land as
+          Pending Review, not immediately reusable.
+        </p>
       </div>
 
       {results ? (
@@ -180,6 +281,53 @@ export function InterviewQuestionSearchTest() {
               </div>
             </div>
           ))}
+        </div>
+      ) : null}
+
+      {isGenerating ? (
+        <div className="rounded-2xl border border-dashed border-primary/40 bg-primary-container/20 p-4 text-sm text-on-surface-variant">
+          Generating new candidate questions with AI fallback...
+        </div>
+      ) : null}
+
+      {generated.length > 0 ? (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 border-t border-outline pt-4">
+            <SparklesIcon className="size-4 text-primary" />
+            <p className="text-sm font-semibold text-on-surface">Newly generated — pending review</p>
+          </div>
+
+          {generated.map((question) => {
+            const isApproved = approvedIds.has(question.id);
+            return (
+              <div
+                key={question.id}
+                className="rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-sm font-semibold text-on-surface">{question.questionText}</p>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${QUALITY_GATE_CLASSES[isApproved ? 'APPROVED' : 'PENDING_REVIEW']}`}
+                  >
+                    {QUALITY_GATE_LABELS[isApproved ? 'APPROVED' : 'PENDING_REVIEW']}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-on-surface-muted">
+                  {question.competency} · {QUESTION_TYPE_LABELS[question.questionType]}
+                </p>
+                {!isApproved ? (
+                  <button
+                    type="button"
+                    onClick={() => handleApprove(question)}
+                    className="mt-3 inline-flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold text-success transition-colors hover:bg-success-container hover:underline"
+                  >
+                    <CheckIcon className="size-3.5" />
+                    Approve
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : null}
     </div>

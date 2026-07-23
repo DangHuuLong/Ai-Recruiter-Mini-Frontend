@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -102,6 +103,13 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
 
   return (
     <div className="max-w-3xl space-y-6">
+      <Link
+        href={ROUTES.INTERVIEW_QUESTIONS}
+        className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
+      >
+        ← Back to Interview Question Bank
+      </Link>
+
       <div>
         <h1 className="text-2xl font-bold text-on-surface">
           {existing ? 'Edit question' : 'New interview question'}

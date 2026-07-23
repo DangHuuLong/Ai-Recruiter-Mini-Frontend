@@ -29,6 +29,7 @@ export const ROUTES = {
   EVALUATION_CONFIG_CREATE: '/evaluation-configs/new',
 
   USERS: '/users',
+  MY_PROFILE: '/profile',
 
   AUDIT_LOG: '/audit-log',
 

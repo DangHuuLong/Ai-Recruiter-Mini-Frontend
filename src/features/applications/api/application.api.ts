@@ -52,6 +52,16 @@ export async function getApplications(
   return { success: true, message: 'Applications fetched successfully (mock)', data, meta };
 }
 
+export async function getCandidateApplications(candidateId: string): Promise<Application[]> {
+  // const response = await apiClient.get<ApiResponse<Application[]>>(
+  //   apiEndpoints.candidates.applications(candidateId),
+  // );
+  // return response.data;
+
+  await mockDelay();
+  return MOCK_APPLICATIONS.filter((application) => application.candidateId === candidateId);
+}
+
 export async function getApplicationById(id: string): Promise<Application> {
   // const response = await apiClient.get<ApiResponse<Application>>(
   //   apiEndpoints.applications.detail(id),

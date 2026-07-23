@@ -2,10 +2,16 @@
 // upload so the Resumes screens can be reviewed without a live backend. To restore real
 // integration, uncomment the `apiClient.upload` call and remove the mock block below.
 // apiClient kept imported so the commented-out real call still resolves at a glance.
-import { apiClient } from '@/lib/api';
-import type { UploadProgress } from '@/lib/api/api-types';
+import { apiClient, apiEndpoints } from '@/lib/api';
+import type { ApiResponse, UploadProgress } from '@/lib/api/api-types';
+import { mockDelay } from '@/lib/utils/mock-delay';
 
 import type { FileAsset } from '../types/file.type';
+
+export type FileDownloadUrl = {
+  url: string;
+  expiresIn: number;
+};
 
 type UploadFileOptions = {
   onUploadProgress?: (progress: UploadProgress) => void;
@@ -54,4 +60,22 @@ export async function uploadFile(
     status: 'ACTIVE',
     uploadedAt: new Date().toISOString(),
   };
+}
+
+export async function getFileDownloadUrl(fileId: string, fileName: string): Promise<FileDownloadUrl> {
+  // const response = await apiClient.get<ApiResponse<FileDownloadUrl>>(
+  //   apiEndpoints.files.downloadUrl(fileId),
+  // );
+  // return response.data;
+
+  await mockDelay(300);
+  const blob = new Blob(
+    [
+      `This is a mock CV file standing in for "${fileName}" (file asset ${fileId}).\n\n` +
+        'In the real backend, this button opens a time-limited signed URL from ' +
+        'GET /files/:id/download-url pointing at the actual uploaded file in storage.',
+    ],
+    { type: 'text/plain' },
+  );
+  return { url: URL.createObjectURL(blob), expiresIn: 600 };
 }

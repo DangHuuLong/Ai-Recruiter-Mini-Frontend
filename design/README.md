@@ -16,5 +16,10 @@ Each folder below corresponds to one screen/flow from `docs/stitch-design-prompt
   generation session — kept as raw reference only, **not** used as a design source (see
   the NOTE.md inside); `00-style-guide/` above was used instead, same as every other
   folder.
+- `06-gap-fixes/` — Prompts 15-19 (Dashboard overview, Resume Detail file
+  view/download, Candidate Detail Applications section, My Profile, Interview Question
+  Bank additions) — screens/additions covering gaps found when auditing the UI against
+  every backend endpoint. Same `00-stitch-export-reference-only/` convention as
+  `05-core-crud/` — not a design source, see the NOTE.md inside.
 
 Once reviewed and merged into `develop`, implementation happens on separate per-screen branches: static UI first, then API integration.
