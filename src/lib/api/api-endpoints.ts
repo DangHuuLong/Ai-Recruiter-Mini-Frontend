@@ -79,4 +79,8 @@ export const apiEndpoints = {
     me: '/users/me',
     update: (id: string) => `/users/${id}`,
   },
+
+  auditLogs: {
+    list: '/audit-logs',
+  },
 } as const;
