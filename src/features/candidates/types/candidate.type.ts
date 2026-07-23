@@ -8,7 +8,7 @@ export interface Candidate {
   portfolioUrl?: string | null;
   location?: string | null;
   normalizedProfile?: unknown | null;
-  identityConfidence?: number | null;
+  identityConfidence?: 'HIGH' | 'MEDIUM' | 'LOW' | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,7 +17,7 @@ export interface CandidateQuery {
   page?: number;
   limit?: number;
   search?: string;
-  sortBy?: 'createdAt' | 'updatedAt' | 'fullName' | 'primaryEmail' | 'primaryPhone' | 'location';
+  sortBy?: 'createdAt' | 'updatedAt' | 'fullName' | 'primaryEmail';
   sortOrder?: 'asc' | 'desc';
 }
 
