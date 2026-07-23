@@ -1,6 +1,7 @@
 'use client';
 
-import { EyeIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CopyIcon, EyeIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import {
@@ -9,6 +10,7 @@ import {
   type DataTableColumn,
   type DataTableSort,
 } from '@/components/common';
+import { showToast } from '@/components/feedback';
 import {
   ACTION_CLASSES,
   AUDIT_RESOURCE_TYPES,
@@ -139,61 +141,94 @@ export function AuditLogViewer() {
         />
       )}
 
-      {selectedLog ? (
-        <div
-          onClick={() => setSelectedLog(null)}
-          className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-2xl border border-outline bg-surface-lowest p-6 shadow-panel"
-          >
-            <h2 className="text-lg font-bold text-on-surface">Audit log detail</h2>
-            <dl className="mt-4 space-y-3 text-sm">
-              <div className="flex justify-between gap-4">
-                <dt className="text-on-surface-muted">Action</dt>
-                <dd className="font-semibold text-on-surface">{selectedLog.action}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-on-surface-muted">Resource</dt>
-                <dd className="font-semibold text-on-surface">
-                  {selectedLog.resourceType}
-                  {selectedLog.resourceId ? ` #${selectedLog.resourceId}` : ''}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-on-surface-muted">Actor</dt>
-                <dd className="font-semibold text-on-surface">
-                  {selectedLog.actor?.fullName ?? selectedLog.actor?.email ?? '—'}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-on-surface-muted">Timestamp</dt>
-                <dd className="font-semibold text-on-surface">
-                  {formatDateTime(selectedLog.createdAt)}
-                </dd>
-              </div>
-            </dl>
-
-            <div className="mt-4">
-              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Metadata
-              </p>
-              <pre className="overflow-x-auto rounded-lg bg-surface-variant p-3 text-xs text-on-surface-variant">
-                {selectedLog.metadata ? JSON.stringify(selectedLog.metadata, null, 2) : 'null'}
-              </pre>
-            </div>
-
-            <button
-              type="button"
+      <AnimatePresence>
+        {selectedLog ? (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setSelectedLog(null)}
-              className="mt-6 w-full cursor-pointer rounded-lg border border-outline px-4 py-2.5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
+              className="fixed inset-0 z-40 bg-black/40"
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+              className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto bg-surface-lowest p-6 shadow-panel"
             >
-              Close
-            </button>
-          </div>
-        </div>
-      ) : null}
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-on-surface">Audit log detail</h2>
+                <button
+                  type="button"
+                  onClick={() => setSelectedLog(null)}
+                  className="cursor-pointer rounded-full p-1.5 text-on-surface-muted transition-colors hover:bg-surface-variant hover:text-on-surface"
+                >
+                  <XIcon className="size-5" />
+                </button>
+              </div>
+
+              <dl className="mt-6 space-y-4 text-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-on-surface-muted">Action</dt>
+                  <dd>
+                    <span
+                      className={cn(
+                        'rounded-full px-2.5 py-1 text-xs font-semibold',
+                        ACTION_CLASSES[selectedLog.action] ?? 'bg-surface-variant text-on-surface-variant',
+                      )}
+                    >
+                      {selectedLog.action}
+                    </span>
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-outline pt-4">
+                  <dt className="text-on-surface-muted">Resource</dt>
+                  <dd className="font-semibold text-on-surface">
+                    {selectedLog.resourceType}
+                    {selectedLog.resourceId ? ` #${selectedLog.resourceId}` : ''}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-outline pt-4">
+                  <dt className="text-on-surface-muted">Actor</dt>
+                  <dd className="font-semibold text-on-surface">
+                    {selectedLog.actor?.fullName ?? selectedLog.actor?.email ?? '—'}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 border-t border-outline pt-4">
+                  <dt className="text-on-surface-muted">Timestamp</dt>
+                  <dd className="font-semibold text-on-surface">{formatDateTime(selectedLog.createdAt)}</dd>
+                </div>
+              </dl>
+
+              <div className="mt-6 border-t border-outline pt-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
+                    Metadata
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(
+                        JSON.stringify(selectedLog.metadata ?? null, null, 2),
+                      );
+                      showToast.success('Metadata copied to clipboard');
+                    }}
+                    className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-primary transition hover:underline"
+                  >
+                    <CopyIcon className="size-3.5" />
+                    Copy JSON
+                  </button>
+                </div>
+                <pre className="mt-2 overflow-x-auto rounded-lg bg-surface-variant p-3 text-xs text-on-surface-variant">
+                  {selectedLog.metadata ? JSON.stringify(selectedLog.metadata, null, 2) : 'null'}
+                </pre>
+              </div>
+            </motion.div>
+          </>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }
