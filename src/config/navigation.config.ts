@@ -28,12 +28,12 @@ export const navigationGroups: NavigationGroup[] = [
       { label: 'Applications', href: ROUTES.APPLICATIONS, icon: ClipboardListIcon },
       { label: 'Evaluations', href: ROUTES.EVALUATIONS, icon: ClipboardCheckIcon },
       { label: 'Batch Scoring', href: ROUTES.BATCH_SCORING, icon: Grid3x3Icon },
+      { label: 'Evaluation Configs', href: ROUTES.EVALUATION_CONFIGS, icon: SlidersHorizontalIcon },
     ],
   },
   {
     label: 'Admin',
     items: [
-      { label: 'Evaluation Configs', href: ROUTES.EVALUATION_CONFIGS, icon: SlidersHorizontalIcon },
       { label: 'Users', href: ROUTES.USERS, icon: UserCogIcon },
       { label: 'Audit Log', href: ROUTES.AUDIT_LOG, icon: HistoryIcon },
     ],
