@@ -83,4 +83,13 @@ export const apiEndpoints = {
   auditLogs: {
     list: '/audit-logs',
   },
+
+  evaluationConfigs: {
+    list: '/evaluation-configs',
+    create: '/evaluation-configs',
+    detail: (id: string) => `/evaluation-configs/${id}`,
+    update: (id: string) => `/evaluation-configs/${id}`,
+    delete: (id: string) => `/evaluation-configs/${id}`,
+    bulkDelete: '/evaluation-configs/bulk-delete',
+  },
 } as const;

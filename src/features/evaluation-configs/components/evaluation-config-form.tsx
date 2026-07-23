@@ -3,48 +3,77 @@
 import { ArrowLeftIcon, PlusIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { showToast } from '@/components/feedback';
+import { LoadingState, showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/config/routes.config';
 import {
+  createEvaluationConfig,
+  getEvaluationConfigById,
+  updateEvaluationConfig,
+} from '@/features/evaluation-configs/api/evaluation-config.api';
+import {
   CRITERION_LABELS,
   CRITERION_OPTIONS,
-  getMockEvaluationConfig,
   type CriterionDefinition,
   type CriterionName,
-  type MockEvaluationConfig,
-} from '@/features/evaluation-configs/mock/evaluation-config-mock-data';
+} from '@/features/evaluation-configs/types/evaluation-config.type';
+import { getJobDescriptions } from '@/features/job-descriptions/api/job-description.api';
+import type { JobDescription } from '@/features/job-descriptions/types/job-description.type';
 import { cn } from '@/lib/utils/cn';
 
 const WEIGHT_TOLERANCE = 0.001;
+
+const DEFAULT_CRITERIA: CriterionDefinition[] = [
+  { criterion: 'SKILLS_MATCH', weight: 0.4 },
+  { criterion: 'EXPERIENCE_RELEVANCE', weight: 0.3 },
+  { criterion: 'PROJECT_RELEVANCE', weight: 0.15 },
+  { criterion: 'EDUCATION_CERTIFICATION', weight: 0.1 },
+  { criterion: 'KEYWORD_DOMAIN_ALIGNMENT', weight: 0.05 },
+];
 
 type EvaluationConfigFormProps = {
   configId?: string;
 };
 
-function toFormCriteria(config: MockEvaluationConfig | null): CriterionDefinition[] {
-  if (config) return config.criteriaDefinition;
-  return [
-    { criterion: 'SKILLS_MATCH', weight: 0.4 },
-    { criterion: 'EXPERIENCE_RELEVANCE', weight: 0.3 },
-    { criterion: 'PROJECT_RELEVANCE', weight: 0.15 },
-    { criterion: 'EDUCATION_CERTIFICATION', weight: 0.1 },
-    { criterion: 'KEYWORD_DOMAIN_ALIGNMENT', weight: 0.05 },
-  ];
-}
-
 export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
   const router = useRouter();
-  const existing = configId ? getMockEvaluationConfig(configId) : null;
 
-  const [name, setName] = useState(existing?.name ?? '');
-  const [description, setDescription] = useState(existing?.description ?? '');
-  const [isDefault, setIsDefault] = useState(existing?.isDefault ?? false);
-  const [criteria, setCriteria] = useState<CriterionDefinition[]>(toFormCriteria(existing));
+  const [isLoadingExisting, setIsLoadingExisting] = useState(Boolean(configId));
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [jobDescriptions, setJobDescriptions] = useState<JobDescription[]>([]);
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [jobDescriptionId, setJobDescriptionId] = useState('');
+  const [isDefault, setIsDefault] = useState(false);
+  const [criteria, setCriteria] = useState<CriterionDefinition[]>(DEFAULT_CRITERIA);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    getJobDescriptions({ limit: 100 })
+      .then((response) => setJobDescriptions(response.data))
+      .catch(() => setJobDescriptions([]));
+  }, []);
+
+  useEffect(() => {
+    if (!configId) return;
+
+    getEvaluationConfigById(configId)
+      .then((config) => {
+        setName(config.name);
+        setDescription(config.description ?? '');
+        setJobDescriptionId(config.jobDescriptionId ?? '');
+        setIsDefault(config.isDefault);
+        setCriteria(config.criteriaDefinition);
+      })
+      .catch((error) => {
+        setLoadError(error instanceof Error ? error.message : 'Failed to load the config');
+      })
+      .finally(() => setIsLoadingExisting(false));
+  }, [configId]);
 
   const totalWeight = criteria.reduce((sum, item) => sum + item.weight, 0);
   const isWeightValid = Math.abs(totalWeight - 1) <= WEIGHT_TOLERANCE;
@@ -70,14 +99,54 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
 
   const isValid = name.trim().length > 0 && criteria.length > 0 && isWeightValid && !duplicateCriteria;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isValid) return;
-    setIsSubmitting(true);
-    setTimeout(() => {
-      showToast.success(existing ? 'Config updated' : 'Config created', { description: name });
+
+    try {
+      setIsSubmitting(true);
+      const payload = {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        jobDescriptionId: jobDescriptionId || undefined,
+        isDefault,
+        criteria,
+      };
+
+      if (configId) {
+        await updateEvaluationConfig(configId, payload);
+      } else {
+        await createEvaluationConfig(payload);
+      }
+
+      showToast.success(configId ? 'Config updated' : 'Config created', { description: name });
       router.push(ROUTES.EVALUATION_CONFIGS);
-    }, 500);
+    } catch (error) {
+      showToast.error(configId ? 'Failed to update config' : 'Failed to create config', {
+        description: error instanceof Error ? error.message : 'Something went wrong while saving.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (isLoadingExisting) {
+    return <LoadingState title="Loading config..." description="Please wait while the config is being loaded." />;
+  }
+
+  if (loadError) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-4">
+        <Link
+          href={ROUTES.EVALUATION_CONFIGS}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
+        >
+          <ArrowLeftIcon className="size-4" />
+          Back to configs
+        </Link>
+        <p className="rounded-xl border border-error bg-error-container p-4 text-sm text-error">{loadError}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -91,7 +160,7 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
 
       <div>
         <h1 className="text-2xl font-bold text-on-surface">
-          {existing ? 'Edit config' : 'New evaluation config'}
+          {configId ? 'Edit config' : 'New evaluation config'}
         </h1>
         <p className="mt-1 text-sm text-on-surface-variant">
           Define how much each criterion counts toward the overall match score.
@@ -111,6 +180,24 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
             rows={2}
             className="w-full rounded-lg border border-outline bg-surface-lowest p-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           />
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
+            Scope
+          </label>
+          <select
+            value={jobDescriptionId}
+            onChange={(e) => setJobDescriptionId(e.target.value)}
+            className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
+          >
+            <option value="">Organization default (all job descriptions)</option>
+            {jobDescriptions.map((jd) => (
+              <option key={jd.id} value={jd.id}>
+                {jd.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <label className="flex cursor-pointer items-center gap-2 text-sm text-on-surface">
@@ -198,8 +285,8 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
         </div>
       </div>
 
-      <Button disabled={!isValid} isLoading={isSubmitting} onClick={handleSubmit}>
-        {isSubmitting ? 'Saving...' : existing ? 'Save changes' : 'Create config'}
+      <Button disabled={!isValid} isLoading={isSubmitting} onClick={() => void handleSubmit()}>
+        {isSubmitting ? 'Saving...' : configId ? 'Save changes' : 'Create config'}
       </Button>
     </div>
   );
