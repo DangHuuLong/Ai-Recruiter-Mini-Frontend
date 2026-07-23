@@ -21,6 +21,7 @@ export const apiEndpoints = {
   files: {
     upload: '/files/upload',
     detail: (id: string) => `/files/${id}`,
+    downloadUrl: (id: string) => `/files/${id}/download-url`,
     delete: (id: string) => `/files/${id}`,
   },
 
