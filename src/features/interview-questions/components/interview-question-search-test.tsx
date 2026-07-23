@@ -1,10 +1,12 @@
 'use client';
 
 import { CheckIcon, SearchIcon, SparklesIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/config/routes.config';
 import {
   MOCK_INTERVIEW_QUESTIONS,
   QUALITY_GATE_CLASSES,
@@ -148,6 +150,13 @@ export function InterviewQuestionSearchTest() {
 
   return (
     <div className="max-w-3xl space-y-6">
+      <Link
+        href={ROUTES.INTERVIEW_QUESTIONS}
+        className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
+      >
+        ← Back to Interview Question Bank
+      </Link>
+
       <div>
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-on-surface">Test retrieval</h1>
