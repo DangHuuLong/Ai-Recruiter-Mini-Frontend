@@ -2,8 +2,9 @@
 
 Static-UI-first phase for the Stitch-redesigned core CRUD screens (branch
 `refactor/design-system-core-crud-screens`): all 5 areas are wired to **fake/mocked**
-data so the redesigned UI can be reviewed without a live backend. Unlike the auth mock
-(`docs/auth-mock-todo.md`), the real API calls here are **not deleted** — they're
+data so the redesigned UI can be reviewed without a live backend. Auth has since been
+restored to real API calls (see the frontend integration plan) — this doc now covers
+only these 5 CRUD areas. The real API calls here are **not deleted** — they're
 commented out directly above each mock block, so restoring is a matter of deleting the
 mock block and uncommenting.
 

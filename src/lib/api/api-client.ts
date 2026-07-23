@@ -1,8 +1,20 @@
 import { envConfig } from '@/config/env.config';
-import { getStoredAccessToken } from '@/lib/auth/auth-storage';
+import { ROUTES } from '@/config/routes.config';
+import { clearStoredAuthSession, getStoredAccessToken } from '@/lib/auth/auth-storage';
 
 import { ApiError } from './api-error';
 import type { ApiErrorResponse, RequestOptions } from './api-types';
+
+// A 401 on a request that carried a token means the session is stale/expired — clear it and
+// bounce to login. A 401 with no token (e.g. bad login credentials) is a normal error the
+// caller should handle inline, not a session expiry.
+const handleUnauthorized = () => {
+  clearStoredAuthSession();
+
+  if (typeof window !== 'undefined' && window.location.pathname !== ROUTES.LOGIN) {
+    window.location.assign(ROUTES.LOGIN);
+  }
+};
 
 const DEFAULT_HEADERS: HeadersInit = {
   'Content-Type': 'application/json',
@@ -137,6 +149,7 @@ const request = async <T>(
 
   const isFormData = body instanceof FormData;
   const url = buildUrl(path, params);
+  const hadToken = Boolean(getStoredAccessToken());
 
   const response = await fetch(url, {
     method,
@@ -144,6 +157,10 @@ const request = async <T>(
     body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     ...fetchOptions,
   });
+
+  if (response.status === 401 && hadToken) {
+    handleUnauthorized();
+  }
 
   return parseResponse<T>(response, normalizePath(path));
 };
@@ -156,6 +173,7 @@ const uploadWithProgress = async <T>(
   const { params, headers, onUploadProgress } = options;
   const url = buildUrl(path, params);
   const normalizedPath = normalizePath(path);
+  const hadToken = Boolean(getStoredAccessToken());
 
   return new Promise<T>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -178,6 +196,10 @@ const uploadWithProgress = async <T>(
     };
 
     xhr.onload = () => {
+      if (xhr.status === 401 && hadToken) {
+        handleUnauthorized();
+      }
+
       try {
         resolve(parseXhrResponse<T>(xhr, normalizedPath));
       } catch (error) {
