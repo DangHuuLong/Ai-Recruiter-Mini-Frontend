@@ -17,6 +17,7 @@ type AuthState = {
   isHydrated: boolean;
   hydrate: () => void;
   setSession: (session: LoginResult) => void;
+  updateUser: (user: AuthUser) => void;
   clearSession: () => void;
 };
 
@@ -42,6 +43,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       user: session.user,
       isHydrated: true,
     });
+  },
+
+  updateUser: (user) => {
+    setStoredAuthUser(user);
+    set({ user });
   },
 
   clearSession: () => {

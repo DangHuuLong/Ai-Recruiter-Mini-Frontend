@@ -69,4 +69,11 @@ export const apiEndpoints = {
     evidence: (id: string) => `/evaluations/${id}/evidence`,
     retry: (id: string) => `/evaluations/${id}/retry`,
   },
+
+  users: {
+    list: '/users',
+    create: '/users',
+    me: '/users/me',
+    update: (id: string) => `/users/${id}`,
+  },
 } as const;
