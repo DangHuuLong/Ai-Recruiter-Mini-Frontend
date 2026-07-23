@@ -103,13 +103,6 @@ export type EvaluationQuery = {
   configId?: string;
   createdById?: string;
   status?: EvaluationStatus;
-  sortBy?:
-    | 'createdAt'
-    | 'updatedAt'
-    | 'startedAt'
-    | 'completedAt'
-    | 'overallScore'
-    | 'application.candidate.fullName'
-    | 'application.jobDescription.title';
+  sortBy?: 'createdAt' | 'updatedAt' | 'startedAt' | 'completedAt' | 'overallScore';
   sortOrder?: 'asc' | 'desc';
 };

@@ -23,7 +23,7 @@ export interface ResumeQuery {
   search?: string;
   candidateId?: string;
   parseStatus?: ParseStatus;
-  sortBy?: 'createdAt' | 'updatedAt' | 'uploadedAt' | 'candidateId' | 'parserVersion' | 'fileAsset.fileName';
+  sortBy?: 'createdAt' | 'updatedAt' | 'uploadedAt';
   sortOrder?: 'asc' | 'desc';
 }
 

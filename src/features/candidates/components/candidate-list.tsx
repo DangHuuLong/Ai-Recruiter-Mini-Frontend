@@ -57,7 +57,6 @@ function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTa
     {
       key: 'phone',
       header: 'Phone',
-      sortKey: 'primaryPhone',
       render: (candidate) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">
           {candidate.primaryPhone || 'Not provided'}
@@ -67,7 +66,6 @@ function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTa
     {
       key: 'location',
       header: 'Location',
-      sortKey: 'location',
       render: (candidate) => (
         <p className="text-sm text-on-surface-variant">{candidate.location || 'Not provided'}</p>
       ),

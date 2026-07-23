@@ -1,13 +1,12 @@
 'use client';
 
-import { ClipboardListIcon, EyeIcon, FileTextIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { ClipboardListIcon, EyeIcon, FileTextIcon, PencilIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import {
   ActionIconButton,
   AvatarChip,
-  ConfirmDialog,
   DataTable,
   ListControls,
   type DataTableColumn,
@@ -15,7 +14,7 @@ import {
   type DataTableSortOrder,
 } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
-import { deleteApplication, getApplications } from '@/features/applications/api/application.api';
+import { getApplications } from '@/features/applications/api/application.api';
 import { ApplicationStatusBadge } from '@/features/applications/components/application-status-badge';
 import type { Application, ApplicationQuery, ApplicationStatus } from '@/features/applications/types/application.type';
 import type { PaginationMeta } from '@/lib/api/api-types';
@@ -37,13 +36,11 @@ const STATUS_FILTER_OPTIONS = [
 
 function buildApplicationColumns(
   status: ApplicationStatus | '',
-  onDelete: (application: Application) => void,
 ): DataTableColumn<Application>[] {
   return [
     {
       key: 'application',
       header: 'Application',
-      sortKey: 'candidate.fullName',
       render: (application) => {
         const candidateName = application.candidate?.fullName || application.candidateId;
         return (
@@ -60,7 +57,6 @@ function buildApplicationColumns(
     {
       key: 'job',
       header: 'Job description',
-      sortKey: 'jobDescription.title',
       render: (application) => (
         <div>
           <p className="text-sm font-medium text-on-surface">
@@ -75,7 +71,6 @@ function buildApplicationColumns(
     {
       key: 'resume',
       header: 'Resume',
-      sortKey: 'resume.fileAsset.fileName',
       render: (application) => (
         <Link
           href={`/resumes/${application.resumeId}`}
@@ -114,12 +109,6 @@ function buildApplicationColumns(
             icon={<PencilIcon className="size-4" />}
             label="Edit"
           />
-          <ActionIconButton
-            icon={<Trash2Icon className="size-4" />}
-            label="Delete"
-            variant="danger"
-            onClick={() => onDelete(application)}
-          />
         </div>
       ),
     },
@@ -135,8 +124,6 @@ export function ApplicationList() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [applicationToDelete, setApplicationToDelete] = useState<Application | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const loadApplications = async () => {
     try {
@@ -174,24 +161,6 @@ export function ApplicationList() {
     if (key === 'status') {
       setStatus(value as ApplicationStatus | '');
       setPage(1);
-    }
-  };
-
-  const handleDeleteApplication = async () => {
-    if (!applicationToDelete) return;
-
-    try {
-      setIsDeleting(true);
-      await deleteApplication(applicationToDelete.id);
-      showToast.success('Application deleted successfully');
-      setApplicationToDelete(null);
-      await loadApplications();
-    } catch (error) {
-      showToast.error('Failed to delete application', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting the application.',
-      });
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -242,23 +211,13 @@ export function ApplicationList() {
       ) : (
         <DataTable
           data={applications}
-          columns={buildApplicationColumns(status, setApplicationToDelete)}
+          columns={buildApplicationColumns(status)}
           getRowKey={(application) => application.id}
           sort={sort}
           onSortChange={handleSortChange}
           onFilterChange={handleFilterChange}
         />
       )}
-
-      <ConfirmDialog
-        open={Boolean(applicationToDelete)}
-        title="Delete application?"
-        description="This action removes the application record and cannot be undone."
-        confirmLabel="Delete application"
-        isLoading={isDeleting}
-        onCancel={() => setApplicationToDelete(null)}
-        onConfirm={() => void handleDeleteApplication()}
-      />
     </section>
   );
 }

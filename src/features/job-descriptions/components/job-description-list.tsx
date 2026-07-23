@@ -1,6 +1,6 @@
 'use client';
 
-import { BriefcaseIcon, EyeIcon, MapPinIcon, PauseIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { BriefcaseIcon, EyeIcon, MapPinIcon, PauseIcon, PencilIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -18,21 +18,13 @@ import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import {
   bulkDeactivateJobDescriptions,
   deactivateJobDescription,
-  deleteJobDescription,
   getJobDescriptions,
 } from '@/features/job-descriptions/api/job-description.api';
-import type { JobDescription, JobDescriptionQuery, ParseStatus } from '@/features/job-descriptions/types/job-description.type';
+import type { JobDescription, JobDescriptionQuery } from '@/features/job-descriptions/types/job-description.type';
 import type { PaginationMeta } from '@/lib/api/api-types';
 import { formatDate } from '@/lib/utils/format-date';
 
 const PAGE_SIZE = 10;
-
-const PARSE_STATUS_FILTER_OPTIONS = [
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Processing', value: 'PROCESSING' },
-  { label: 'Success', value: 'SUCCESS' },
-  { label: 'Failed', value: 'FAILED' },
-];
 
 function statusClassName(status: JobDescription['parseStatus']) {
   switch (status) {
@@ -48,9 +40,7 @@ function statusClassName(status: JobDescription['parseStatus']) {
 }
 
 function buildColumns(
-  parseStatus: ParseStatus | '',
   onDeactivate: (jobDescription: JobDescription) => void,
-  onDelete: (jobDescription: JobDescription) => void,
 ): DataTableColumn<JobDescription>[] {
   return [
     {
@@ -81,7 +71,6 @@ function buildColumns(
     {
       key: 'location',
       header: 'Location',
-      sortKey: 'location',
       render: (jobDescription) => (
         <p className="flex items-center gap-1.5 text-sm text-on-surface-variant">
           {jobDescription.location ? <MapPinIcon className="size-3.5 shrink-0 text-on-surface-muted" /> : null}
@@ -92,7 +81,6 @@ function buildColumns(
     {
       key: 'type',
       header: 'Type',
-      sortKey: 'employmentType',
       render: (jobDescription) => (
         <div className="space-y-1 text-sm text-on-surface-variant">
           <p>{jobDescription.employmentType || 'Not provided'}</p>
@@ -103,7 +91,6 @@ function buildColumns(
     {
       key: 'parseStatus',
       header: 'Parse Status',
-      filter: { key: 'parseStatus', options: PARSE_STATUS_FILTER_OPTIONS, activeValue: parseStatus },
       render: (jobDescription) => (
         <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClassName(jobDescription.parseStatus)}`}>
           {jobDescription.parseStatus}
@@ -147,12 +134,6 @@ function buildColumns(
               onClick={() => onDeactivate(jobDescription)}
             />
           ) : null}
-          <ActionIconButton
-            icon={<Trash2Icon className="size-4" />}
-            label="Delete"
-            variant="danger"
-            onClick={() => onDelete(jobDescription)}
-          />
         </div>
       ),
     },
@@ -163,13 +144,11 @@ export function JobDescriptionList() {
   const [jobDescriptions, setJobDescriptions] = useState<JobDescription[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
-  const [parseStatus, setParseStatus] = useState<ParseStatus | ''>('');
   const [sort, setSort] = useState<DataTableSort | null>(null);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [jobToDeactivate, setJobToDeactivate] = useState<JobDescription | null>(null);
-  const [jobToDelete, setJobToDelete] = useState<JobDescription | null>(null);
   const [isMutating, setIsMutating] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isBulkConfirmOpen, setIsBulkConfirmOpen] = useState(false);
@@ -183,7 +162,6 @@ export function JobDescriptionList() {
         page,
         limit: PAGE_SIZE,
         search,
-        parseStatus: parseStatus || undefined,
         sortBy: sort?.key as JobDescriptionQuery['sortBy'],
         sortOrder: sort?.order,
       });
@@ -200,18 +178,11 @@ export function JobDescriptionList() {
 
   useEffect(() => {
     void loadJobDescriptions();
-  }, [page, search, parseStatus, sort]);
+  }, [page, search, sort]);
 
   const handleSortChange = (key: string, order: DataTableSortOrder) => {
     setSort({ key, order });
     setPage(1);
-  };
-
-  const handleFilterChange = (key: string, value: string) => {
-    if (key === 'parseStatus') {
-      setParseStatus(value as ParseStatus | '');
-      setPage(1);
-    }
   };
 
   const handleDeactivate = async () => {
@@ -226,24 +197,6 @@ export function JobDescriptionList() {
     } catch (error) {
       showToast.error('Failed to deactivate job description', {
         description: error instanceof Error ? error.message : 'Something went wrong while deactivating the JD.',
-      });
-    } finally {
-      setIsMutating(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!jobToDelete) return;
-
-    try {
-      setIsMutating(true);
-      await deleteJobDescription(jobToDelete.id);
-      showToast.success('Job description deleted successfully');
-      setJobToDelete(null);
-      await loadJobDescriptions();
-    } catch (error) {
-      showToast.error('Failed to delete job description', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting the JD.',
       });
     } finally {
       setIsMutating(false);
@@ -333,11 +286,10 @@ export function JobDescriptionList() {
       ) : (
         <DataTable
           data={jobDescriptions}
-          columns={buildColumns(parseStatus, setJobToDeactivate, setJobToDelete)}
+          columns={buildColumns(setJobToDeactivate)}
           getRowKey={(jobDescription) => jobDescription.id}
           sort={sort}
           onSortChange={handleSortChange}
-          onFilterChange={handleFilterChange}
           selection={{ selectedIds, onChange: setSelectedIds }}
         />
       )}
@@ -345,7 +297,7 @@ export function JobDescriptionList() {
       <ConfirmDialog
         open={Boolean(jobToDeactivate)}
         title="Deactivate job description?"
-        description="Inactive job descriptions cannot be used for new applications. Existing records remain available."
+        description="This removes it from the list and disables its detail page. It stays linked to any existing applications, but cannot be viewed, edited, or reused. This cannot be undone."
         confirmLabel="Deactivate JD"
         variant="warning"
         isLoading={isMutating}
@@ -354,19 +306,9 @@ export function JobDescriptionList() {
       />
 
       <ConfirmDialog
-        open={Boolean(jobToDelete)}
-        title="Delete job description?"
-        description="This action removes the job description if the backend allows it. This cannot be undone."
-        confirmLabel="Delete JD"
-        isLoading={isMutating}
-        onCancel={() => setJobToDelete(null)}
-        onConfirm={() => void handleDelete()}
-      />
-
-      <ConfirmDialog
         open={isBulkConfirmOpen}
         title={`Deactivate ${selectedIds.size} job description${selectedIds.size === 1 ? '' : 's'}?`}
-        description="Inactive job descriptions cannot be used for new applications. Existing records remain available."
+        description="This removes it from the list and disables its detail page. It stays linked to any existing applications, but cannot be viewed, edited, or reused. This cannot be undone."
         confirmLabel="Deactivate selected"
         variant="warning"
         isLoading={isBulkDeactivating}
