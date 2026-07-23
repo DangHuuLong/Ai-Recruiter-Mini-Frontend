@@ -1,10 +1,4 @@
-// Shared helper for feature api.ts files temporarily mocked for static-UI review.
-export function mockDelay(ms = 500): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Supports dot-path keys (e.g. "candidate.fullName") for sorting by joined/relation
-// fields already present on the mocked, nested response objects.
+// Supports dot-path keys (e.g. "candidate.fullName") for sorting by nested/relation fields.
 function getNestedValue(item: unknown, path: string): unknown {
   return path.split('.').reduce<unknown>((value, key) => {
     if (value == null || typeof value !== 'object') {
@@ -14,7 +8,7 @@ function getNestedValue(item: unknown, path: string): unknown {
   }, item);
 }
 
-export function sortMock<T>(
+export function sortByKey<T>(
   items: T[],
   sortBy?: string,
   sortOrder: 'asc' | 'desc' = 'desc',
@@ -43,19 +37,4 @@ export function sortMock<T>(
 
     return String(valueA).localeCompare(String(valueB)) * direction;
   });
-}
-
-export function paginateMock<T>(
-  items: T[],
-  page = 1,
-  limit = 10,
-): { data: T[]; meta: { page: number; limit: number; total: number; totalPages: number } } {
-  const total = items.length;
-  const totalPages = Math.max(1, Math.ceil(total / limit));
-  const start = (page - 1) * limit;
-
-  return {
-    data: items.slice(start, start + limit),
-    meta: { page, limit, total, totalPages },
-  };
 }

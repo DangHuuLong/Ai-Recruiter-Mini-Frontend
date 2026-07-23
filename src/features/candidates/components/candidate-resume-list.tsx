@@ -8,7 +8,7 @@ import { ActionIconButton, DataTable, type DataTableColumn, type DataTableSort }
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { useCandidateResumes } from '@/features/candidates/hooks/use-candidate-resumes';
 import type { ParseStatus, Resume } from '@/features/resumes/types/resume.type';
-import { sortMock } from '@/lib/utils/mock-delay';
+import { sortByKey } from '@/lib/utils/sort';
 import { formatDate } from '@/lib/utils/format-date';
 
 const PARSE_STATUS_CLASSES: Record<ParseStatus, string> = {
@@ -95,7 +95,7 @@ export function CandidateResumeList({
   const visibleResumes = useMemo(() => {
     let filtered = resumes;
     if (parseStatus) filtered = filtered.filter((resume) => resume.parseStatus === parseStatus);
-    return sortMock(filtered, sort?.key, sort?.order);
+    return sortByKey(filtered, sort?.key, sort?.order);
   }, [resumes, parseStatus, sort]);
 
   useEffect(() => {
