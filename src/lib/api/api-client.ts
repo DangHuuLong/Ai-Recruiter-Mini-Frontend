@@ -2,6 +2,7 @@ import { envConfig } from '@/config/env.config';
 import { ROUTES } from '@/config/routes.config';
 import { clearStoredAuthSession, getStoredAccessToken } from '@/lib/auth/auth-storage';
 
+import { clearApiCache, readApiCache, writeApiCache } from './api-cache';
 import { ApiError } from './api-error';
 import type { ApiErrorResponse, RequestOptions } from './api-types';
 
@@ -10,6 +11,7 @@ import type { ApiErrorResponse, RequestOptions } from './api-types';
 // caller should handle inline, not a session expiry.
 const handleUnauthorized = () => {
   clearStoredAuthSession();
+  clearApiCache();
 
   if (typeof window !== 'undefined' && window.location.pathname !== ROUTES.LOGIN) {
     window.location.assign(ROUTES.LOGIN);
@@ -145,11 +147,18 @@ const request = async <T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> => {
-  const { params, body, headers, ...fetchOptions } = options;
+  const { params, body, headers, noCache, ...fetchOptions } = options;
 
   const isFormData = body instanceof FormData;
   const url = buildUrl(path, params);
   const hadToken = Boolean(getStoredAccessToken());
+
+  if (method === 'GET' && !noCache) {
+    const cached = readApiCache<T>(url);
+    if (cached !== undefined) {
+      return cached;
+    }
+  }
 
   const response = await fetch(url, {
     method,
@@ -162,7 +171,18 @@ const request = async <T>(
     handleUnauthorized();
   }
 
-  return parseResponse<T>(response, normalizePath(path));
+  const result = await parseResponse<T>(response, normalizePath(path));
+
+  if (method === 'GET') {
+    if (!noCache) writeApiCache(url, result);
+  } else {
+    // Any successful mutation can affect data behind other GET endpoints (not just this
+    // one path) — e.g. promoting a batch cell touches candidates/applications/evaluations.
+    // Clearing everything is simple and always correct; the cost is just a few refetches.
+    clearApiCache();
+  }
+
+  return result;
 };
 
 const uploadWithProgress = async <T>(

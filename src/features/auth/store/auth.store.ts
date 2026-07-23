@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 
 import type { AuthUser, LoginResult } from '@/features/auth/types/auth.type';
+import { clearApiCache } from '@/lib/api/api-cache';
 import {
   clearStoredAuthSession,
   getStoredAccessToken,
@@ -52,6 +53,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   clearSession: () => {
     clearStoredAuthSession();
+    clearApiCache();
 
     set({
       accessToken: null,
