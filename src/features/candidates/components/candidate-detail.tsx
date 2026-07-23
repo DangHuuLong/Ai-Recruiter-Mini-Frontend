@@ -8,6 +8,7 @@ import { DetailItem, DetailLinkItem, DetailPageLayout, DetailSection } from '@/c
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { useCandidateDetail } from '@/features/candidates/hooks/use-candidate-detail';
 import type { CandidateDetailProps } from '@/features/candidates/types/candidate-detail-ui.type';
+import { CandidateApplicationList } from '@/features/candidates/components/candidate-application-list';
 import { CandidateResumeList } from '@/features/candidates/components/candidate-resume-list';
 
 function InfoCardHeader({ icon: Icon, title }: { icon: typeof UserIcon; title: string }) {
@@ -120,6 +121,13 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
         description="Resume records linked to this candidate."
       >
         <CandidateResumeList candidateId={candidate.id} />
+      </DetailSection>
+
+      <DetailSection
+        title="Applications"
+        description="Job descriptions this candidate has applied to."
+      >
+        <CandidateApplicationList candidateId={candidate.id} />
       </DetailSection>
     </DetailPageLayout>
   );
