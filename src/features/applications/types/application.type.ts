@@ -71,11 +71,6 @@ export type UpdateApplicationStatusPayload = {
   note?: string;
 };
 
-export type DeleteApplicationResult = {
-  id: string;
-  deleted: boolean;
-};
-
 export type ApplicationQuery = {
   page?: number;
   limit?: number;
@@ -84,14 +79,7 @@ export type ApplicationQuery = {
   jobDescriptionId?: string;
   resumeId?: string;
   status?: ApplicationStatus;
-  sortBy?:
-    | 'createdAt'
-    | 'updatedAt'
-    | 'appliedAt'
-    | 'lastActivityAt'
-    | 'candidate.fullName'
-    | 'jobDescription.title'
-    | 'resume.fileAsset.fileName';
+  sortBy?: 'createdAt' | 'updatedAt' | 'appliedAt' | 'lastActivityAt';
   sortOrder?: 'asc' | 'desc';
 };
 
