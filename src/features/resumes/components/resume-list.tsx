@@ -39,7 +39,6 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
     {
       key: 'resume',
       header: 'Resume',
-      sortKey: 'fileAsset.fileName',
       render: (resume) => (
         <div className="flex items-center gap-3">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-variant text-on-surface-variant">
@@ -57,7 +56,6 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
     {
       key: 'candidate',
       header: 'Candidate',
-      sortKey: 'candidateId',
       render: (resume) => <p className="font-mono text-xs text-on-surface-variant">{resume.candidateId}</p>,
     },
     {
@@ -73,7 +71,6 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
     {
       key: 'parser',
       header: 'Parser',
-      sortKey: 'parserVersion',
       render: (resume) => <p className="text-sm text-on-surface-variant">{resume.parserVersion || 'Not provided'}</p>,
     },
     {
