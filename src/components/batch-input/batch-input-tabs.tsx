@@ -39,8 +39,8 @@ type BatchInputTabsProps = {
   count: number;
   mode: InputMode;
   onModeChange: (mode: InputMode) => void;
-  files: string[];
-  onFilesChange: (files: string[]) => void;
+  files: File[];
+  onFilesChange: (files: File[]) => void;
   texts: string[];
   onTextsChange: (texts: string[]) => void;
   pastePlaceholder: string;
@@ -63,8 +63,8 @@ export function BatchInputTabs({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFilesSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const names = Array.from(event.target.files ?? []).map((file) => file.name);
-    onFilesChange([...files, ...names].slice(0, maxCount));
+    const selected = Array.from(event.target.files ?? []);
+    onFilesChange([...files, ...selected].slice(0, maxCount));
     event.target.value = '';
   };
 
@@ -111,14 +111,14 @@ export function BatchInputTabs({
 
           {files.length > 0 ? (
             <ul className="mt-3 space-y-2">
-              {files.map((name, index) => (
+              {files.map((file, index) => (
                 <li
-                  key={`${name}-${index}`}
+                  key={`${file.name}-${index}`}
                   className="flex items-center justify-between rounded-lg border border-outline bg-surface-variant px-3 py-2 text-sm text-on-surface"
                 >
                   <span className="flex items-center gap-2 truncate">
                     <FileTextIcon className="size-4 shrink-0 text-on-surface-muted" />
-                    {name}
+                    {file.name}
                   </span>
                   <button
                     type="button"

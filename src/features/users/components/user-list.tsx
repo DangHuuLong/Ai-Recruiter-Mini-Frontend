@@ -2,25 +2,30 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { ActionIconButton, DataTable, type DataTableColumn, type DataTableSort, type DataTableSortOrder } from '@/components/common';
-import { showToast } from '@/components/feedback';
+import {
+  ActionIconButton,
+  DataTable,
+  ListControls,
+  type DataTableColumn,
+  type DataTableSort,
+  type DataTableSortOrder,
+} from '@/components/common';
+import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  isLastActiveAdmin,
-  MOCK_CURRENT_USER_ID,
-  MOCK_USERS,
-  ROLE_LABELS,
-  type MockUser,
-  type UserRole,
-} from '@/features/users/mock/user-mock-data';
-import { sortMock } from '@/lib/utils/mock-delay';
+import { useAuthStore } from '@/features/auth/store/auth.store';
+import { createUser, getUsers, updateUser } from '@/features/users/api/user.api';
+import { ROLE_LABELS, type OrgUserRole, type User, type UserQuery } from '@/features/users/types/user.type';
+import type { PaginationMeta } from '@/lib/api/api-types';
+import { ApiError } from '@/lib/api/api-error';
 import { cn } from '@/lib/utils/cn';
 import { formatDate } from '@/lib/utils/format-date';
 
-const ROLE_FILTER_OPTIONS = (Object.keys(ROLE_LABELS) as UserRole[]).map((role) => ({
+const PAGE_SIZE = 10;
+
+const ROLE_FILTER_OPTIONS = (Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => ({
   label: ROLE_LABELS[role],
   value: role,
 }));
@@ -41,10 +46,11 @@ function getInitials(name: string | null, email: string) {
 }
 
 function buildColumns(
-  role: UserRole | '',
+  role: OrgUserRole | '',
   status: string,
-  onEdit: (user: MockUser) => void,
-): DataTableColumn<MockUser>[] {
+  currentUserId: string | undefined,
+  onEdit: (user: User) => void,
+): DataTableColumn<User>[] {
   return [
     {
       key: 'member',
@@ -58,7 +64,7 @@ function buildColumns(
           <div>
             <p className="font-semibold text-on-surface">
               {user.fullName ?? user.email}
-              {user.id === MOCK_CURRENT_USER_ID ? (
+              {user.id === currentUserId ? (
                 <span className="ml-1.5 text-xs font-normal text-on-surface-muted">(You)</span>
               ) : null}
             </p>
@@ -114,69 +120,167 @@ function buildColumns(
 }
 
 export function UserList() {
-  const [users, setUsers] = useState<MockUser[]>(MOCK_USERS);
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<MockUser | null>(null);
-  const [roleFilter, setRoleFilter] = useState<UserRole | ''>('');
+  const currentUserId = useAuthStore((state) => state.user?.id);
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState<OrgUserRole | ''>('');
   const [statusFilter, setStatusFilter] = useState('');
   const [sort, setSort] = useState<DataTableSort | null>(null);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSortChange = (key: string, order: DataTableSortOrder) => {
-    setSort({ key, order });
-  };
-
-  const handleFilterChange = (key: string, value: string) => {
-    if (key === 'role') setRoleFilter(value as UserRole | '');
-    if (key === 'isActive') setStatusFilter(value);
-  };
-
-  const visibleUsers = useMemo(() => {
-    let filtered = users;
-    if (roleFilter) filtered = filtered.filter((user) => user.role === roleFilter);
-    if (statusFilter) filtered = filtered.filter((user) => String(user.isActive) === statusFilter);
-    return sortMock(filtered, sort?.key, sort?.order);
-  }, [users, roleFilter, statusFilter, sort]);
-
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
   const [inviteName, setInviteName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
   const [invitePassword, setInvitePassword] = useState('');
-  const [inviteRole, setInviteRole] = useState<UserRole>('RECRUITER');
+  const [inviteRole, setInviteRole] = useState<OrgUserRole>('RECRUITER');
 
-  const [editRole, setEditRole] = useState<UserRole>('RECRUITER');
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editRole, setEditRole] = useState<OrgUserRole>('RECRUITER');
   const [editIsActive, setEditIsActive] = useState(true);
+  const [isOnlyActiveAdmin, setIsOnlyActiveAdmin] = useState(false);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
-  const openEdit = (user: MockUser) => {
-    setEditingUser(user);
-    setEditRole(user.role);
-    setEditIsActive(user.isActive);
+  const loadUsers = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const response = await getUsers({
+        page,
+        limit: PAGE_SIZE,
+        search,
+        role: roleFilter || undefined,
+        isActive: statusFilter === '' ? undefined : statusFilter === 'true',
+        sortBy: (sort?.key as UserQuery['sortBy']) ?? 'createdAt',
+        sortOrder: sort?.order ?? 'desc',
+      });
+      setUsers(response.data);
+      setMeta(response.meta);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load team members';
+      setErrorMessage(message);
+      showToast.error('Failed to load team members', { description: message });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleInvite = () => {
+  useEffect(() => {
+    void loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, search, roleFilter, statusFilter, sort]);
+
+  const handleSortChange = (key: string, order: DataTableSortOrder) => {
+    setSort({ key, order });
+    setPage(1);
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    if (key === 'role') {
+      setRoleFilter(value as OrgUserRole | '');
+      setPage(1);
+    }
+    if (key === 'isActive') {
+      setStatusFilter(value);
+      setPage(1);
+    }
+  };
+
+  const handleInvite = async () => {
     if (!inviteEmail.trim() || invitePassword.length < 8) {
       showToast.error('Email and a password of at least 8 characters are required');
       return;
     }
-    showToast.success('Invitation sent', { description: inviteEmail });
-    setIsInviteOpen(false);
-    setInviteName('');
-    setInviteEmail('');
-    setInvitePassword('');
-    setInviteRole('RECRUITER');
+
+    try {
+      setIsInviting(true);
+      await createUser({
+        email: inviteEmail.trim(),
+        password: invitePassword,
+        fullName: inviteName.trim() || undefined,
+        role: inviteRole,
+      });
+      showToast.success('Invitation sent', { description: inviteEmail });
+      setIsInviteOpen(false);
+      setInviteName('');
+      setInviteEmail('');
+      setInvitePassword('');
+      setInviteRole('RECRUITER');
+      await loadUsers();
+    } catch (error) {
+      showToast.error('Failed to invite member', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong while sending the invitation.',
+      });
+    } finally {
+      setIsInviting(false);
+    }
   };
 
-  const handleSaveEdit = () => {
+  const openEdit = async (user: User) => {
+    setEditingUser(user);
+    setEditRole(user.role);
+    setEditIsActive(user.isActive);
+    setIsOnlyActiveAdmin(false);
+
+    // Mirrors the backend's own check: an ADMIN who is the org's only active admin can't be
+    // demoted or deactivated. Only worth checking when the target is currently an active admin.
+    if (user.role === 'ADMIN' && user.isActive) {
+      try {
+        const response = await getUsers({ role: 'ADMIN', isActive: true, limit: 1 });
+        setIsOnlyActiveAdmin(response.meta.total <= 1);
+      } catch {
+        // Non-fatal — the server still enforces this on save even if this check fails.
+      }
+    }
+  };
+
+  const handleSaveEdit = async () => {
     if (!editingUser) return;
-    setUsers((current) =>
-      current.map((u) => (u.id === editingUser.id ? { ...u, role: editRole, isActive: editIsActive } : u)),
-    );
-    showToast.success('Member updated', { description: editingUser.email });
-    setEditingUser(null);
+
+    try {
+      setIsSavingEdit(true);
+      await updateUser(editingUser.id, { role: editRole, isActive: editIsActive });
+      showToast.success('Member updated', { description: editingUser.email });
+      setEditingUser(null);
+      await loadUsers();
+    } catch (error) {
+      showToast.error('Failed to update member', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong while saving changes.',
+      });
+    } finally {
+      setIsSavingEdit(false);
+    }
   };
 
-  const isSelf = editingUser?.id === MOCK_CURRENT_USER_ID;
-  const isOnlyActiveAdmin = editingUser ? isLastActiveAdmin(editingUser, users) : false;
+  const isSelf = editingUser?.id === currentUserId;
   const roleLocked = isSelf || isOnlyActiveAdmin;
   const activeLocked = isSelf || isOnlyActiveAdmin;
+
+  if (isLoading && users.length === 0) {
+    return <LoadingState title="Loading team members..." description="Please wait while your team is being loaded." />;
+  }
+
+  if (errorMessage && users.length === 0) {
+    return (
+      <EmptyState
+        title="Failed to load team members"
+        description={errorMessage}
+        action={
+          <button
+            type="button"
+            onClick={() => void loadUsers()}
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
+          >
+            Try again
+          </button>
+        }
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -193,14 +297,33 @@ export function UserList() {
         </Button>
       </div>
 
-      <DataTable
-        data={visibleUsers}
-        columns={buildColumns(roleFilter, statusFilter, openEdit)}
-        getRowKey={(user) => user.id}
-        sort={sort}
-        onSortChange={handleSortChange}
-        onFilterChange={handleFilterChange}
+      <ListControls
+        search={{
+          value: search,
+          placeholder: 'Search by name or email...',
+          onChange: (value) => {
+            setSearch(value);
+            setPage(1);
+          },
+        }}
+        pagination={{ ...meta, onPageChange: setPage }}
       />
+
+      {users.length === 0 ? (
+        <EmptyState
+          title="No team members found"
+          description="Invite the first member or adjust your search/filter."
+        />
+      ) : (
+        <DataTable
+          data={users}
+          columns={buildColumns(roleFilter, statusFilter, currentUserId, (user) => void openEdit(user))}
+          getRowKey={(user) => user.id}
+          sort={sort}
+          onSortChange={handleSortChange}
+          onFilterChange={handleFilterChange}
+        />
+      )}
 
       <AnimatePresence>
         {isInviteOpen ? (
@@ -251,10 +374,10 @@ export function UserList() {
                   </label>
                   <select
                     value={inviteRole}
-                    onChange={(e) => setInviteRole(e.target.value as UserRole)}
+                    onChange={(e) => setInviteRole(e.target.value as OrgUserRole)}
                     className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
                   >
-                    {(Object.keys(ROLE_LABELS) as UserRole[]).map((role) => (
+                    {(Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => (
                       <option key={role} value={role}>
                         {ROLE_LABELS[role]}
                       </option>
@@ -263,7 +386,7 @@ export function UserList() {
                 </div>
               </div>
 
-              <Button className="mt-6" onClick={handleInvite}>
+              <Button className="mt-6" isLoading={isInviting} onClick={() => void handleInvite()}>
                 Send invitation
               </Button>
             </motion.div>
@@ -311,11 +434,11 @@ export function UserList() {
                   </label>
                   <select
                     value={editRole}
-                    onChange={(e) => setEditRole(e.target.value as UserRole)}
+                    onChange={(e) => setEditRole(e.target.value as OrgUserRole)}
                     disabled={roleLocked}
                     className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
                   >
-                    {(Object.keys(ROLE_LABELS) as UserRole[]).map((role) => (
+                    {(Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => (
                       <option key={role} value={role}>
                         {ROLE_LABELS[role]}
                       </option>
@@ -350,7 +473,7 @@ export function UserList() {
                 ) : null}
               </div>
 
-              <Button className="mt-6" onClick={handleSaveEdit}>
+              <Button className="mt-6" isLoading={isSavingEdit} onClick={() => void handleSaveEdit()}>
                 Save changes
               </Button>
             </motion.div>

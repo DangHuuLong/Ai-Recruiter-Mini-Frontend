@@ -19,7 +19,7 @@ type PaginationProps = {
 };
 
 type ListControlsProps = {
-  search: ListSearchProps;
+  search?: ListSearchProps;
   pagination?: PaginationProps;
   children?: ReactNode;
   className?: string;
@@ -32,18 +32,20 @@ export function ListControls({ search, pagination, children, className }: ListCo
   return (
     <div className={cn('rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card', className)}>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="w-full max-w-md">
-          <label htmlFor="list-search" className="sr-only">
-            Search
-          </label>
-          <input
-            id="list-search"
-            value={search.value}
-            onChange={(event) => search.onChange(event.target.value)}
-            placeholder={search.placeholder ?? 'Search...'}
-            className="h-10 w-full rounded-xl border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-          />
-        </div>
+        {search ? (
+          <div className="w-full max-w-md">
+            <label htmlFor="list-search" className="sr-only">
+              Search
+            </label>
+            <input
+              id="list-search"
+              value={search.value}
+              onChange={(event) => search.onChange(event.target.value)}
+              placeholder={search.placeholder ?? 'Search...'}
+              className="h-10 w-full rounded-xl border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
+            />
+          </div>
+        ) : null}
 
         {children ? <div className="flex flex-wrap gap-2">{children}</div> : null}
       </div>

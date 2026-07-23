@@ -2,7 +2,7 @@
 
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BatchInputTabs, type InputMode } from '@/components/batch-input/batch-input-tabs';
 import { CvStructuredForm } from '@/components/batch-input/cv-structured-form';
@@ -14,18 +14,24 @@ import {
   type JobDescriptionStructuredValues,
   type ResumeStructuredValues,
 } from '@/components/batch-input/structured-input.type';
+import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/config/routes.config';
+import { createScoringBatch, getUploadUrls } from '@/features/batch-scoring/api/batch-scoring.api';
+import type { CreateScoringBatchPayload } from '@/features/batch-scoring/types/batch-scoring.type';
+import { uploadFilesForBatch } from '@/features/batch-scoring/utils/batch-file-upload.util';
+import {
+  toJobDescriptionStructuredInput,
+  toResumeStructuredInput,
+  trimOrUndefined,
+} from '@/features/batch-scoring/utils/structured-input-mapper.util';
+import { getEvaluationConfigs } from '@/features/evaluation-configs/api/evaluation-config.api';
+import type { EvaluationConfig } from '@/features/evaluation-configs/types/evaluation-config.type';
+import { ApiError } from '@/lib/api/api-error';
 import { cn } from '@/lib/utils/cn';
 
 const MAX_CVS = 2000;
 const MAX_JDS = 50;
-
-const MOCK_EVALUATION_CONFIGS = [
-  { id: 'default', name: 'Organization default' },
-  { id: 'senior-eng', name: 'Senior Engineering (weighted)' },
-  { id: 'design', name: 'Design roles' },
-];
 
 const STEPS = [
   { step: 1, label: 'Add resumes' },
@@ -33,29 +39,41 @@ const STEPS = [
   { step: 3, label: 'Review & submit' },
 ];
 
+async function uploadFiles(files: File[]) {
+  return uploadFilesForBatch(files, getUploadUrls);
+}
+
 export function CreateBatchWizard() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
   const [cvMode, setCvMode] = useState<InputMode>('upload');
-  const [cvFiles, setCvFiles] = useState<string[]>([]);
+  const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [cvTexts, setCvTexts] = useState<string[]>(['']);
   const [cvStructuredList, setCvStructuredList] = useState<ResumeStructuredValues[]>([
     EMPTY_RESUME_STRUCTURED,
   ]);
 
   const [jdMode, setJdMode] = useState<InputMode>('paste');
-  const [jdFiles, setJdFiles] = useState<string[]>([]);
+  const [jdFiles, setJdFiles] = useState<File[]>([]);
   const [jdTexts, setJdTexts] = useState<string[]>(['']);
   const [jdStructuredList, setJdStructuredList] = useState<JobDescriptionStructuredValues[]>([
     EMPTY_JD_STRUCTURED,
   ]);
 
-  const [evaluationConfigId, setEvaluationConfigId] = useState('default');
+  const [evaluationConfigs, setEvaluationConfigs] = useState<EvaluationConfig[]>([]);
+  const [evaluationConfigId, setEvaluationConfigId] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [notifyWebhookUrl, setNotifyWebhookUrl] = useState('');
   const [notifyEmail, setNotifyEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStage, setSubmitStage] = useState('');
+
+  useEffect(() => {
+    getEvaluationConfigs({ limit: 100 })
+      .then((response) => setEvaluationConfigs(response.data))
+      .catch(() => setEvaluationConfigs([]));
+  }, []);
 
   const cvCount =
     cvMode === 'upload'
@@ -73,11 +91,54 @@ export function CreateBatchWizard() {
 
   const totalPairs = cvCount * jdCount;
 
-  const handleSubmit = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      router.push(`${ROUTES.BATCH_SCORING}/batch-3`);
-    }, 700);
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const payload: CreateScoringBatchPayload = {
+        evaluationConfigId: evaluationConfigId || undefined,
+        notifyWebhookUrl: trimOrUndefined(notifyWebhookUrl),
+        notifyEmail: trimOrUndefined(notifyEmail),
+      };
+
+      if (cvMode === 'upload') {
+        setSubmitStage('Uploading resumes...');
+        payload.resumeFiles = await uploadFiles(cvFiles);
+      } else if (cvMode === 'paste') {
+        payload.resumeTexts = cvTexts
+          .filter((t) => t.trim())
+          .map((rawText) => ({ rawText }));
+      } else {
+        payload.resumeStructured = cvStructuredList
+          .filter((entry) => entry.personal.fullName.trim())
+          .map(toResumeStructuredInput);
+      }
+
+      if (jdMode === 'upload') {
+        setSubmitStage('Uploading job descriptions...');
+        payload.jobDescriptionFiles = await uploadFiles(jdFiles);
+      } else if (jdMode === 'paste') {
+        payload.jobDescriptions = jdTexts
+          .filter((t) => t.trim())
+          .map((rawText) => ({ rawText }));
+      } else {
+        payload.jobDescriptionStructured = jdStructuredList
+          .filter((entry) => entry.title.trim())
+          .map(toJobDescriptionStructuredInput);
+      }
+
+      setSubmitStage('Starting batch...');
+      const result = await createScoringBatch(payload);
+
+      showToast.success('Batch started', { description: `${result.totalCvCount} CVs × ${result.totalJdCount} JDs` });
+      router.push(`${ROUTES.BATCH_SCORING}/${result.batchId}`);
+    } catch (error) {
+      showToast.error('Failed to start batch', {
+        description: error instanceof ApiError ? error.message : error instanceof Error ? error.message : 'Something went wrong.',
+      });
+      setIsSubmitting(false);
+      setSubmitStage('');
+    }
   };
 
   return (
@@ -199,7 +260,8 @@ export function CreateBatchWizard() {
               onChange={(e) => setEvaluationConfigId(e.target.value)}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              {MOCK_EVALUATION_CONFIGS.map((config) => (
+              <option value="">Organization default</option>
+              {evaluationConfigs.map((config) => (
                 <option key={config.id} value={config.id}>
                   {config.name}
                 </option>
@@ -274,9 +336,9 @@ export function CreateBatchWizard() {
             className="w-auto px-5"
             disabled={totalPairs === 0}
             isLoading={isSubmitting}
-            onClick={handleSubmit}
+            onClick={() => void handleSubmit()}
           >
-            {isSubmitting ? 'Starting...' : `Start scoring ${totalPairs} pairs`}
+            {isSubmitting ? submitStage || 'Starting...' : `Start scoring ${totalPairs} pairs`}
           </Button>
         )}
       </div>

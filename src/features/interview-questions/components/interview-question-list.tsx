@@ -11,63 +11,68 @@ import {
   UploadIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   ActionIconButton,
+  ConfirmDialog,
   DataTable,
+  ListControls,
   type DataTableColumn,
-  type DataTableSort,
 } from '@/components/common';
-import { showToast } from '@/components/feedback';
+import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import {
-  MOCK_INTERVIEW_QUESTIONS,
+  deleteInterviewQuestion,
+  getInterviewQuestions,
+  reembedInterviewQuestion,
+  updateInterviewQuestion,
+} from '@/features/interview-questions/api/interview-question.api';
+import {
   QUALITY_GATE_CLASSES,
   QUALITY_GATE_LABELS,
   QUESTION_TYPE_LABELS,
   SOURCE_LABELS,
-  type InterviewQuestionSource,
+  type InterviewQuestion,
   type InterviewQuestionType,
-  type MockInterviewQuestion,
   type QuestionQualityGateStatus,
-} from '@/features/interview-questions/mock/interview-question-mock-data';
+} from '@/features/interview-questions/types/interview-question.type';
 import {
-  getSpecializationsFor,
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
-} from '@/features/interview-questions/mock/interview-question-taxonomy';
-import { mockDelay, sortMock } from '@/lib/utils/mock-delay';
+} from '@/features/interview-questions/types/interview-question-taxonomy.type';
+import type { PaginationMeta } from '@/lib/api/api-types';
 import { cn } from '@/lib/utils/cn';
+
+const PAGE_SIZE = 20;
 
 const OCCUPATION_FAMILY_FILTER_OPTIONS = (Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map(
   (family) => ({ label: OCCUPATION_FAMILY_LABELS[family], value: family }),
+);
+
+const QUESTION_TYPE_FILTER_OPTIONS = (Object.keys(QUESTION_TYPE_LABELS) as InterviewQuestionType[]).map(
+  (type) => ({ label: QUESTION_TYPE_LABELS[type], value: type }),
 );
 
 const QUALITY_GATE_FILTER_OPTIONS = (Object.keys(QUALITY_GATE_LABELS) as QuestionQualityGateStatus[]).map(
   (status) => ({ label: QUALITY_GATE_LABELS[status], value: status }),
 );
 
-const SOURCE_FILTER_OPTIONS = (Object.keys(SOURCE_LABELS) as InterviewQuestionSource[]).map((source) => ({
-  label: SOURCE_LABELS[source],
-  value: source,
-}));
-
 function buildColumns(
   occupationFamily: OccupationFamily | '',
+  questionType: InterviewQuestionType | '',
   qualityGateStatus: QuestionQualityGateStatus | '',
-  source: InterviewQuestionSource | '',
   reembeddingId: string | null,
-  onApprove: (question: MockInterviewQuestion) => void,
-  onReembed: (question: MockInterviewQuestion) => void,
-  onDelete: (question: MockInterviewQuestion) => void,
-): DataTableColumn<MockInterviewQuestion>[] {
+  onApprove: (question: InterviewQuestion) => void,
+  onReembed: (question: InterviewQuestion) => void,
+  onDelete: (question: InterviewQuestion) => void,
+): DataTableColumn<InterviewQuestion>[] {
   return [
     {
       key: 'question',
       header: 'Question',
-      sortKey: 'questionText',
       className: 'max-w-xs',
+      filter: { key: 'questionType', options: QUESTION_TYPE_FILTER_OPTIONS, activeValue: questionType },
       render: (question) => (
         <div>
           <p className="truncate font-medium text-on-surface">{question.questionText}</p>
@@ -78,7 +83,6 @@ function buildColumns(
     {
       key: 'family',
       header: 'Family / Specialization',
-      sortKey: 'occupationFamily',
       filter: { key: 'occupationFamily', options: OCCUPATION_FAMILY_FILTER_OPTIONS, activeValue: occupationFamily },
       render: (question) => (
         <div className="text-on-surface-variant">
@@ -90,7 +94,6 @@ function buildColumns(
     {
       key: 'competency',
       header: 'Competency',
-      sortKey: 'competency',
       render: (question) => <p className="text-on-surface-variant">{question.competency}</p>,
     },
     {
@@ -106,7 +109,6 @@ function buildColumns(
     {
       key: 'source',
       header: 'Source',
-      filter: { key: 'source', options: SOURCE_FILTER_OPTIONS, activeValue: source },
       render: (question) => (
         <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
           {SOURCE_LABELS[question.source]}
@@ -116,7 +118,6 @@ function buildColumns(
     {
       key: 'usage',
       header: 'Usage',
-      sortKey: 'usageCount',
       render: (question) => <p className="text-on-surface-variant">{question.usageCount}</p>,
     },
     {
@@ -163,59 +164,117 @@ function buildColumns(
 }
 
 export function InterviewQuestionList() {
-  const [questions, setQuestions] = useState<MockInterviewQuestion[]>(MOCK_INTERVIEW_QUESTIONS);
+  const [questions, setQuestions] = useState<InterviewQuestion[]>([]);
+  const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [occupationFamily, setOccupationFamily] = useState<OccupationFamily | ''>('');
-  const [specialization, setSpecialization] = useState('');
   const [questionType, setQuestionType] = useState<InterviewQuestionType | ''>('');
   const [qualityGateStatus, setQualityGateStatus] = useState<QuestionQualityGateStatus | ''>('');
-  const [source, setSource] = useState<InterviewQuestionSource | ''>('');
-  const [sort, setSort] = useState<DataTableSort | null>(null);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [reembeddingId, setReembeddingId] = useState<string | null>(null);
+  const [questionToDelete, setQuestionToDelete] = useState<InterviewQuestion | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const specializationOptions = getSpecializationsFor(occupationFamily);
+  const loadQuestions = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const response = await getInterviewQuestions({
+        page,
+        limit: PAGE_SIZE,
+        occupationFamily: occupationFamily || undefined,
+        questionType: questionType || undefined,
+        qualityGateStatus: qualityGateStatus || undefined,
+      });
+      setQuestions(response.data);
+      setMeta(response.meta);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load interview questions';
+      setErrorMessage(message);
+      showToast.error('Failed to load interview questions', { description: message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const filtered = useMemo(() => {
-    const result = questions.filter((q) => {
-      if (occupationFamily && q.occupationFamily !== occupationFamily) return false;
-      if (specialization && q.specialization !== specialization) return false;
-      if (questionType && q.questionType !== questionType) return false;
-      if (qualityGateStatus && q.qualityGateStatus !== qualityGateStatus) return false;
-      if (source && q.source !== source) return false;
-      return true;
-    });
-    return sortMock(result, sort?.key, sort?.order);
-  }, [questions, occupationFamily, specialization, questionType, qualityGateStatus, source, sort]);
+  useEffect(() => {
+    void loadQuestions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, occupationFamily, questionType, qualityGateStatus]);
 
   const handleFilterChange = (key: string, value: string) => {
-    if (key === 'occupationFamily') {
-      setOccupationFamily(value as OccupationFamily | '');
-      setSpecialization('');
-    }
+    if (key === 'occupationFamily') setOccupationFamily(value as OccupationFamily | '');
+    if (key === 'questionType') setQuestionType(value as InterviewQuestionType | '');
     if (key === 'qualityGateStatus') setQualityGateStatus(value as QuestionQualityGateStatus | '');
-    if (key === 'source') setSource(value as InterviewQuestionSource | '');
+    setPage(1);
   };
 
-  const handleApprove = (question: MockInterviewQuestion) => {
-    setQuestions((current) =>
-      current.map((q) => (q.id === question.id ? { ...q, qualityGateStatus: 'APPROVED' } : q)),
-    );
-    showToast.success('Question approved');
+  const handleApprove = async (question: InterviewQuestion) => {
+    try {
+      await updateInterviewQuestion(question.id, { qualityGateStatus: 'APPROVED' });
+      showToast.success('Question approved');
+      await loadQuestions();
+    } catch (error) {
+      showToast.error('Failed to approve question', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
+    }
   };
 
-  const handleDelete = (question: MockInterviewQuestion) => {
-    setQuestions((current) => current.filter((q) => q.id !== question.id));
-    showToast.success('Question deleted');
-  };
-
-  const handleReembed = async (question: MockInterviewQuestion) => {
+  const handleReembed = async (question: InterviewQuestion) => {
     try {
       setReembeddingId(question.id);
-      await mockDelay(700);
+      await reembedInterviewQuestion(question.id);
       showToast.success('Embedding recomputed', { description: question.questionText });
+    } catch (error) {
+      showToast.error('Failed to re-embed question', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
     } finally {
       setReembeddingId(null);
     }
   };
+
+  const handleDelete = async () => {
+    if (!questionToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteInterviewQuestion(questionToDelete.id);
+      showToast.success('Question deleted');
+      setQuestionToDelete(null);
+      await loadQuestions();
+    } catch (error) {
+      showToast.error('Failed to delete question', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (isLoading && questions.length === 0) {
+    return <LoadingState title="Loading interview questions..." description="Please wait while questions are being loaded." />;
+  }
+
+  if (errorMessage && questions.length === 0) {
+    return (
+      <EmptyState
+        title="Failed to load interview questions"
+        description={errorMessage}
+        action={
+          <button
+            type="button"
+            onClick={() => void loadQuestions()}
+            className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
+          >
+            Try again
+          </button>
+        }
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -257,58 +316,39 @@ export function InterviewQuestionList() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <select
-          value={specialization}
-          onChange={(e) => setSpecialization(e.target.value)}
-          disabled={!occupationFamily}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
-        >
-          <option value="">All specializations</option>
-          {specializationOptions.map((spec) => (
-            <option key={spec} value={spec}>
-              {spec}
-            </option>
-          ))}
-        </select>
+      <ListControls pagination={{ ...meta, onPageChange: setPage }} />
 
-        <select
-          value={questionType}
-          onChange={(e) => setQuestionType(e.target.value as InterviewQuestionType | '')}
-          className="h-10 cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-        >
-          <option value="">All question types</option>
-          {(Object.keys(QUESTION_TYPE_LABELS) as InterviewQuestionType[]).map((type) => (
-            <option key={type} value={type}>
-              {QUESTION_TYPE_LABELS[type]}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-outline bg-surface-lowest p-12 text-center shadow-card">
-          <p className="text-sm font-semibold text-on-surface">No questions match these filters</p>
-          <p className="mt-1 text-sm text-on-surface-variant">Try clearing a filter or add a new question.</p>
-        </div>
+      {questions.length === 0 ? (
+        <EmptyState
+          title="No questions match these filters"
+          description="Try clearing a filter or add a new question."
+        />
       ) : (
         <DataTable
-          data={filtered}
+          data={questions}
           columns={buildColumns(
             occupationFamily,
+            questionType,
             qualityGateStatus,
-            source,
             reembeddingId,
-            handleApprove,
+            (question) => void handleApprove(question),
             (question) => void handleReembed(question),
-            handleDelete,
+            setQuestionToDelete,
           )}
           getRowKey={(question) => question.id}
-          sort={sort}
-          onSortChange={(key, order) => setSort({ key, order })}
           onFilterChange={handleFilterChange}
         />
       )}
+
+      <ConfirmDialog
+        open={Boolean(questionToDelete)}
+        title="Delete question?"
+        description="This action removes the question from the bank. This cannot be undone."
+        confirmLabel="Delete question"
+        isLoading={isDeleting}
+        onCancel={() => setQuestionToDelete(null)}
+        onConfirm={() => void handleDelete()}
+      />
     </div>
   );
 }

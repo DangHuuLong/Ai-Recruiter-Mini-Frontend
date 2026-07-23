@@ -24,7 +24,7 @@ import {
   loadDashboardOverview,
   type DashboardOverviewData,
 } from '@/features/dashboard/utils/dashboard-stats.util';
-import { STATUS_LABELS } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
+import { STATUS_LABELS } from '@/features/batch-scoring/types/batch-scoring.type';
 import { formatRelativeTime } from '@/lib/utils/format-date';
 
 const EVALUATION_STATUS_CLASSES: Record<string, string> = {
