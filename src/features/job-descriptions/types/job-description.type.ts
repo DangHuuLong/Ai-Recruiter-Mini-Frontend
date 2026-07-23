@@ -64,9 +64,7 @@ export type JobDescriptionQuery = {
   page?: number;
   limit?: number;
   search?: string;
-  isActive?: boolean;
-  parseStatus?: ParseStatus;
-  sortBy?: 'createdAt' | 'updatedAt' | 'title' | 'location' | 'employmentType';
+  sortBy?: 'createdAt' | 'updatedAt' | 'title' | 'companyName';
   sortOrder?: 'asc' | 'desc';
 };
 
@@ -94,14 +92,7 @@ export type CreateJobDescriptionPayload = {
   createdById?: string;
 };
 
-export type UpdateJobDescriptionPayload = Partial<CreateJobDescriptionPayload> & {
-  isActive?: boolean;
-};
-
-export type DeleteJobDescriptionResult = {
-  id: string;
-  deleted: boolean;
-};
+export type UpdateJobDescriptionPayload = Partial<CreateJobDescriptionPayload>;
 
 export type CreateJobSkillPayload = {
   name: string;
