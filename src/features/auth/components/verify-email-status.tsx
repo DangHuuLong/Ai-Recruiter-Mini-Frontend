@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { getDefaultRouteForRole } from '@/config/route-access.config';
 import { ROUTES } from '@/config/routes.config';
 import { verifyEmail } from '@/features/auth/api/auth.api';
 import { useAuthStore } from '@/features/auth/store/auth.store';
@@ -21,6 +22,7 @@ export function VerifyEmailStatus() {
   const [errorMessage, setErrorMessage] = useState<string | null>(
     token ? null : 'This verification link is invalid.',
   );
+  const [landingRoute, setLandingRoute] = useState<string>(ROUTES.DASHBOARD);
   const hasRequested = useRef(false);
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export function VerifyEmailStatus() {
     verifyEmail({ token })
       .then((session) => {
         setSession(session);
+        setLandingRoute(getDefaultRouteForRole(session.user.role));
         setStatus('success');
       })
       .catch((error) => {
@@ -60,7 +63,7 @@ export function VerifyEmailStatus() {
         </div>
         <h2 className="mt-5 text-xl font-bold text-on-surface">Email verified!</h2>
         <p className="mt-2 text-sm text-on-surface-variant">Your account is ready to use.</p>
-        <Button className="mt-6" onClick={() => router.replace(ROUTES.DASHBOARD)}>
+        <Button className="mt-6" onClick={() => router.replace(landingRoute)}>
           Go to dashboard
         </Button>
       </div>

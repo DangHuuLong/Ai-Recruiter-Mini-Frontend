@@ -5,17 +5,29 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 import { navigationGroups } from '@/config/navigation.config';
+import { getDefaultRouteForRole, getRequiredRoles } from '@/config/route-access.config';
 import { ROUTES } from '@/config/routes.config';
+import { useAuthStore } from '@/features/auth/store/auth.store';
 import { cn } from '@/lib/utils/cn';
 import { isNavigationItemActive } from '@/lib/utils/navigation';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const role = useAuthStore((state) => state.user?.role);
+
+  const visibleGroups = navigationGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !role || getRequiredRoles(item.href).includes(role)),
+    }))
+    .filter((group) => group.items.length > 0);
+
+  const homeHref = role ? getDefaultRouteForRole(role) : ROUTES.DASHBOARD;
 
   return (
     <aside className="hidden min-h-dvh w-72 shrink-0 border-r border-outline bg-surface-lowest lg:flex lg:flex-col">
       <div className="flex h-20 items-center border-b border-outline px-5">
-        <Link href={ROUTES.DASHBOARD} className="flex items-center gap-3">
+        <Link href={homeHref} className="flex items-center gap-3">
           <span className="relative flex size-11 shrink-0 items-center justify-center rounded-xl border border-outline bg-surface-lowest">
             <Image src="/images/logo.svg" alt="" fill className="object-contain p-1" />
           </span>
@@ -32,7 +44,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-6">
-        {navigationGroups.map((group, groupIndex) => (
+        {visibleGroups.map((group, groupIndex) => (
           <div key={group.label ?? `group-${groupIndex}`}>
             {group.label ? (
               <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-on-surface-muted">

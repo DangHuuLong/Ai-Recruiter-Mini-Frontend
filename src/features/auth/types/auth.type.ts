@@ -1,7 +1,8 @@
-export type UserRole = 'ADMIN' | 'RECRUITER' | 'HIRING_MANAGER' | 'INTERVIEWER' | string;
+export type UserRole = 'ADMIN' | 'RECRUITER' | 'HIRING_MANAGER' | 'DEV';
 
 export type AuthUser = {
   id: string;
+  organizationId: string;
   email: string;
   fullName: string;
   role: UserRole;

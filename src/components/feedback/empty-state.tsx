@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils/cn';
 type EmptyStateProps = {
   title?: string;
   description?: string;
+  icon?: ReactNode;
   action?: ReactNode;
   className?: string;
 };
@@ -12,6 +13,7 @@ type EmptyStateProps = {
 export function EmptyState({
   title = 'No data found',
   description = 'There is no data to display at the moment.',
+  icon,
   action,
   className,
 }: EmptyStateProps) {
@@ -23,7 +25,7 @@ export function EmptyState({
       )}
     >
       <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-primary-container ring-1 ring-outline">
-        <span className="text-2xl font-semibold text-on-primary-container">○</span>
+        {icon ?? <span className="text-2xl font-semibold text-on-primary-container">○</span>}
       </div>
 
       <div className="max-w-md space-y-2">
