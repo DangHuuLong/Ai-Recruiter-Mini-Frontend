@@ -1,7 +1,6 @@
 // Composes dashboard data from the real list endpoints of every restored feature module —
 // there is no dedicated dashboard/analytics endpoint on the backend (confirmed by auditing
-// all controllers), so this aggregates real records client-side instead. Batch Scoring is
-// still mocked (not yet restored) so that one widget stays on its in-memory mock array.
+// all controllers), so this aggregates real records client-side instead.
 import { getCandidates } from '@/features/candidates/api/candidate.api';
 import { getJobDescriptions } from '@/features/job-descriptions/api/job-description.api';
 import { getApplications } from '@/features/applications/api/application.api';
@@ -10,7 +9,8 @@ import { getEvaluations, getEvaluationSkills } from '@/features/evaluations/api/
 import type { Evaluation } from '@/features/evaluations/types/evaluation.type';
 import { getAuditLogs } from '@/features/audit-log/api/audit-log.api';
 import type { AuditLog } from '@/features/audit-log/types/audit-log.type';
-import { MOCK_BATCHES, type MockBatchSummary } from '@/features/batch-scoring/mock/batch-scoring-mock-data';
+import { getScoringBatches } from '@/features/batch-scoring/api/batch-scoring.api';
+import type { ScoringBatchSummary } from '@/features/batch-scoring/types/batch-scoring.type';
 
 export type DashboardKpis = {
   totalCandidates: number;
@@ -38,7 +38,7 @@ export type DashboardOverviewData = {
   kpis: DashboardKpis;
   funnel: ApplicationFunnelEntry[];
   recentEvaluations: Evaluation[];
-  batchesInProgress: MockBatchSummary[];
+  batchesInProgress: ScoringBatchSummary[];
   skillGap: SkillGapEntry[];
   recentActivity: AuditLog[];
 };
@@ -67,6 +67,14 @@ async function loadApplicationFunnel(): Promise<ApplicationFunnelEntry[]> {
     }),
   );
   return counts;
+}
+
+async function loadBatchesInProgress(): Promise<ScoringBatchSummary[]> {
+  const [parsing, scoring] = await Promise.all([
+    getScoringBatches({ status: 'PARSING', limit: 10 }),
+    getScoringBatches({ status: 'SCORING', limit: 10 }),
+  ]);
+  return [...parsing.data, ...scoring.data];
 }
 
 async function loadSkillGapHighlights(recentCompleted: Evaluation[]): Promise<SkillGapEntry[]> {
@@ -100,6 +108,7 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
     completedEvaluationsResponse,
     recentEvaluationsResponse,
     recentActivityResponse,
+    batchesInProgress,
   ] = await Promise.all([
     getCandidates({ limit: 1 }),
     getJobDescriptions({ limit: 1 }),
@@ -113,6 +122,7 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
     }),
     getEvaluations({ limit: RECENT_EVALUATIONS_LIMIT, sortBy: 'createdAt', sortOrder: 'desc' }),
     getAuditLogs({ limit: RECENT_ACTIVITY_LIMIT }),
+    loadBatchesInProgress(),
   ]);
 
   const completedScores = completedEvaluationsResponse.data
@@ -135,10 +145,6 @@ export async function loadDashboardOverview(): Promise<DashboardOverviewData> {
       : null,
     completedEvaluationCount: completedEvaluationsResponse.meta.total,
   };
-
-  const batchesInProgress = MOCK_BATCHES.filter(
-    (batch) => batch.status === 'PARSING' || batch.status === 'SCORING',
-  );
 
   return {
     kpis,

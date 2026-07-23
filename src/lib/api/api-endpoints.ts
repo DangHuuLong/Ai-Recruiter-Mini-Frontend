@@ -93,6 +93,20 @@ export const apiEndpoints = {
     bulkDelete: '/evaluation-configs/bulk-delete',
   },
 
+  scoringBatches: {
+    list: '/scoring-batches',
+    create: '/scoring-batches',
+    uploadUrls: '/scoring-batches/upload-urls',
+    status: (id: string) => `/scoring-batches/${id}`,
+    matrix: (id: string) => `/scoring-batches/${id}/matrix`,
+    cell: (id: string, resumeItemId: string, jdItemId: string) =>
+      `/scoring-batches/${id}/cells/${resumeItemId}/${jdItemId}`,
+    skillGapSummary: (id: string) => `/scoring-batches/${id}/skill-gap-summary`,
+    export: (id: string) => `/scoring-batches/${id}/export`,
+    cancel: (id: string) => `/scoring-batches/${id}/cancel`,
+    promote: (id: string) => `/scoring-batches/${id}/promote`,
+  },
+
   interviewQuestions: {
     list: '/interview-questions',
     create: '/interview-questions',

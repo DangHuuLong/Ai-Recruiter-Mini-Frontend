@@ -5,90 +5,199 @@ import {
   ArrowLeftIcon,
   DownloadIcon,
   LoaderCircleIcon,
-  SparklesIcon,
   UserPlusIcon,
   XIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { showToast } from '@/components/feedback';
+import { LoadingState, showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import {
+  cancelScoringBatch,
+  downloadScoringBatchCsv,
+  getScoringBatchCell,
+  getScoringBatchMatrix,
+  getScoringBatchStatus,
+  getSkillGapSummary,
+  promoteScoringBatchItems,
+} from '@/features/batch-scoring/api/batch-scoring.api';
+import {
   CRITERION_LABELS,
-  getMockBatch,
-  getMockCellDetail,
-  getMockMatrix,
-  getMockSkillGap,
-  getScoreTier,
   STATUS_CLASSES,
   STATUS_LABELS,
-  type MockCellDetail,
-  type MockMatrixCell,
-} from '@/features/batch-scoring/mock/batch-scoring-mock-data';
+  getScoreTier,
+  type BatchMatrix,
+  type BatchStatusResult,
+  type CellDetail,
+  type MatrixCell,
+  type SkillGapEntry,
+} from '@/features/batch-scoring/types/batch-scoring.type';
+import { ApiError } from '@/lib/api/api-error';
 import { cn } from '@/lib/utils/cn';
 
 const IN_PROGRESS_STATUSES = new Set(['PENDING', 'PARSING', 'SCORING']);
+const POLL_INTERVAL_MS = 3000;
 
 type BatchDetailProps = {
   batchId: string;
 };
 
 export function BatchDetail({ batchId }: BatchDetailProps) {
-  const batch = getMockBatch(batchId);
-  const [selectedCell, setSelectedCell] = useState<
-    (MockCellDetail & { candidateLabel: string; jdLabel: string }) | null
-  >(null);
-  const [questionsRevealed, setQuestionsRevealed] = useState(false);
-  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [status, setStatus] = useState<BatchStatusResult | null>(null);
+  const [matrix, setMatrix] = useState<BatchMatrix | null>(null);
+  const [skillGap, setSkillGap] = useState<SkillGapEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
-  if (!batch) {
+  const [selectedCell, setSelectedCell] = useState<
+    (CellDetail & { candidateLabel: string; jdLabel: string }) | null
+  >(null);
+  const [isLoadingCell, setIsLoadingCell] = useState(false);
+  const [isPromoting, setIsPromoting] = useState(false);
+
+  const pollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const loadMatrixAndSkillGap = async () => {
+    const [matrixResult, skillGapResult] = await Promise.all([
+      getScoringBatchMatrix(batchId, { limit: 100 }),
+      getSkillGapSummary(batchId).catch(() => ({ missingSkills: [] as SkillGapEntry[] })),
+    ]);
+    setMatrix(matrixResult);
+    setSkillGap('missingSkills' in skillGapResult ? skillGapResult.missingSkills : []);
+  };
+
+  const load = async () => {
+    try {
+      setErrorMessage(null);
+      const statusResult = await getScoringBatchStatus(batchId);
+      setStatus(statusResult);
+
+      if (!IN_PROGRESS_STATUSES.has(statusResult.status)) {
+        await loadMatrixAndSkillGap();
+      }
+    } catch (error) {
+      setErrorMessage(error instanceof ApiError ? error.message : 'Failed to load this batch');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batchId]);
+
+  useEffect(() => {
+    if (!status || !IN_PROGRESS_STATUSES.has(status.status)) {
+      if (pollTimer.current) {
+        clearInterval(pollTimer.current);
+        pollTimer.current = null;
+      }
+      return;
+    }
+
+    pollTimer.current = setInterval(() => {
+      void load();
+    }, POLL_INTERVAL_MS);
+
+    return () => {
+      if (pollTimer.current) {
+        clearInterval(pollTimer.current);
+        pollTimer.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status?.status]);
+
+  const openCell = async (cell: MatrixCell) => {
+    if (cell.status !== 'COMPLETED' || cell.overallScore === null || !matrix) return;
+
+    const row = matrix.rows.find((r) => r.resumeItemId === cell.resumeItemId);
+    const column = matrix.columns.find((c) => c.jdItemId === cell.jdItemId);
+
+    try {
+      setIsLoadingCell(true);
+      const detail = await getScoringBatchCell(batchId, cell.resumeItemId, cell.jdItemId);
+      setSelectedCell({
+        ...detail,
+        candidateLabel: row?.candidateName ?? row?.fileName ?? 'Candidate',
+        jdLabel: column?.label ?? 'Job description',
+      });
+    } catch (error) {
+      showToast.error('Failed to load cell detail', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsLoadingCell(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      setIsCancelling(true);
+      await cancelScoringBatch(batchId);
+      showToast.success('Batch cancelled');
+      await load();
+    } catch (error) {
+      showToast.error('Failed to cancel batch', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      await downloadScoringBatchCsv(batchId, status?.name ?? null);
+    } catch (error) {
+      showToast.error('Failed to export CSV', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handlePromote = async () => {
+    if (!selectedCell) return;
+
+    try {
+      setIsPromoting(true);
+      await promoteScoringBatchItems(batchId, [
+        { resumeItemId: selectedCell.resumeItemId, jdItemId: selectedCell.jdItemId },
+      ]);
+      showToast.success('Promoted to candidate pipeline', {
+        description: `${selectedCell.candidateLabel} → ${selectedCell.jdLabel}`,
+      });
+      setSelectedCell(null);
+    } catch (error) {
+      showToast.error('Failed to promote', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsPromoting(false);
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingState title="Loading batch..." description="Please wait while the batch is being loaded." />;
+  }
+
+  if (errorMessage || !status) {
     return (
       <div className="rounded-2xl border border-outline bg-surface-lowest p-10 text-center shadow-card">
-        <p className="text-sm font-semibold text-on-surface">Batch not found</p>
+        <p className="text-sm font-semibold text-on-surface">{errorMessage ?? 'Batch not found'}</p>
       </div>
     );
   }
 
-  const matrix = getMockMatrix(batch);
-  const skillGap = getMockSkillGap(batch);
-  const isInProgress = IN_PROGRESS_STATUSES.has(batch.status);
-  const progressPercent =
-    batch.totalPairCount === 0
-      ? 0
-      : Math.round((batch.completedPairCount / batch.totalPairCount) * 100);
-
-  const openCell = (cell: MockMatrixCell) => {
-    if (cell.status !== 'COMPLETED' || cell.overallScore === null) return;
-
-    const row = matrix.rows.find((r) => r.resumeItemId === cell.resumeItemId);
-    const column = matrix.columns.find((c) => c.id === cell.jdItemId);
-    const detail = getMockCellDetail(cell.overallScore);
-
-    setSelectedCell({
-      ...detail,
-      candidateLabel: row?.candidateLabel ?? 'Candidate',
-      jdLabel: column?.label ?? 'Job description',
-    });
-    setQuestionsRevealed(false);
-    setIsGeneratingQuestions(false);
-  };
-
-  const handleGenerateQuestions = () => {
-    setIsGeneratingQuestions(true);
-    setTimeout(() => {
-      setIsGeneratingQuestions(false);
-      setQuestionsRevealed(true);
-    }, 700);
-  };
-
-  const handlePromote = () => {
-    showToast.success('Promoted to candidate pipeline', {
-      description: `${selectedCell?.candidateLabel} → ${selectedCell?.jdLabel}`,
-    });
-    setSelectedCell(null);
-  };
+  const isInProgress = IN_PROGRESS_STATUSES.has(status.status);
 
   return (
     <div className="space-y-6">
@@ -103,35 +212,31 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-on-surface">{batch.name}</h1>
+            <h1 className="text-2xl font-bold text-on-surface">{status.name || 'Untitled batch'}</h1>
             <span
               className={cn(
                 'rounded-full px-2.5 py-1 text-xs font-semibold',
-                STATUS_CLASSES[batch.status],
+                STATUS_CLASSES[status.status],
               )}
             >
-              {STATUS_LABELS[batch.status]}
+              {STATUS_LABELS[status.status]}
             </span>
           </div>
           <p className="mt-1 text-sm text-on-surface-variant">
-            {batch.totalCvCount} CVs × {batch.totalJdCount} JDs · {batch.completedPairCount}/
-            {batch.totalPairCount} pairs scored
+            {status.progress.totalCvCount} CVs × {status.progress.totalJdCount} JDs · {status.progress.completedPairCount}/
+            {status.progress.totalPairCount} pairs scored
           </p>
         </div>
 
         <div className="flex gap-2">
-          {batch.status === 'COMPLETED' || batch.status === 'COMPLETED_WITH_ERRORS' ? (
-            <Button variant="secondary" className="w-auto gap-2 px-4">
+          {status.status === 'COMPLETED' || status.status === 'COMPLETED_WITH_ERRORS' ? (
+            <Button variant="secondary" className="w-auto gap-2 px-4" isLoading={isExporting} onClick={() => void handleExport()}>
               <DownloadIcon className="size-4" />
               Export CSV
             </Button>
           ) : null}
           {isInProgress ? (
-            <Button
-              variant="secondary"
-              className="w-auto px-4"
-              onClick={() => showToast.info('Batch cancelled')}
-            >
+            <Button variant="secondary" className="w-auto px-4" isLoading={isCancelling} onClick={() => void handleCancel()}>
               Cancel batch
             </Button>
           ) : null}
@@ -142,22 +247,22 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
         <div className="rounded-2xl border border-outline bg-surface-lowest p-8 text-center shadow-card">
           <LoaderCircleIcon className="mx-auto size-8 animate-spin text-primary" />
           <p className="mt-4 text-sm font-semibold text-on-surface">
-            {STATUS_LABELS[batch.status]}...
+            {STATUS_LABELS[status.status]}...
           </p>
           <div className="mx-auto mt-4 h-2 w-full max-w-sm overflow-hidden rounded-full bg-surface-variant">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${progressPercent}%` }} />
+            <div className="h-full rounded-full bg-primary" style={{ width: `${status.progress.percent}%` }} />
           </div>
           <p className="mt-2 text-xs text-on-surface-muted">
-            {batch.completedPairCount} / {batch.totalPairCount} pairs · {progressPercent}%
+            {status.progress.completedPairCount} / {status.progress.totalPairCount} pairs · {status.progress.percent}%
           </p>
         </div>
-      ) : batch.status === 'FAILED' || batch.status === 'CANCELLED' ? (
+      ) : status.status === 'FAILED' || status.status === 'CANCELLED' ? (
         <div className="rounded-2xl border border-outline bg-surface-lowest p-8 text-center shadow-card">
           <p className="text-sm font-semibold text-on-surface">
-            This batch {batch.status === 'FAILED' ? 'failed to complete' : 'was cancelled'}.
+            This batch {status.status === 'FAILED' ? 'failed to complete' : 'was cancelled'}.
           </p>
         </div>
-      ) : (
+      ) : matrix ? (
         <>
           <div className="no-scrollbar overflow-x-auto rounded-2xl border border-outline bg-surface-lowest shadow-card">
             <table className="w-full min-w-[560px] border-collapse text-sm">
@@ -168,10 +273,10 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                   </th>
                   {matrix.columns.map((column) => (
                     <th
-                      key={column.id}
+                      key={column.jdItemId}
                       className="border-b border-outline bg-surface-variant p-3 text-left font-semibold text-on-surface-variant"
                     >
-                      {column.label}
+                      {column.label ?? 'Job description'}
                     </th>
                   ))}
                 </tr>
@@ -180,18 +285,18 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                 {matrix.rows.map((row) => (
                   <tr key={row.resumeItemId}>
                     <td className="sticky left-0 z-10 border-r border-outline bg-surface-lowest p-3 font-semibold text-on-surface">
-                      {row.candidateLabel}
+                      {row.candidateName ?? row.fileName ?? 'Candidate'}
                     </td>
                     {matrix.columns.map((column) => {
                       const cell = matrix.cells.find(
-                        (c) => c.resumeItemId === row.resumeItemId && c.jdItemId === column.id,
+                        (c) => c.resumeItemId === row.resumeItemId && c.jdItemId === column.jdItemId,
                       );
-                      if (!cell) return <td key={column.id} className="border-b border-outline p-2" />;
+                      if (!cell) return <td key={column.jdItemId} className="border-b border-outline p-2" />;
 
                       const tier = cell.overallScore !== null ? getScoreTier(cell.overallScore) : null;
 
                       return (
-                        <td key={column.id} className="border-b border-outline p-2">
+                        <td key={column.jdItemId} className="border-b border-outline p-2">
                           {cell.status === 'FAILED' ? (
                             <div
                               title={cell.error ?? 'Failed'}
@@ -199,22 +304,23 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                             >
                               Failed
                             </div>
-                          ) : cell.status === 'PENDING' || !tier ? (
+                          ) : cell.status === 'PENDING' || cell.status === 'PROCESSING' || !tier ? (
                             <div className="flex h-14 w-full items-center justify-center rounded-lg bg-surface-variant text-xs font-semibold text-on-surface-muted">
                               Pending
                             </div>
                           ) : (
                             <button
                               type="button"
-                              onClick={() => openCell(cell)}
+                              onClick={() => void openCell(cell)}
+                              disabled={isLoadingCell}
                               title={tier.label}
                               className={cn(
-                                'flex h-14 w-full cursor-pointer items-center justify-center rounded-lg text-base font-bold transition-opacity hover:opacity-75',
+                                'flex h-14 w-full cursor-pointer items-center justify-center rounded-lg text-base font-bold transition-opacity hover:opacity-75 disabled:cursor-wait',
                                 tier.containerClass,
                                 tier.textClass,
                               )}
                             >
-                              {cell.overallScore}
+                              {Math.round(cell.overallScore ?? 0)}
                             </button>
                           )}
                         </td>
@@ -226,33 +332,35 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
             </table>
           </div>
 
-          <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
-            <h2 className="text-base font-bold text-on-surface">Skill gap summary</h2>
-            <p className="mt-1 text-sm text-on-surface-variant">
-              Most frequently missing skills across this batch.
-            </p>
-            <div className="mt-4 space-y-3">
-              {skillGap.map((entry) => {
-                const maxCount = skillGap[0]?.missingCount ?? 1;
-                return (
-                  <div key={entry.skillName}>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-on-surface">{entry.skillName}</span>
-                      <span className="text-on-surface-muted">{entry.missingCount} candidates</span>
+          {skillGap.length > 0 ? (
+            <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
+              <h2 className="text-base font-bold text-on-surface">Skill gap summary</h2>
+              <p className="mt-1 text-sm text-on-surface-variant">
+                Most frequently missing skills across this batch.
+              </p>
+              <div className="mt-4 space-y-3">
+                {skillGap.slice(0, 10).map((entry) => {
+                  const maxCount = skillGap[0]?.missingCount ?? 1;
+                  return (
+                    <div key={entry.skillName}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-on-surface">{entry.skillName}</span>
+                        <span className="text-on-surface-muted">{entry.missingCount} candidates</span>
+                      </div>
+                      <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-surface-variant">
+                        <div
+                          className="h-full rounded-full bg-error"
+                          style={{ width: `${(entry.missingCount / maxCount) * 100}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-surface-variant">
-                      <div
-                        className="h-full rounded-full bg-error"
-                        style={{ width: `${(entry.missingCount / maxCount) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          ) : null}
         </>
-      )}
+      ) : null}
 
       <AnimatePresence>
         {selectedCell ? (
@@ -277,7 +385,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                     {selectedCell.candidateLabel} · {selectedCell.jdLabel}
                   </p>
                   <p className="mt-1 text-3xl font-bold text-on-surface">
-                    {selectedCell.overallScore}
+                    {selectedCell.overallScore !== null ? Math.round(selectedCell.overallScore) : '—'}
                   </p>
                   <p className="mt-1 text-sm text-on-surface-variant">{selectedCell.summary}</p>
                 </div>
@@ -292,7 +400,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
 
               <div className="mt-6 space-y-3">
                 <h3 className="text-sm font-bold text-on-surface">Score breakdown</h3>
-                {selectedCell.criteria.map((criterion) => (
+                {(selectedCell.criteria ?? []).map((criterion) => (
                   <div key={criterion.criterion}>
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-on-surface">
@@ -315,7 +423,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
               <div className="mt-6">
                 <h3 className="text-sm font-bold text-on-surface">Skills</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {selectedCell.skills.map((skill) => (
+                  {(selectedCell.skills ?? []).map((skill) => (
                     <span
                       key={skill.skillName}
                       title={`${skill.importance} importance${skill.evidence ? ` — ${skill.evidence}` : ''}`}
@@ -334,26 +442,11 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                 </div>
               </div>
 
-              <div className="mt-6">
-                <h3 className="text-sm font-bold text-on-surface">Suggested interview questions</h3>
-
-                {!questionsRevealed ? (
-                  <Button
-                    variant="secondary"
-                    className="mt-3 w-auto gap-2 px-4"
-                    isLoading={isGeneratingQuestions}
-                    onClick={handleGenerateQuestions}
-                  >
-                    {isGeneratingQuestions ? (
-                      <LoaderCircleIcon className="size-4 animate-spin" />
-                    ) : (
-                      <SparklesIcon className="size-4" />
-                    )}
-                    {isGeneratingQuestions ? 'Generating...' : 'Generate interview questions'}
-                  </Button>
-                ) : (
+              {(selectedCell.interviewQuestions ?? []).length > 0 ? (
+                <div className="mt-6">
+                  <h3 className="text-sm font-bold text-on-surface">Suggested interview questions</h3>
                   <ol className="mt-2 space-y-3">
-                    {selectedCell.interviewQuestions.map((item) => (
+                    {(selectedCell.interviewQuestions ?? []).map((item) => (
                       <li key={item.displayOrder} className="text-sm text-on-surface-variant">
                         <div className="flex gap-2">
                           <span className="font-semibold text-on-surface-muted">{item.displayOrder}.</span>
@@ -368,10 +461,10 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                       </li>
                     ))}
                   </ol>
-                )}
-              </div>
+                </div>
+              ) : null}
 
-              <Button className="mt-6 gap-2" onClick={handlePromote}>
+              <Button className="mt-6 gap-2" isLoading={isPromoting} onClick={() => void handlePromote()}>
                 <UserPlusIcon className="size-4" />
                 Promote to pipeline
               </Button>
