@@ -1,5 +1,13 @@
 import { PublicBatchResults } from '@/features/public-batches/components/public-batch-results';
 
-export default function PublicBatchResultsPage() {
-  return <PublicBatchResults />;
+type PageProps = {
+  params: Promise<{
+    batchId: string;
+  }>;
+};
+
+export default async function PublicBatchResultsPage({ params }: PageProps) {
+  const { batchId } = await params;
+
+  return <PublicBatchResults batchId={batchId} />;
 }

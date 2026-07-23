@@ -16,8 +16,16 @@ import {
   type ResumeStructuredValues,
 } from '@/components/batch-input/structured-input.type';
 import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-background';
+import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/config/routes.config';
+import { getPublicUploadUrls, createPublicBatch } from '@/features/public-batches/api/public-batch.api';
+import type { CreatePublicBatchPayload } from '@/features/public-batches/types/public-batch.type';
+import { uploadFilesForBatch } from '@/features/batch-scoring/utils/batch-file-upload.util';
+import {
+  toJobDescriptionStructuredInput,
+  toResumeStructuredInput,
+} from '@/features/batch-scoring/utils/structured-input-mapper.util';
 
 const MAX_CVS = 2;
 const MAX_JDS = 10;
@@ -26,18 +34,21 @@ export default function PublicBatchCreationPage() {
   const router = useRouter();
 
   const [cvMode, setCvMode] = useState<InputMode>('upload');
-  const [cvFiles, setCvFiles] = useState<string[]>([]);
+  const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [cvTexts, setCvTexts] = useState<string[]>(['']);
   const [cvStructuredList, setCvStructuredList] = useState<ResumeStructuredValues[]>([
     EMPTY_RESUME_STRUCTURED,
   ]);
 
   const [jdMode, setJdMode] = useState<InputMode>('paste');
-  const [jdFiles, setJdFiles] = useState<string[]>([]);
+  const [jdFiles, setJdFiles] = useState<File[]>([]);
   const [jdTexts, setJdTexts] = useState<string[]>(['']);
   const [jdStructuredList, setJdStructuredList] = useState<JobDescriptionStructuredValues[]>([
     EMPTY_JD_STRUCTURED,
   ]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStage, setSubmitStage] = useState('');
 
   const cvCount =
     cvMode === 'upload'
@@ -55,8 +66,44 @@ export default function PublicBatchCreationPage() {
 
   const isOverLimit = cvCount === 0 || jdCount === 0;
 
-  const handleSubmit = () => {
-    router.push('/try/preview');
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const payload: CreatePublicBatchPayload = {};
+
+      if (cvMode === 'upload') {
+        setSubmitStage('Uploading resumes...');
+        payload.resumeFiles = await uploadFilesForBatch(cvFiles, getPublicUploadUrls);
+      } else if (cvMode === 'paste') {
+        payload.resumeTexts = cvTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
+      } else {
+        payload.resumeStructured = cvStructuredList
+          .filter((entry) => entry.personal.fullName.trim())
+          .map(toResumeStructuredInput);
+      }
+
+      if (jdMode === 'upload') {
+        setSubmitStage('Uploading job descriptions...');
+        payload.jobDescriptionFiles = await uploadFilesForBatch(jdFiles, getPublicUploadUrls);
+      } else if (jdMode === 'paste') {
+        payload.jobDescriptions = jdTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
+      } else {
+        payload.jobDescriptionStructured = jdStructuredList
+          .filter((entry) => entry.title.trim())
+          .map(toJobDescriptionStructuredInput);
+      }
+
+      setSubmitStage('Starting...');
+      const result = await createPublicBatch(payload);
+      router.push(`/try/${result.batchId}`);
+    } catch (error) {
+      showToast.error('Failed to start your batch', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
+      setIsSubmitting(false);
+      setSubmitStage('');
+    }
   };
 
   return (
@@ -131,8 +178,13 @@ export default function PublicBatchCreationPage() {
           />
         </div>
 
-        <Button className="mt-6" disabled={isOverLimit} onClick={handleSubmit}>
-          See my results
+        <Button
+          className="mt-6"
+          disabled={isOverLimit}
+          isLoading={isSubmitting}
+          onClick={() => void handleSubmit()}
+        >
+          {isSubmitting ? submitStage || 'Starting...' : 'See my results'}
         </Button>
       </div>
     </div>
