@@ -47,6 +47,9 @@ export type RequestOptions = Omit<RequestInit, 'body'> & {
   params?: QueryParams;
   body?: unknown;
   onUploadProgress?: (progress: UploadProgress) => void;
+  // GET responses are cached in-memory by default (see api-cache.ts) — set true to always
+  // hit the network, for data that must stay real-time (e.g. status polling).
+  noCache?: boolean;
 };
 
 // Shared per-id success/failure shape returned by bulk endpoints (e.g. POST

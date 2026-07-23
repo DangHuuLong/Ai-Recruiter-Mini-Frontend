@@ -71,17 +71,20 @@ export async function createScoringBatch(
   return response.data;
 }
 
+// Polled on an interval while a batch is in progress — must always hit the network.
 export async function getScoringBatchStatus(id: string): Promise<BatchStatusResult> {
   const response = await apiClient.get<ApiResponse<BatchStatusResult>>(
     apiEndpoints.scoringBatches.status(id),
+    { noCache: true },
   );
   return response.data;
 }
 
+// Reloaded on every poll tick once a batch settles — must always hit the network.
 export async function getScoringBatchMatrix(id: string, query: MatrixQuery = {}): Promise<BatchMatrix> {
   const response = await apiClient.get<ApiResponse<BatchMatrix>>(
     apiEndpoints.scoringBatches.matrix(id),
-    { params: query as QueryParams },
+    { params: query as QueryParams, noCache: true },
   );
   return response.data;
 }
