@@ -2,19 +2,23 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { showToast } from '@/components/feedback';
+import { LoadingState, showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/config/routes.config';
 import { TagListInput } from '@/features/interview-questions/components/tag-list-input';
 import {
+  createInterviewQuestion,
+  getInterviewQuestionById,
+  updateInterviewQuestion,
+} from '@/features/interview-questions/api/interview-question.api';
+import {
   ASSESSMENT_TARGET_LABELS,
   AUTONOMY_LEVEL_LABELS,
   COMPETENCY_TYPE_LABELS,
   EXPERIENCE_BUCKET_LABELS,
-  getMockInterviewQuestion,
   QUALITY_GATE_LABELS,
   QUESTION_TYPE_LABELS,
   type AssessmentTarget,
@@ -23,12 +27,13 @@ import {
   type ExperienceBucket,
   type InterviewQuestionType,
   type QuestionQualityGateStatus,
-} from '@/features/interview-questions/mock/interview-question-mock-data';
+} from '@/features/interview-questions/types/interview-question.type';
 import {
   getSpecializationsFor,
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
-} from '@/features/interview-questions/mock/interview-question-taxonomy';
+} from '@/features/interview-questions/types/interview-question-taxonomy.type';
+import { ApiError } from '@/lib/api/api-error';
 
 type InterviewQuestionFormProps = {
   questionId?: string;
@@ -36,33 +41,49 @@ type InterviewQuestionFormProps = {
 
 export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps) {
   const router = useRouter();
-  const existing = questionId ? getMockInterviewQuestion(questionId) : null;
 
-  const [questionText, setQuestionText] = useState(existing?.questionText ?? '');
-  const [occupationFamily, setOccupationFamily] = useState<OccupationFamily | ''>(
-    existing?.occupationFamily ?? '',
-  );
-  const [specialization, setSpecialization] = useState(existing?.specialization ?? '');
-  const [enablers, setEnablers] = useState<string[]>(existing?.enablers ?? []);
-  const [businessContext, setBusinessContext] = useState(existing?.businessContext ?? '');
-  const [competency, setCompetency] = useState(existing?.competency ?? '');
-  const [competencyType, setCompetencyType] = useState<CompetencyType | ''>(
-    existing?.competencyType ?? '',
-  );
-  const [assessmentTarget, setAssessmentTarget] = useState<AssessmentTarget | ''>(
-    existing?.assessmentTarget ?? '',
-  );
-  const [experienceBucket, setExperienceBucket] = useState<ExperienceBucket | ''>(
-    existing?.experienceBucket ?? '',
-  );
-  const [autonomyLevel, setAutonomyLevel] = useState<AutonomyLevel | ''>(existing?.autonomyLevel ?? '');
-  const [questionType, setQuestionType] = useState<InterviewQuestionType | ''>(
-    existing?.questionType ?? '',
-  );
-  const [rubric, setRubric] = useState<string[]>(existing?.rubric ?? []);
-  const [qualityGateStatus, setQualityGateStatus] = useState<QuestionQualityGateStatus>(
-    existing?.qualityGateStatus ?? 'PENDING_REVIEW',
-  );
+  const [isLoadingExisting, setIsLoadingExisting] = useState(Boolean(questionId));
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [questionText, setQuestionText] = useState('');
+  const [occupationFamily, setOccupationFamily] = useState<OccupationFamily | ''>('');
+  const [specialization, setSpecialization] = useState('');
+  const [enablers, setEnablers] = useState<string[]>([]);
+  const [businessContext, setBusinessContext] = useState('');
+  const [competency, setCompetency] = useState('');
+  const [competencyType, setCompetencyType] = useState<CompetencyType | ''>('');
+  const [assessmentTarget, setAssessmentTarget] = useState<AssessmentTarget | ''>('');
+  const [experienceBucket, setExperienceBucket] = useState<ExperienceBucket | ''>('');
+  const [autonomyLevel, setAutonomyLevel] = useState<AutonomyLevel | ''>('');
+  const [questionType, setQuestionType] = useState<InterviewQuestionType | ''>('');
+  const [rubric, setRubric] = useState<string[]>([]);
+  const [qualityGateStatus, setQualityGateStatus] = useState<QuestionQualityGateStatus>('PENDING_REVIEW');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!questionId) return;
+
+    getInterviewQuestionById(questionId)
+      .then((question) => {
+        setQuestionText(question.questionText);
+        setOccupationFamily(question.occupationFamily);
+        setSpecialization(question.specialization);
+        setEnablers(question.enablers);
+        setBusinessContext(question.businessContext);
+        setCompetency(question.competency);
+        setCompetencyType(question.competencyType);
+        setAssessmentTarget(question.assessmentTarget);
+        setExperienceBucket(question.experienceBucket);
+        setAutonomyLevel(question.autonomyLevel);
+        setQuestionType(question.questionType);
+        setRubric(question.rubric);
+        setQualityGateStatus(question.qualityGateStatus);
+      })
+      .catch((error) => {
+        setLoadError(error instanceof Error ? error.message : 'Failed to load the question');
+      })
+      .finally(() => setIsLoadingExisting(false));
+  }, [questionId]);
 
   const specializationOptions = getSpecializationsFor(occupationFamily);
 
@@ -95,11 +116,63 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
     rubric,
   ]);
 
-  const handleSubmit = () => {
-    if (!isValid) return;
-    showToast.success(existing ? 'Question updated' : 'Question created');
-    router.push(ROUTES.INTERVIEW_QUESTIONS);
+  const handleSubmit = async () => {
+    if (!isValid || !occupationFamily || !competencyType || !assessmentTarget || !experienceBucket || !autonomyLevel || !questionType) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const payload = {
+        questionText: questionText.trim(),
+        occupationFamily,
+        specialization: specialization.trim(),
+        enablers,
+        businessContext: businessContext.trim(),
+        competency: competency.trim(),
+        competencyType,
+        assessmentTarget,
+        experienceBucket,
+        autonomyLevel,
+        questionType,
+        rubric,
+        qualityGateStatus,
+      };
+
+      if (questionId) {
+        await updateInterviewQuestion(questionId, payload);
+      } else {
+        await createInterviewQuestion(payload);
+      }
+
+      showToast.success(questionId ? 'Question updated' : 'Question created');
+      router.push(ROUTES.INTERVIEW_QUESTIONS);
+    } catch (error) {
+      showToast.error(questionId ? 'Failed to update question' : 'Failed to create question', {
+        description: error instanceof ApiError ? error.message : 'Something went wrong while saving.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (isLoadingExisting) {
+    return <LoadingState title="Loading question..." description="Please wait while the question is being loaded." />;
+  }
+
+  if (loadError) {
+    return (
+      <div className="max-w-3xl space-y-4">
+        <Link
+          href={ROUTES.INTERVIEW_QUESTIONS}
+          className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
+        >
+          ← Back to Interview Question Bank
+        </Link>
+        <p className="rounded-xl border border-error bg-error-container p-4 text-sm text-error">{loadError}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -112,7 +185,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
 
       <div>
         <h1 className="text-2xl font-bold text-on-surface">
-          {existing ? 'Edit question' : 'New interview question'}
+          {questionId ? 'Edit question' : 'New interview question'}
         </h1>
         <p className="mt-1 text-sm text-on-surface-variant">
           Curated content used by the retrieval/search-or-generate engine (DEV role only).
@@ -328,8 +401,14 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         >
           Cancel
         </Button>
-        <Button type="button" className="w-auto px-4" disabled={!isValid} onClick={handleSubmit}>
-          {existing ? 'Save changes' : 'Create question'}
+        <Button
+          type="button"
+          className="w-auto px-4"
+          disabled={!isValid}
+          isLoading={isSubmitting}
+          onClick={() => void handleSubmit()}
+        >
+          {questionId ? 'Save changes' : 'Create question'}
         </Button>
       </div>
     </div>

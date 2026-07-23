@@ -92,4 +92,16 @@ export const apiEndpoints = {
     delete: (id: string) => `/evaluation-configs/${id}`,
     bulkDelete: '/evaluation-configs/bulk-delete',
   },
+
+  interviewQuestions: {
+    list: '/interview-questions',
+    create: '/interview-questions',
+    bulkCreate: '/interview-questions/bulk',
+    search: '/interview-questions/search',
+    searchOrGenerate: '/interview-questions/search-or-generate',
+    detail: (id: string) => `/interview-questions/${id}`,
+    update: (id: string) => `/interview-questions/${id}`,
+    delete: (id: string) => `/interview-questions/${id}`,
+    reembed: (id: string) => `/interview-questions/${id}/reembed`,
+  },
 } as const;

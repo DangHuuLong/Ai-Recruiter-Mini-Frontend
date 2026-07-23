@@ -8,18 +8,20 @@ import { useRef, useState } from 'react';
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/config/routes.config';
+import { bulkCreateInterviewQuestions } from '@/features/interview-questions/api/interview-question.api';
 import {
   ASSESSMENT_TARGET_LABELS,
   AUTONOMY_LEVEL_LABELS,
   COMPETENCY_TYPE_LABELS,
   EXPERIENCE_BUCKET_LABELS,
   QUESTION_TYPE_LABELS,
-} from '@/features/interview-questions/mock/interview-question-mock-data';
+  type CreateInterviewQuestionPayload,
+} from '@/features/interview-questions/types/interview-question.type';
 import {
   INTERVIEW_QUESTION_TAXONOMY,
   OCCUPATION_FAMILY_LABELS,
   type OccupationFamily,
-} from '@/features/interview-questions/mock/interview-question-taxonomy';
+} from '@/features/interview-questions/types/interview-question-taxonomy.type';
 import { cn } from '@/lib/utils/cn';
 
 type RawItem = Record<string, unknown>;
@@ -51,7 +53,7 @@ function validateItem(item: RawItem): string[] {
   if (!family || !(family in INTERVIEW_QUESTION_TAXONOMY)) {
     errors.push('Invalid or missing "occupationFamily"');
   } else if (typeof item.specialization === 'string') {
-    const known = INTERVIEW_QUESTION_TAXONOMY[family].some((e) => e.specialization === item.specialization);
+    const known = INTERVIEW_QUESTION_TAXONOMY[family].specializations.includes(item.specialization);
     if (!known) errors.push(`"specialization" not known for ${family}`);
   }
 
@@ -84,6 +86,7 @@ export function InterviewQuestionBulkCreate() {
   const [rawText, setRawText] = useState('');
   const [preview, setPreview] = useState<PreviewRow[] | null>(null);
   const [results, setResults] = useState<SubmitResult[] | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleParse = () => {
     setResults(null);
@@ -116,17 +119,39 @@ export function InterviewQuestionBulkCreate() {
     file.text().then((text) => setRawText(text));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!preview) return;
-    const nextResults: SubmitResult[] = preview.map((row) => {
-      if (row.errors.length > 0) {
-        return { index: row.index, success: false, error: row.errors[0] };
-      }
-      return { index: row.index, success: true };
-    });
-    setResults(nextResults);
-    const successCount = nextResults.filter((r) => r.success).length;
-    showToast.success(`Created ${successCount} of ${nextResults.length} questions`);
+
+    const invalidResults: SubmitResult[] = preview
+      .filter((row) => row.errors.length > 0)
+      .map((row) => ({ index: row.index, success: false, error: row.errors[0] }));
+    const validRows = preview.filter((row) => row.errors.length === 0);
+
+    if (validRows.length === 0) {
+      setResults(invalidResults);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const items = validRows.map((row) => row.raw as unknown as CreateInterviewQuestionPayload);
+      const apiResults = await bulkCreateInterviewQuestions(items);
+      const mapped: SubmitResult[] = apiResults.map((result, i) => ({
+        index: validRows[i].index,
+        success: result.success,
+        error: result.success ? undefined : result.error,
+      }));
+      const combined = [...invalidResults, ...mapped].sort((a, b) => a.index - b.index);
+      setResults(combined);
+      const successCount = combined.filter((r) => r.success).length;
+      showToast.success(`Created ${successCount} of ${combined.length} questions`);
+    } catch (error) {
+      showToast.error('Bulk create failed', {
+        description: error instanceof Error ? error.message : 'Something went wrong.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const validCount = preview?.filter((row) => row.errors.length === 0).length ?? 0;
@@ -274,7 +299,8 @@ export function InterviewQuestionBulkCreate() {
                 type="button"
                 className="w-auto px-4"
                 disabled={validCount === 0}
-                onClick={handleSubmit}
+                isLoading={isSubmitting}
+                onClick={() => void handleSubmit()}
               >
                 Create {validCount} question{validCount === 1 ? '' : 's'}
               </Button>
