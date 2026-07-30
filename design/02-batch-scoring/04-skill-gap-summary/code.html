@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Skill Gap Summary - AI Recruiter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+            color: #191b23;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-bar-transition {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .bento-card:hover {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#2170e4",
+                        "inverse-surface": "#2e3038",
+                        "on-secondary-fixed-variant": "#444749",
+                        "surface-variant": "#e1e2ec",
+                        "info": "#0EA5E9",
+                        "on-primary-fixed": "#001a42",
+                        "warning": "#F59E0B",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "inverse-on-surface": "#eff0fa",
+                        "on-primary-container": "#1E293B",
+                        "link": "#2563EB",
+                        "surface": "#f9f9ff",
+                        "on-secondary-container": "#626567",
+                        "primary-hover": "#2563EB",
+                        "on-surface-variant": "#424754",
+                        "on-tertiary-container": "#fffbff",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "secondary-container": "#e0e3e5",
+                        "surface-container-low": "#f2f3fd",
+                        "surface-bright": "#f9f9ff",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#FEE2E2",
+                        "warning-container": "#FEF3C7",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#d8e2ff",
+                        "primary": "#0058be",
+                        "surface-container-high": "#e6e7f2",
+                        "outline": "#E2E8F0",
+                        "surface-container": "#ecedf7",
+                        "focus-ring": "#93C5FD",
+                        "on-surface": "#191b23",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-tint": "#005ac2",
+                        "success": "#22C55E",
+                        "inverse-primary": "#adc6ff",
+                        "on-error-container": "#93000a",
+                        "secondary": "#5c5f61",
+                        "tertiary-fixed": "#ffdcc6",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "success-container": "#DCFCE7",
+                        "outline-variant": "#c2c6d6",
+                        "tertiary": "#924700",
+                        "on-background": "#191b23",
+                        "primary-fixed-dim": "#adc6ff",
+                        "tertiary-container": "#b75b00",
+                        "on-secondary-fixed": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "on-surface-muted": "#64748B",
+                        "on-tertiary": "#ffffff",
+                        "error": "#EF4444",
+                        "surface-dim": "#d8d9e3",
+                        "secondary-fixed": "#e0e3e5",
+                        "on-tertiary-fixed": "#311400",
+                        "surface-container-highest": "#e1e2ec"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "radius": "8px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-on-secondary-fixed border-r border-outline flex flex-col py-md px-sm z-50">
+<div class="px-sm mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-black text-primary dark:text-primary-fixed leading-none">AI Recruiter</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-xs">Enterprise Talent Hub</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto no-scrollbar">
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Recruiting</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span class="font-label-caps text-label-caps">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-caps text-label-caps">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-caps text-label-caps">Job Descriptions</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-caps text-label-caps">Applications</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label-caps text-label-caps">Evaluations</span>
+</a>
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-bold rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Batch Scoring</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Admin</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-label-caps text-label-caps">Evaluation Configs</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+<span class="font-label-caps text-label-caps">Users</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Audit Log</span>
+</a>
+<div class="border-t border-outline my-sm"></div>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 uppercase px-sm mb-xs">Dev Tools</p>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-variant/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-caps text-label-caps">Interview Question Bank</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- Top Nav Bar -->
+<header class="bg-surface-container-lowest border-b border-outline h-16 flex justify-between items-center px-margin-desktop sticky top-0 z-40">
+<div class="flex items-center gap-md">
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary">Skill Gap Summary</h2>
+<div class="h-6 w-[1px] bg-outline"></div>
+<div class="flex items-center gap-xs text-on-surface-muted">
+<span class="font-body-md text-body-md">Batch:</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Q4 Engineering Pipeline</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative group">
+<select class="appearance-none bg-surface-container-low border border-outline rounded-lg px-md py-sm pr-10 font-body-sm text-body-sm focus:ring-2 focus:ring-focus-ring outline-none cursor-pointer">
+<option>Senior Backend Engineer (JD-402)</option>
+<option>Staff Site Reliability Engineer (JD-405)</option>
+<option>Fullstack Developer (JD-398)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">help</button>
+<div class="text-right hidden sm:block">
+<p class="font-body-sm text-body-sm font-semibold">Sarah Jenkins</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">HR Manager</p>
+</div>
+<div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a recruitment manager in a minimalist office setting, soft natural lighting, corporate portrait style, high-end photography, neutral colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2X06GomxUeFXHpWp879zn0L24L62_H0gV1PEGfMJSMzWpiQZxAGA4D6upefmVnZ5eD9FefbVIpLkW0pD47q8KzlRroznwHEdFCTY06OV7Lo9vhlPyRpkqU79JNoJfHaODl0uwgHoR6TCdhcRzbiTV1bOvkF7-MjW4tS6EctrRNdMF4Xq6sCvLahWrNTkTsi47sE0nRz14-Zd5dqYMRS5Bodrd-9BTEZwT3oSKhYFko8PIkqsrZpOrpWs5gnw8GRh5o5JLkQOkOxQ"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-desktop max-w-[1200px] mx-auto">
+<!-- Summary Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+<div class="bento-card p-lg">
+<p class="font-label-caps text-label-caps text-on-surface-muted mb-xs">Total Candidates</p>
+<div class="flex items-end justify-between">
+<h3 class="font-headline-lg text-headline-lg font-bold">142</h3>
+<span class="text-success flex items-center font-body-sm text-body-sm"><span class="material-symbols-outlined text-sm mr-1">trending_up</span>+12%</span>
+</div>
+</div>
+<div class="bento-card p-lg">
+<p class="font-label-caps text-label-caps text-on-surface-muted mb-xs">Top Missing Skill</p>
+<div class="flex items-end justify-between">
+<h3 class="font-headline-lg text-headline-lg font-bold">Go</h3>
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-[11px] font-bold uppercase">Critical Gap</span>
+</div>
+</div>
+<div class="bento-card p-lg">
+<p class="font-label-caps text-label-caps text-on-surface-muted mb-xs">Avg. Skill Score</p>
+<div class="flex items-end justify-between">
+<h3 class="font-headline-lg text-headline-lg font-bold">64.2%</h3>
+<div class="w-24 h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 64%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Skill Gap Chart -->
+<section class="bento-card overflow-hidden">
+<div class="px-lg py-md border-b border-outline flex justify-between items-center bg-surface-container-lowest">
+<div>
+<h4 class="font-headline-sm text-headline-sm font-bold">Skill Frequency Deficit</h4>
+<p class="font-body-sm text-body-sm text-on-surface-muted">Percentage of candidates missing specific mandatory skills for JD-402</p>
+</div>
+<button class="flex items-center gap-xs px-md py-sm border border-outline rounded-lg font-body-sm text-body-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export Analysis
+                    </button>
+</div>
+<div class="p-lg">
+<!-- Legend -->
+<div class="flex gap-md mb-lg">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 bg-primary rounded-sm"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Primary Gap</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 bg-surface-variant rounded-sm"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">Baseline Competency</span>
+</div>
+</div>
+<!-- Horizontal Bar Chart Rows -->
+<div class="space-y-lg">
+<!-- Row 1 -->
+<div class="group">
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-sm">
+<span class="font-body-md text-body-md font-bold text-on-surface">Go / Golang</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-muted rounded text-[10px] uppercase font-bold tracking-tight">Backend</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">82 Candidates (58%)</span>
+</div>
+<div class="relative w-full h-10 bg-surface-container-low rounded-lg overflow-hidden border border-outline/50">
+<div class="absolute inset-0 bg-surface-variant/20"></div>
+<div class="h-full bg-primary chart-bar-transition group-hover:bg-primary-hover relative" style="width: 58%">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-[size:10px_10px]"></div>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="group">
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-sm">
+<span class="font-body-md text-body-md font-bold text-on-surface">Kubernetes</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-muted rounded text-[10px] uppercase font-bold tracking-tight">Infrastructure</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">76 Candidates (54%)</span>
+</div>
+<div class="relative w-full h-10 bg-surface-container-low rounded-lg overflow-hidden border border-outline/50">
+<div class="absolute inset-0 bg-surface-variant/20"></div>
+<div class="h-full bg-primary chart-bar-transition group-hover:bg-primary-hover relative" style="width: 54%">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-[size:10px_10px]"></div>
+</div>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="group">
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-sm">
+<span class="font-body-md text-body-md font-bold text-on-surface">System Design</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-muted rounded text-[10px] uppercase font-bold tracking-tight">Architecture</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">61 Candidates (43%)</span>
+</div>
+<div class="relative w-full h-10 bg-surface-container-low rounded-lg overflow-hidden border border-outline/50">
+<div class="absolute inset-0 bg-surface-variant/20"></div>
+<div class="h-full bg-primary chart-bar-transition group-hover:bg-primary-hover relative" style="width: 43%">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-[size:10px_10px]"></div>
+</div>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="group">
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-sm">
+<span class="font-body-md text-body-md font-bold text-on-surface">GraphQL</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-muted rounded text-[10px] uppercase font-bold tracking-tight">API</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">48 Candidates (34%)</span>
+</div>
+<div class="relative w-full h-10 bg-surface-container-low rounded-lg overflow-hidden border border-outline/50">
+<div class="absolute inset-0 bg-surface-variant/20"></div>
+<div class="h-full bg-primary chart-bar-transition group-hover:bg-primary-hover relative" style="width: 34%">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-[size:10px_10px]"></div>
+</div>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="group">
+<div class="flex justify-between items-center mb-sm">
+<div class="flex items-center gap-sm">
+<span class="font-body-md text-body-md font-bold text-on-surface">Microservices</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-muted rounded text-[10px] uppercase font-bold tracking-tight">Backend</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">32 Candidates (22%)</span>
+</div>
+<div class="relative w-full h-10 bg-surface-container-low rounded-lg overflow-hidden border border-outline/50">
+<div class="absolute inset-0 bg-surface-variant/20"></div>
+<div class="h-full bg-primary chart-bar-transition group-hover:bg-primary-hover relative" style="width: 22%">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-[size:10px_10px]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chart Footer -->
+<div class="bg-surface-container-low px-lg py-md border-t border-outline flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-info">info</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">Showing top 5 missing skills from 28 total tracked capabilities.</span>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:underline uppercase tracking-widest font-bold">See full distribution</button>
+</div>
+</section>
+<!-- Bottom Action Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-xl">
+<div class="bento-card p-lg flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 bg-warning-container text-warning rounded-xl flex items-center justify-center mb-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<h5 class="font-headline-sm text-headline-sm font-bold mb-sm">Upskilling Opportunity</h5>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">70% of missing skills could be bridged with a 4-week Go &amp; Cloud-Native onboarding program. Recommended for internal mobility candidates.</p>
+</div>
+<button class="w-full py-md bg-primary text-on-primary rounded-lg font-bold hover:bg-primary-hover transition-all">Generate Training Plan</button>
+</div>
+<div class="bento-card p-lg flex flex-col justify-between border-dashed border-2">
+<div class="flex-1 flex flex-col items-center justify-center text-center py-md">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-md">add_chart</span>
+<h5 class="font-headline-sm text-headline-sm font-bold text-on-surface-muted mb-sm">Add custom metric</h5>
+<p class="font-body-sm text-body-sm text-on-surface-muted max-w-[240px]">Drag a field here to correlate missing skills with experience or seniority.</p>
+</div>
+<button class="w-full py-md border border-outline rounded-lg text-on-surface-variant font-bold hover:bg-surface-container-low transition-all">Configure View</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction for bar animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.chart-bar-transition');
+            bars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

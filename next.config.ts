@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Produces a self-contained dist/standalone/ with only the deps actually used at
+  // runtime — lets the Docker runner stage skip `npm install` entirely.
+  output: "standalone",
 };
 
 export default nextConfig;

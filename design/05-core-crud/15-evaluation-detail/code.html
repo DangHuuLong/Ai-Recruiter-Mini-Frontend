@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Candidate Evaluation - Sarah Mitchell</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#3323cc",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "secondary": "#4b41e1",
+                        "on-surface-variant": "#45464d",
+                        "primary": "#000000",
+                        "tertiary-container": "#0b1c30",
+                        "on-primary-container": "#7c839b",
+                        "primary-fixed": "#dae2fd",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#bec6e0",
+                        "secondary-fixed": "#e2dfff",
+                        "background": "#f7f9fb",
+                        "primary-container": "#131b2e",
+                        "surface-container-low": "#f2f4f6",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "inverse-on-surface": "#eff1f3",
+                        "inverse-primary": "#bec6e0",
+                        "on-surface": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "outline-variant": "#c6c6cd",
+                        "surface-dim": "#d8dadc",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#eceef0",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "outline": "#76777d",
+                        "on-secondary-fixed": "#0f0069",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary-container": "#75859d",
+                        "tertiary": "#000000",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-background": "#191c1e",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "secondary-container": "#645efb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "24px",
+                        "lg": "24px",
+                        "2xl": "48px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "code-id": ["Geist"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "code-id": ["12px", {"lineHeight": "1", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .syntax-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Geist', monospace;
+            line-height: 1.5;
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px rgba(75, 65, 225, 0.1);
+            border-left: 4px solid #4b41e1;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface dark:bg-surface-dim border-r border-outline-variant dark:border-outline flex flex-col p-md gap-sm z-50">
+<div class="flex flex-col gap-xs mb-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-on-primary-fixed">AI Recruiter</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Enterprise Talent</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-body-md">Jobs</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md">Resumes</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-body-md">Applications</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-md p-md bg-secondary-fixed text-on-secondary-fixed font-semibold rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fact_check</span>
+<span class="font-body-md">Evaluations</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-lg z-40 shadow-sm">
+<div class="flex items-center gap-md">
+<h2 class="font-headline-md text-headline-md font-black text-primary">Recruiting Dashboard</h2>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm w-80 focus:ring-2 focus:ring-secondary/20 transition-all" placeholder="Search candidate data..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined">history</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined">help</span></button>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<button class="bg-primary text-on-primary px-md py-2 rounded-lg font-body-sm hover:opacity-90 transition-opacity">Invite Team</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a recruitment manager in a modern office, soft bokeh background with glass partitions, clean corporate aesthetic, natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZZfdQYvbuwiziIjQDqjkF6dEeKvG8tB1SBO5L-NN7JpOCubzAbFwDoiicg6XAVyUqtAK3IOKwEDHGt2EZIhBPzzpicO_jAcY8wCzAkUdJbiUGSc5AB_nyGnWCm0WsmLClkj0dqiAm7JeaLyCgdZnXmB8VM2JQQ-dNmfFq85-oZIKga69k95u8P0MW7CthZC-f9tYFe_7cHN9KmofLzAfjN3mNXQ4YOCJig_Mh6OUGPuCDxeK2WrTSSr-oR--exXllO0dkiInWmDE"/>
+</div>
+</div>
+</header>
+<!-- View Content -->
+<div class="pt-24 pb-12 px-xl max-w-container-max mx-auto space-y-lg">
+<!-- Header Card: Analytical Hero -->
+<section class="glass-card rounded-xl p-xl flex items-center gap-xl">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-high" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-secondary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364.4" stroke-dashoffset="21.8" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-headline-lg font-headline-lg text-secondary">94</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">OF 100</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-primary">Sarah Mitchell</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant mt-xs">Senior Full-Stack Engineer · <span class="text-secondary font-semibold uppercase text-sm tracking-wider">Status COMPLETED</span></p>
+<div class="flex items-center gap-sm mt-sm text-body-sm text-outline">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>Started 2 mins ago · Completed Just now</span>
+</div>
+</div>
+<button class="flex items-center gap-sm px-lg py-3 border-2 border-primary rounded-lg font-body-md font-bold hover:bg-primary hover:text-on-primary transition-all">
+                            View application
+                            <span class="material-symbols-outlined">open_in_new</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section 1: Summary & Skill Gaps -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="glass-card rounded-xl p-lg ai-glow">
+<div class="flex items-center gap-sm mb-md text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-label-caps text-label-caps uppercase">AI Summary</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                        Sarah Mitchell exhibits exceptional architectural maturity, particularly in React/Node.js ecosystems. Her evaluation shows a high degree of technical rigor, with 94% alignment to core competency requirements. Her recent work at FinTech Corp demonstrates expertise in high-concurrency systems and microservices orchestration that perfectly matches the upcoming project roadmap.
+                    </p>
+</div>
+<div class="glass-card rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-md text-error">
+<span class="material-symbols-outlined">warning</span>
+<h3 class="font-label-caps text-label-caps uppercase">Skill Gap Summary</h3>
+</div>
+<ul class="space-y-sm">
+<li class="flex items-start gap-sm bg-error/5 p-sm rounded-lg border border-error/10">
+<span class="material-symbols-outlined text-error text-[20px]">priority_high</span>
+<div class="text-body-sm">
+<strong class="text-on-surface">Go (Golang):</strong> Minimal production evidence for high-performance backend requirements.
+                            </div>
+</li>
+<li class="flex items-start gap-sm bg-tertiary-fixed/30 p-sm rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-on-tertiary-container text-[20px]">info</span>
+<div class="text-body-sm">
+<strong class="text-on-surface">Kubernetes:</strong> Deep AWS experience but less focus on bare-metal orchestration.
+                            </div>
+</li>
+</ul>
+</div>
+</section>
+<!-- Section 2: Explanation Narrative -->
+<section class="glass-card rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+<h3 class="font-label-caps text-label-caps uppercase">Analytical Narrative</h3>
+</div>
+<div class="prose prose-slate max-w-none">
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                        The candidate's score is primarily driven by a near-perfect match in "Technical Problem Solving" and "Architectural Design." Sarah's response to the system scalability scenario demonstrated an advanced understanding of database sharding and eventual consistency—concepts typically only mastered by principal-level contributors. While there is a slight deficit in specific language familiarity (Go), her rapid adaptation to TypeScript and Rust suggests a high "Learning Velocity" which we've weighted as a compensating factor.
+                    </p>
+</div>
+</section>
+<!-- Section 3: Score Breakdown -->
+<section class="glass-card rounded-xl overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">equalizer</span>
+<h3 class="font-label-caps text-label-caps uppercase">Score Breakdown</h3>
+</div>
+<span class="text-body-sm text-outline">Weight-adjusted calculation</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<div class="p-lg hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h4 class="text-body-md font-bold text-on-surface">Skills Match</h4>
+<span class="text-label-caps text-outline uppercase">Weight: 40%</span>
+</div>
+<span class="text-headline-md font-headline-md text-secondary">98%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mb-md">
+<div class="bg-secondary h-2 rounded-full" style="width: 98%"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-sm">Matches 14 out of 15 required core technical skills with significant production evidence.</p>
+<ul class="grid grid-cols-2 gap-x-lg gap-y-xs list-disc pl-md text-body-sm text-outline">
+<li>Expert React/Next.js depth</li>
+<li>PostgreSQL performance tuning</li>
+<li>Advanced CI/CD implementation</li>
+<li>High-level System Architecture</li>
+</ul>
+</div>
+<!-- Row 2 -->
+<div class="p-lg hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h4 class="text-body-md font-bold text-on-surface">Experience Relevance</h4>
+<span class="text-label-caps text-outline uppercase">Weight: 25%</span>
+</div>
+<span class="text-headline-md font-headline-md text-secondary">92%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mb-md">
+<div class="bg-secondary h-2 rounded-full" style="width: 92%"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant">Past roles at Uber and Stripe align perfectly with our scale and transaction volume requirements.</p>
+</div>
+<!-- Row 3 -->
+<div class="p-lg hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h4 class="text-body-md font-bold text-on-surface">Keyword/Domain Alignment</h4>
+<span class="text-label-caps text-outline uppercase">Weight: 15%</span>
+</div>
+<span class="text-headline-md font-headline-md text-secondary">85%</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mb-md">
+<div class="bg-secondary h-2 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant">Strong domain presence in Fintech and API-first marketplaces.</p>
+</div>
+</div>
+</section>
+<!-- Section 4: Matched / Missing Skills (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Matched Skills -->
+<div class="glass-card rounded-xl p-lg">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<h3 class="font-label-caps text-label-caps uppercase">Matched Skills</h3>
+</div>
+<span class="px-sm py-1 bg-secondary-fixed text-on-secondary-fixed rounded text-xs font-bold">14 FOUND</span>
+</div>
+<div class="space-y-md">
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-secondary transition-all group">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="text-body-md font-bold block">React.js</span>
+<span class="text-code-id text-outline">v18.x Composition Patterns</span>
+</div>
+<span class="px-2 py-1 bg-on-secondary-fixed-variant/10 text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase">Critical</span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-md italic">"Demonstrated expert-level state management with XState and heavy optimization."</p>
+<div class="flex flex-wrap gap-xs">
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">link</span> github.com/smitchell/arch
+                                </span>
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-[11px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">description</span> Resume p2
+                                </span>
+</div>
+</div>
+<!-- Skill 2 -->
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-secondary transition-all">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="text-body-md font-bold block">TypeScript</span>
+<span class="text-code-id text-outline">Strict Mode Architect</span>
+</div>
+<span class="px-2 py-1 bg-on-secondary-fixed-variant/10 text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase">High</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Missing Skills -->
+<div class="glass-card rounded-xl p-lg">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm text-error">
+<span class="material-symbols-outlined">cancel</span>
+<h3 class="font-label-caps text-label-caps uppercase">Missing Skills</h3>
+</div>
+<span class="px-sm py-1 bg-error-container text-on-error-container rounded text-xs font-bold">2 ABSENT</span>
+</div>
+<div class="space-y-md">
+<div class="p-md rounded-lg border border-outline-variant bg-surface-container-low grayscale opacity-80">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="text-body-md font-bold block text-outline">Golang (Go)</span>
+<span class="text-code-id text-outline">Backend Concurrency</span>
+</div>
+<span class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded uppercase">Required</span>
+</div>
+<p class="text-body-sm text-outline italic">No verified production experience in the last 3 years. Mentions interest but no specific evidence found.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Evidence Code Block -->
+<section class="glass-card rounded-xl overflow-hidden">
+<div class="p-lg bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline">data_object</span>
+<h3 class="font-label-caps text-label-caps uppercase">Raw Evaluation Evidence</h3>
+</div>
+<button class="text-secondary text-body-sm font-semibold flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export JSON
+                    </button>
+</div>
+<div class="syntax-block p-lg text-code-id overflow-x-auto whitespace-pre">
+{
+  "candidate_id": "MITCHELL-0094-S",
+  "parsed_competencies": [
+    { "skill": "React", "score": 1.0, "match_type": "EXACT", "context": "Lead contributor at Stripe UI Components" },
+    { "skill": "Postgres", "score": 0.92, "match_type": "VERIFIED", "context": "Refactored billing schema for 10M+ users" }
+  ],
+  "reasoning_engine_v4": "High confidence match (0.97) detected in 'Enterprise Scale' and 'Security Compliance' modules. Candidate outperforms 94% of cohort in algorithmic efficiency simulation."
+}</div>
+</section>
+<!-- Section 6: Interview Questions -->
+<section class="space-y-md">
+<div class="flex items-center gap-sm px-sm">
+<span class="material-symbols-outlined text-secondary">forum</span>
+<h3 class="font-label-caps text-label-caps uppercase">Recommended Interview Questions</h3>
+</div>
+<!-- Q1 -->
+<div class="glass-card rounded-xl p-lg border-l-4 border-l-secondary">
+<div class="flex justify-between items-start mb-md">
+<span class="bg-secondary-fixed text-on-secondary-fixed px-sm py-1 rounded text-[10px] font-black tracking-tighter uppercase">QUESTION 01</span>
+<div class="flex gap-xs">
+<span class="px-2 py-1 bg-surface-container-high rounded text-[10px] font-semibold text-on-surface-variant">ARCH</span>
+<span class="px-2 py-1 bg-surface-container-high rounded text-[10px] font-semibold text-on-surface-variant">SCALABILITY</span>
+<span class="px-2 py-1 bg-secondary text-on-secondary rounded text-[10px] font-semibold">HARD</span>
+</div>
+</div>
+<h4 class="text-body-lg font-bold text-on-surface mb-md">"How would you handle eventual consistency in our specific microservices architecture when processing real-time payments?"</h4>
+<div class="bg-surface-container-low p-md rounded-lg border border-outline-variant">
+<h5 class="text-label-caps text-outline uppercase mb-sm">Rationale</h5>
+<p class="text-body-sm text-on-surface-variant italic">While Sarah understands the theory perfectly, this question probes for practical implementation scars from her Stripe tenure. Look for mentions of Outbox patterns or idempotent consumer logic.</p>
+</div>
+</div>
+<!-- Q2 -->
+<div class="glass-card rounded-xl p-lg border-l-4 border-l-on-secondary-fixed-variant">
+<div class="flex justify-between items-start mb-md">
+<span class="bg-surface-container-highest text-on-surface px-sm py-1 rounded text-[10px] font-black tracking-tighter uppercase">QUESTION 02</span>
+<div class="flex gap-xs">
+<span class="px-2 py-1 bg-surface-container-high rounded text-[10px] font-semibold text-on-surface-variant">GOLANG</span>
+<span class="px-2 py-1 bg-surface-container-high rounded text-[10px] font-semibold text-on-surface-variant">LEARNING</span>
+<span class="px-2 py-1 bg-secondary text-on-secondary rounded text-[10px] font-semibold">ADAPTIVE</span>
+</div>
+</div>
+<h4 class="text-body-lg font-bold text-on-surface mb-md">"Explain how you would bridge your Node.js concurrency mental model to Go's Goroutines and Channels."</h4>
+<div class="bg-surface-container-low p-md rounded-lg border border-outline-variant">
+<h5 class="text-label-caps text-outline uppercase mb-sm">Rationale</h5>
+<p class="text-body-sm text-on-surface-variant italic">Addresses the identified skill gap. We want to see if she can map existing expertise in asynchronous logic to our primary backend language's unique paradigms.</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+    </script>
+</body></html>

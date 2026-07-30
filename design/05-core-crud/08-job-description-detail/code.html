@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Description Detail | RecruitAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#eceef0",
+                    "surface-variant": "#e0e3e5",
+                    "primary-container": "#131b2e",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "tertiary-container": "#0b1c30",
+                    "on-secondary-container": "#fffbff",
+                    "tertiary": "#000000",
+                    "on-secondary-fixed": "#0f0069",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "surface-tint": "#565e74",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#bec6e0",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c6c6cd",
+                    "surface-container-highest": "#e0e3e5",
+                    "tertiary-fixed": "#d3e4fe",
+                    "primary-fixed-dim": "#bec6e0",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#7c839b",
+                    "secondary-fixed-dim": "#c3c0ff",
+                    "on-secondary-fixed-variant": "#3323cc",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#76777d",
+                    "on-tertiary-container": "#75859d",
+                    "surface-bright": "#f7f9fb",
+                    "secondary": "#4b41e1",
+                    "on-surface-variant": "#45464d",
+                    "on-primary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "error": "#ba1a1a",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed": "#131b2e",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "secondary-fixed": "#e2dfff",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary": "#ffffff",
+                    "primary": "#000000",
+                    "on-surface": "#191c1e",
+                    "secondary-container": "#645efb",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface-dim": "#d8dadc",
+                    "on-background": "#191c1e",
+                    "surface-container-low": "#f2f4f6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "gutter": "24px",
+                    "2xl": "48px",
+                    "lg": "24px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "code-id": ["Geist"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "code-id": ["12px", {"lineHeight": "1", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .glass-header { backdrop-filter: blur(8px); }
+        .ai-border { border: 1.5px solid; border-image: linear-gradient(to right, #645efb, #4b41e1) 1; }
+        .manual-card { border-left: 4px solid #4b41e1; }
+        .raw-card { border-left: 4px solid #76777d; }
+        .ai-card { border-left: 4px solid #645efb; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-surface-container-lowest border-r border-outline-variant shadow-sm z-50">
+<div class="flex flex-col h-full p-md gap-sm">
+<div class="flex items-center gap-md mb-xl px-sm">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">RecruitAI</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-primary-container font-semibold">Expert Partner</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-semibold">Candidates</span>
+</a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container font-semibold rounded-lg shadow-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">work</span>
+<span class="font-semibold">Jobs</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-semibold">Interviews</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-semibold">Analytics</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-semibold">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-semibold">Help Center</span>
+</a>
+<button class="mt-md w-full bg-primary text-on-primary py-md px-lg rounded-xl font-semibold flex items-center justify-center gap-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+                    Post New Job
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-lg">
+<div class="flex items-center gap-md w-1/2">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-sm focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all" placeholder="Search JDs, candidates..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<div class="flex items-center gap-sm pl-md border-l border-outline-variant">
+<span class="text-body-sm font-semibold text-on-surface">Alex Rivera</span>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Body -->
+<div class="p-lg max-w-7xl mx-auto space-y-lg">
+<!-- 1. Header Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="flex items-start justify-between">
+<div class="space-y-sm">
+<a class="flex items-center gap-xs text-secondary font-semibold text-body-sm hover:underline" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            Back to Job Board
+                        </a>
+<h2 class="font-headline-lg text-headline-lg text-primary">Senior Full-Stack Engineer (AI/ML)</h2>
+<div class="flex items-center gap-md text-on-surface-variant">
+<span class="font-medium">Synthetix Cloud Systems</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span>San Francisco, CA (Hybrid)</span>
+</div>
+<div class="flex flex-wrap gap-sm pt-sm">
+<span class="px-sm py-xs bg-error-container text-on-error-container rounded-full text-[11px] font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">error</span>
+                                Parse Status: Partial Fail
+                            </span>
+<span class="px-sm py-xs bg-surface-container-high text-on-surface-variant rounded-full text-[11px] font-bold">Full-Time</span>
+<span class="px-sm py-xs bg-surface-container-high text-on-surface-variant rounded-full text-[11px] font-bold">Senior (5+ Years)</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-md">
+<button class="bg-secondary text-on-secondary px-lg py-md rounded-xl font-bold flex items-center gap-sm shadow-lg shadow-secondary/20 hover:bg-secondary/90 transition-all active:scale-95">
+<span class="material-symbols-outlined">auto_fix_high</span>
+                            Parse JD
+                        </button>
+</div>
+</div>
+<!-- Error Box -->
+<div class="mt-lg p-md bg-error/5 border border-error/20 rounded-lg flex gap-md items-start">
+<span class="material-symbols-outlined text-error mt-0.5">report</span>
+<div class="space-y-xs">
+<p class="text-body-sm font-bold text-error">Parser failed on Section 4: "Benefits &amp; Perks"</p>
+<p class="text-body-sm text-on-surface-variant">The AI engine encountered unexpected formatting in the compensation structure. Manual verification required for equity values.</p>
+</div>
+</div>
+</section>
+<!-- 2. Raw JD Text Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden raw-card">
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low/50">
+<div>
+<h3 class="font-headline-md text-[18px] text-primary">Raw Job Posting</h3>
+<p class="text-label-caps text-outline">Parser Version: v2.4.1</p>
+</div>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">content_copy</span>
+</button>
+</div>
+<div class="p-lg">
+<div class="bg-surface-container p-lg rounded-lg h-64 overflow-y-auto font-code-id text-code-id text-on-surface-variant leading-relaxed border border-outline-variant/30">
+<pre class="whitespace-pre-wrap">ABOUT SYNTHETIX CLOUD SYSTEMS
+We are looking for a Senior Full-Stack Engineer with a passion for AI-driven infrastructure. 
+You will be responsible for building high-performance web applications that interact with 
+our proprietary LLM fine-tuning engine.
+
+RESPONSIBILITIES:
+- Design and implement scalable APIs in Node.js and Go.
+- Build intuitive front-end interfaces using React and Tailwind CSS.
+- Optimize DB queries for massive vector datasets (Pinecone, PGVector).
+- Collaborate with ML engineers to integrate inference pipelines.
+
+REQUIREMENTS:
+- 5+ years of experience in full-stack development.
+- Deep knowledge of TypeScript and React.
+- Experience with cloud providers (AWS/GCP).
+- Strong understanding of REST and GraphQL.
+
+NICE TO HAVE:
+- Experience with PyTorch or TensorFlow.
+- Contributions to open-source developer tools.
+- Previous experience in a fast-paced fintech startup.
+                        </pre>
+</div>
+</div>
+</section>
+<!-- 3. Parsed JD Data Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden ai-card">
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between bg-secondary-container/5">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-headline-md text-[18px] text-primary">AI Parsed JD Data</h3>
+</div>
+<span class="text-label-caps text-secondary font-bold">Confidence: 94%</span>
+</div>
+<div class="p-lg space-y-xl">
+<!-- Info Grid -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-md">
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-caps text-on-primary-container mb-xs">Parsed Title</p>
+<p class="font-bold text-on-surface">Full-Stack Engineer</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-caps text-on-primary-container mb-xs">Seniority</p>
+<p class="font-bold text-on-surface text-body-sm">Senior</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-caps text-on-primary-container mb-xs">Employment</p>
+<p class="font-bold text-on-surface text-body-sm">Permanent</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-caps text-on-primary-container mb-xs">Min Exp</p>
+<p class="font-bold text-on-surface text-body-sm">5 Years</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<p class="text-label-caps text-on-primary-container mb-xs">Education</p>
+<p class="font-bold text-on-surface text-body-sm">BSc Comp Sci</p>
+</div>
+</div>
+<!-- Bulleted Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+<div>
+<h4 class="font-bold text-body-sm text-primary flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-secondary text-[20px]">assignment</span>
+                                Responsibilities
+                            </h4>
+<ul class="space-y-sm text-body-sm text-on-surface-variant list-disc pl-4 marker:text-secondary">
+<li>Design and implement scalable APIs</li>
+<li>Build React/Tailwind front-ends</li>
+<li>Optimize vector database queries</li>
+<li>Integrate inference pipelines</li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-body-sm text-primary flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-secondary text-[20px]">check_circle</span>
+                                Requirements
+                            </h4>
+<ul class="space-y-sm text-body-sm text-on-surface-variant list-disc pl-4 marker:text-secondary">
+<li>5+ years full-stack exp</li>
+<li>Mastery of TypeScript &amp; React</li>
+<li>Cloud Platform (AWS/GCP)</li>
+<li>REST &amp; GraphQL expertise</li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-body-sm text-primary flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-secondary text-[20px]">add_task</span>
+                                Nice to have
+                            </h4>
+<ul class="space-y-sm text-body-sm text-on-surface-variant list-disc pl-4 marker:text-secondary">
+<li>PyTorch / TensorFlow basics</li>
+<li>Open-source contributions</li>
+<li>Fintech/Startup background</li>
+</ul>
+</div>
+</div>
+<!-- Tag Sections -->
+<div class="space-y-lg">
+<div>
+<h4 class="text-label-caps text-outline mb-md uppercase tracking-widest">Required Skills</h4>
+<div class="flex flex-wrap gap-sm">
+<div class="px-md py-sm bg-surface-bright border border-secondary/20 rounded-lg flex items-center gap-md">
+<span class="font-bold text-secondary text-body-sm">TypeScript</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">ts_lang · Core</span>
+</div>
+<div class="px-md py-sm bg-surface-bright border border-secondary/20 rounded-lg flex items-center gap-md">
+<span class="font-bold text-secondary text-body-sm">React.js</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">react_framework · Core</span>
+</div>
+<div class="px-md py-sm bg-surface-bright border border-secondary/20 rounded-lg flex items-center gap-md">
+<span class="font-bold text-secondary text-body-sm">Node.js</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">nodejs_env · Core</span>
+</div>
+<div class="px-md py-sm bg-surface-bright border border-outline-variant rounded-lg flex items-center gap-md">
+<span class="font-bold text-on-surface text-body-sm">PostgreSQL</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">postgres_db · Optional</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="text-label-caps text-outline mb-md uppercase tracking-widest">Preferred Skills</h4>
+<div class="flex flex-wrap gap-sm">
+<div class="px-md py-sm bg-surface-bright border border-outline-variant rounded-lg flex items-center gap-md">
+<span class="font-bold text-on-surface text-body-sm">PyTorch</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">pytorch_ml · Optional</span>
+</div>
+<div class="px-md py-sm bg-surface-bright border border-outline-variant rounded-lg flex items-center gap-md">
+<span class="font-bold text-on-surface text-body-sm">Docker</span>
+<span class="w-[1px] h-4 bg-outline-variant"></span>
+<span class="text-xs text-on-surface-variant">docker_engine · Optional</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="text-label-caps text-outline mb-md uppercase tracking-widest">Domain Keywords</h4>
+<div class="flex flex-wrap gap-xs">
+<span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[11px] font-bold">Cloud Infrastructure</span>
+<span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[11px] font-bold">Vector Search</span>
+<span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[11px] font-bold">LLM Orchestration</span>
+<span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[11px] font-bold">Scalable APIs</span>
+<span class="px-sm py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[11px] font-bold">Frontend UX</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Job Skills Manager Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden manual-card pb-lg">
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low/30">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+<h3 class="font-headline-md text-[18px] text-primary">Job Skills Manager</h3>
+</div>
+</div>
+<!-- Add/Edit Form -->
+<div class="p-lg bg-surface-container-low/20 border-b border-outline-variant/30">
+<form class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-md items-end">
+<div class="lg:col-span-1">
+<label class="block text-label-caps text-outline mb-sm">Skill Name</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all" placeholder="e.g. Go" type="text"/>
+</div>
+<div class="lg:col-span-1">
+<label class="block text-label-caps text-outline mb-sm">Normalized Name</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all" placeholder="golang_lang" type="text"/>
+</div>
+<div>
+<label class="block text-label-caps text-outline mb-sm">Type</label>
+<select class="w-full px-md py-sm border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all">
+<option>Required</option>
+<option>Preferred</option>
+</select>
+</div>
+<div>
+<label class="block text-label-caps text-outline mb-sm">Weight (1-10)</label>
+<input class="w-full px-md py-sm border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all" type="number" value="5"/>
+</div>
+<div class="flex items-center h-10 gap-md">
+<input class="rounded text-secondary focus:ring-secondary" id="core-check" type="checkbox"/>
+<label class="text-body-sm font-medium" for="core-check">Mark as Core</label>
+</div>
+<button class="bg-primary text-on-primary h-10 px-lg rounded-lg font-bold flex items-center justify-center gap-xs hover:opacity-90 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                            Add Skill
+                        </button>
+</form>
+</div>
+<div class="p-lg space-y-lg">
+<!-- Required Skills Grid -->
+<div>
+<h4 class="text-label-caps text-outline mb-md flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            Required Skills Matrix
+                        </h4>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Skill Card -->
+<div class="p-md bg-surface-container-low rounded-xl border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex justify-between items-start mb-sm">
+<h5 class="font-bold text-primary">TypeScript</h5>
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-xs py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-[9px] font-black uppercase">Req</span>
+<span class="px-xs py-0.5 bg-primary-container text-on-primary-container rounded text-[9px] font-black uppercase tracking-widest">Core</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline font-medium">Weight</span>
+<span class="text-body-sm font-bold text-secondary">10 / 10</span>
+</div>
+</div>
+<!-- Skill Card 2 -->
+<div class="p-md bg-surface-container-low rounded-xl border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex justify-between items-start mb-sm">
+<h5 class="font-bold text-primary">React.js</h5>
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-xs py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-[9px] font-black uppercase">Req</span>
+<span class="px-xs py-0.5 bg-primary-container text-on-primary-container rounded text-[9px] font-black uppercase tracking-widest">Core</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline font-medium">Weight</span>
+<span class="text-body-sm font-bold text-secondary">9 / 10</span>
+</div>
+</div>
+<!-- Skill Card 3 -->
+<div class="p-md bg-surface-container-low rounded-xl border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex justify-between items-start mb-sm">
+<h5 class="font-bold text-primary">AWS (S3/EC2)</h5>
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-xs py-0.5 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-[9px] font-black uppercase">Req</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline font-medium">Weight</span>
+<span class="text-body-sm font-bold text-secondary">7 / 10</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Preferred Skills Grid -->
+<div>
+<h4 class="text-label-caps text-outline mb-md flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+                            Preferred Skills Matrix
+                        </h4>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Skill Card -->
+<div class="p-md bg-surface-container-low rounded-xl border border-outline-variant group hover:shadow-md transition-all">
+<div class="flex justify-between items-start mb-sm">
+<h5 class="font-bold text-primary">PyTorch</h5>
+<div class="flex gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-secondary"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="text-on-surface-variant hover:text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-xs py-0.5 bg-surface-container-high text-on-surface-variant rounded text-[9px] font-black uppercase">Pref</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline font-medium">Weight</span>
+<span class="text-body-sm font-bold text-secondary">4 / 10</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer spacing -->
+<div class="h-16"></div>
+</main>
+<script>
+        // Simple UI Interaction: Toggle "Parse JD" button state
+        const parseBtn = document.querySelector('button:has(.material-symbols-outlined:contains("auto_fix_high"))');
+        if(parseBtn) {
+            parseBtn.addEventListener('click', () => {
+                const originalContent = parseBtn.innerHTML;
+                parseBtn.innerHTML = `<span class="animate-spin material-symbols-outlined">sync</span> Parsing...`;
+                parseBtn.disabled = true;
+                setTimeout(() => {
+                    parseBtn.innerHTML = originalContent;
+                    parseBtn.disabled = false;
+                }, 2000);
+            });
+        }
+
+        // Help material-symbols content matching
+        document.querySelectorAll('.material-symbols-outlined').forEach(span => {
+            if (span.textContent === 'contains("auto_fix_high")') span.textContent = 'auto_fix_high';
+        });
+    </script>
+</body></html>
