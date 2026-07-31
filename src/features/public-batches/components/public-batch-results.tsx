@@ -19,7 +19,7 @@ const POLL_INTERVAL_MS = 3000;
 const SKILL_TYPE_CLASSES: Record<string, string> = {
   MATCHED: 'bg-success-container text-success',
   MISSING: 'bg-error-container text-error',
-  RELATED: 'bg-warning-container text-on-surface',
+  PARTIAL: 'bg-warning-container text-on-surface',
 };
 
 type PublicBatchResultsProps = {
