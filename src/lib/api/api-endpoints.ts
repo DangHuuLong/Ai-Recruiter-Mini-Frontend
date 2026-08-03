@@ -118,4 +118,11 @@ export const apiEndpoints = {
     delete: (id: string) => `/interview-questions/${id}`,
     reembed: (id: string) => `/interview-questions/${id}/reembed`,
   },
+
+  aiActivityLogs: {
+    list: '/ai-activity-logs',
+    detail: (id: string) => `/ai-activity-logs/${id}`,
+    statsSummary: '/ai-activity-logs/stats/summary',
+    statsTimeseries: '/ai-activity-logs/stats/timeseries',
+  },
 } as const;
