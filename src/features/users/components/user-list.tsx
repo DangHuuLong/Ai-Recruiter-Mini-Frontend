@@ -79,7 +79,7 @@ function buildColumns(
       filter: { key: 'role', options: ROLE_FILTER_OPTIONS, activeValue: role },
       render: (user) => (
         <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-          {ROLE_LABELS[user.role]}
+          {ROLE_LABELS[user.role] ?? user.role}
         </span>
       ),
     },
