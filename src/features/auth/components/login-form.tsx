@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { showToast } from '@/components/feedback';
-import { getDefaultRouteForRole } from '@/config/route-access.config';
+import { canAccessRoute, getDefaultRouteForRole } from '@/config/route-access.config';
 import { ROUTES } from '@/config/routes.config';
 import { login } from '@/features/auth/api/auth.api';
 import { useAuthStore } from '@/features/auth/store/auth.store';
@@ -46,7 +46,10 @@ export function LoginForm() {
       setSession(session);
 
       showToast.success('Logged in successfully');
-      router.replace(searchParams.get('next') || getDefaultRouteForRole(session.user.role));
+      const next = searchParams.get('next');
+      const destination =
+        next && canAccessRoute(next, session.user.role) ? next : getDefaultRouteForRole(session.user.role);
+      router.replace(destination);
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === UNVERIFIED_EMAIL_STATUS_CODE) {
         setUnverifiedEmail(values.email);
