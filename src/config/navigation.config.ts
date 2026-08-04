@@ -16,42 +16,44 @@ import {
 import { ROUTES } from './routes.config';
 import type { NavigationGroup } from '@/lib/types/navigation';
 
-export const navigationGroups: NavigationGroup[] = [
-  {
-    items: [{ label: 'Dashboard', href: ROUTES.DASHBOARD, icon: LayoutDashboardIcon }],
-  },
-  {
-    label: 'Recruiting',
-    items: [
-      { label: 'Candidates', href: ROUTES.CANDIDATES, icon: UsersIcon },
-      { label: 'Resumes', href: ROUTES.RESUMES, icon: FileTextIcon },
-      { label: 'Job Descriptions', href: ROUTES.JOB_DESCRIPTIONS, icon: BriefcaseIcon },
-      { label: 'Applications', href: ROUTES.APPLICATIONS, icon: ClipboardListIcon },
-      { label: 'Evaluations', href: ROUTES.EVALUATIONS, icon: ClipboardCheckIcon },
-      { label: 'Batch Scoring', href: ROUTES.BATCH_SCORING, icon: Grid3x3Icon },
-      { label: 'Evaluation Configs', href: ROUTES.EVALUATION_CONFIGS, icon: SlidersHorizontalIcon },
-    ],
-  },
-  {
-    label: 'Admin',
-    items: [
-      { label: 'Users', href: ROUTES.USERS, icon: UserCogIcon },
-      { label: 'Audit Log', href: ROUTES.AUDIT_LOG, icon: HistoryIcon },
-    ],
-  },
-  {
-    label: 'Dev Tools',
-    items: [
-      {
-        label: 'Interview Question Bank',
-        href: ROUTES.INTERVIEW_QUESTIONS,
-        icon: MessageSquareTextIcon,
-      },
-      {
-        label: 'AI Activity Log',
-        href: ROUTES.AI_ACTIVITY_LOG,
-        icon: ActivityIcon,
-      },
-    ],
-  },
-];
+export function getNavigationGroups(t: (key: string) => string): NavigationGroup[] {
+  return [
+    {
+      items: [{ label: t('dashboard'), href: ROUTES.DASHBOARD, icon: LayoutDashboardIcon }],
+    },
+    {
+      label: t('groups.recruiting'),
+      items: [
+        { label: t('candidates'), href: ROUTES.CANDIDATES, icon: UsersIcon },
+        { label: t('resumes'), href: ROUTES.RESUMES, icon: FileTextIcon },
+        { label: t('jobDescriptions'), href: ROUTES.JOB_DESCRIPTIONS, icon: BriefcaseIcon },
+        { label: t('applications'), href: ROUTES.APPLICATIONS, icon: ClipboardListIcon },
+        { label: t('evaluations'), href: ROUTES.EVALUATIONS, icon: ClipboardCheckIcon },
+        { label: t('batchScoring'), href: ROUTES.BATCH_SCORING, icon: Grid3x3Icon },
+        { label: t('evaluationConfigs'), href: ROUTES.EVALUATION_CONFIGS, icon: SlidersHorizontalIcon },
+      ],
+    },
+    {
+      label: t('groups.admin'),
+      items: [
+        { label: t('users'), href: ROUTES.USERS, icon: UserCogIcon },
+        { label: t('auditLog'), href: ROUTES.AUDIT_LOG, icon: HistoryIcon },
+      ],
+    },
+    {
+      label: t('groups.devTools'),
+      items: [
+        {
+          label: t('interviewQuestions'),
+          href: ROUTES.INTERVIEW_QUESTIONS,
+          icon: MessageSquareTextIcon,
+        },
+        {
+          label: t('aiActivityLog'),
+          href: ROUTES.AI_ACTIVITY_LOG,
+          icon: ActivityIcon,
+        },
+      ],
+    },
+  ];
+}

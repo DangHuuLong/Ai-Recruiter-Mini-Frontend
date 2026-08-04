@@ -36,5 +36,24 @@
       "title": "No data",
       "description": "There's nothing to show here yet."
     }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "candidates": "Candidates",
+    "resumes": "Resumes",
+    "jobDescriptions": "Job Descriptions",
+    "applications": "Applications",
+    "evaluations": "Evaluations",
+    "batchScoring": "Batch Scoring",
+    "evaluationConfigs": "Evaluation Configs",
+    "users": "Users",
+    "auditLog": "Audit Log",
+    "interviewQuestions": "Interview Question Bank",
+    "aiActivityLog": "AI Activity Log",
+    "groups": {
+      "recruiting": "Recruiting",
+      "admin": "Admin",
+      "devTools": "Dev Tools"
+    }
   }
 }

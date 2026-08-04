@@ -2,9 +2,10 @@
 
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { usePathname } from '@/i18n/navigation';
 
-import { navigationGroups } from '@/config/navigation.config';
+import { getNavigationGroups } from '@/config/navigation.config';
 import { getDefaultRouteForRole, getRequiredRoles } from '@/config/route-access.config';
 import { ROUTES } from '@/config/routes.config';
 import { useAuthStore } from '@/features/auth/store/auth.store';
@@ -14,6 +15,9 @@ import { isNavigationItemActive } from '@/lib/utils/navigation';
 export function Sidebar() {
   const pathname = usePathname();
   const role = useAuthStore((state) => state.user?.role);
+  const t = useTranslations('navigation');
+
+  const navigationGroups = getNavigationGroups(t);
 
   const visibleGroups = navigationGroups
     .map((group) => ({

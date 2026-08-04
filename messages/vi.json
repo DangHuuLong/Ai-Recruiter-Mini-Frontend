@@ -36,5 +36,24 @@
       "title": "Không có dữ liệu",
       "description": "Chưa có mục nào để hiển thị."
     }
+  },
+  "navigation": {
+    "dashboard": "Bảng điều khiển",
+    "candidates": "Ứng viên",
+    "resumes": "Hồ sơ CV",
+    "jobDescriptions": "Mô tả công việc",
+    "applications": "Đơn ứng tuyển",
+    "evaluations": "Đánh giá",
+    "batchScoring": "Chấm điểm hàng loạt",
+    "evaluationConfigs": "Cấu hình đánh giá",
+    "users": "Thành viên",
+    "auditLog": "Nhật ký hoạt động",
+    "interviewQuestions": "Ngân hàng câu hỏi phỏng vấn",
+    "aiActivityLog": "Nhật ký hoạt động AI",
+    "groups": {
+      "recruiting": "Tuyển dụng",
+      "admin": "Quản trị",
+      "devTools": "Công cụ nội bộ"
+    }
   }
 }
