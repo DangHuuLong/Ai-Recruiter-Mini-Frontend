@@ -1,7 +1,7 @@
 'use client';
 
 import { DownloadIcon, EyeIcon, FileTextIcon, Loader2Icon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
 
 import { DetailItem, DetailPageLayout, DetailSection } from '@/components/common';

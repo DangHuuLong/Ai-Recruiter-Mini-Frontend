@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { EmptyState } from '@/components/feedback';
 import { getDefaultRouteForRole } from '@/config/route-access.config';

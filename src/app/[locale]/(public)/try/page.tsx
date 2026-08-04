@@ -1,8 +1,8 @@
 'use client';
 
 import { ArrowLeftIcon } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useState } from 'react';
 
 import { BatchInputTabs, type InputMode } from '@/components/batch-input/batch-input-tabs';

@@ -1,7 +1,7 @@
 'use client';
 
 import { EyeIcon, FileTextIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { ActionIconButton, DataTable, type DataTableColumn, type DataTableSort } from '@/components/common';

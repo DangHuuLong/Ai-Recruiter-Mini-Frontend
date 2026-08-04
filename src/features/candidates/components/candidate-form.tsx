@@ -1,7 +1,7 @@
 'use client';
 
 import { Code2Icon, GlobeIcon, LinkIcon, MailIcon, MapPinIcon, PhoneIcon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useState } from 'react';
 
 import { showToast } from '@/components/feedback/toast';

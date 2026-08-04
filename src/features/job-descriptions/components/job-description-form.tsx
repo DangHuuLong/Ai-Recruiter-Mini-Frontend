@@ -1,8 +1,8 @@
 'use client';
 
 import { Building2Icon, BriefcaseIcon, ClockIcon, MapPinIcon, TrendingUpIcon, UsersIcon } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useState } from 'react';
 
 import { showToast } from '@/components/feedback';

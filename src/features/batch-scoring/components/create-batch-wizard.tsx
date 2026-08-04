@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
 
 import { BatchInputTabs, type InputMode } from '@/components/batch-input/batch-input-tabs';

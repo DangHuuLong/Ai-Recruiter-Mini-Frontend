@@ -1,5 +1,5 @@
 import { FileTextIcon, ShieldCheckIcon, SparklesIcon, UploadIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-background';
 import { ROUTES } from '@/config/routes.config';

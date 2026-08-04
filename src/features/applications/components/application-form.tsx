@@ -1,7 +1,7 @@
 'use client';
 
 import { InfoIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 

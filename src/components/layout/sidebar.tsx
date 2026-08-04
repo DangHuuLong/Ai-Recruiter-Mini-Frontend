@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 
 import { navigationGroups } from '@/config/navigation.config';
 import { getDefaultRouteForRole, getRequiredRoles } from '@/config/route-access.config';

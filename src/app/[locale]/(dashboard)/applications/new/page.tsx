@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { PageHeader } from '@/components/common';
 import { ApplicationForm } from '@/features/applications/components/application-form';

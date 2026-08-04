@@ -1,5 +1,5 @@
 import { FilePlusIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { PageHeader } from '@/components/common';
 import { JobDescriptionList } from '@/features/job-descriptions/components/job-description-list';

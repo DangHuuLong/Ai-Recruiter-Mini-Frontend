@@ -1,5 +1,5 @@
 import { PlusIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { PageHeader } from '@/components/common';
 import { ApplicationList } from '@/features/applications/components/application-list';

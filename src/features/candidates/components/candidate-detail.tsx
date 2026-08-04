@@ -1,7 +1,7 @@
 'use client';
 
 import { IdCardIcon, Share2Icon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect } from 'react';
 
 import { DetailItem, DetailLinkItem, DetailPageLayout, DetailSection } from '@/components/common';

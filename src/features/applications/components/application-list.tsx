@@ -1,7 +1,7 @@
 'use client';
 
 import { ClipboardListIcon, EyeIcon, FileTextIcon, PencilIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
 
 import {

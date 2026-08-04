@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeftIcon, LoaderCircleIcon, XIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-background';

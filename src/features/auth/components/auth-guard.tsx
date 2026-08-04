@@ -1,7 +1,8 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+
+import { usePathname, useRouter } from '@/i18n/navigation';
 
 import { ROUTES } from '@/config/routes.config';
 import { getRequiredRoles } from '@/config/route-access.config';
