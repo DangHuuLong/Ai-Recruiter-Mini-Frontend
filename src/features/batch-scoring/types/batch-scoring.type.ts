@@ -64,6 +64,10 @@ export type ScoringBatchQuery = {
 
 // --- Upload ---
 
+// Tells the backend which per-tier limit (resumes vs job descriptions) to validate the
+// file count against — see PublicBatchesService/ScoringBatchesService.createUploadUrls.
+export type UploadUrlKind = 'RESUME' | 'JOB_DESCRIPTION';
+
 export type UploadUrlFileRequest = {
   fileName: string;
   mimeType: string;
