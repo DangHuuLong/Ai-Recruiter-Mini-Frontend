@@ -15,6 +15,7 @@ type RouteAccessRule = {
 // Ordered by prefix length (longest first) so the most specific rule always wins.
 const ROUTE_ACCESS_RULES: RouteAccessRule[] = [
   { prefix: '/interview-questions', roles: ['DEV'] },
+  { prefix: '/ai-activity-log', roles: ['DEV'] },
   { prefix: '/audit-log', roles: ['ADMIN'] },
   { prefix: '/users', roles: ['ADMIN'] },
   { prefix: ROUTES.MY_PROFILE, roles: ALL_ROLES },

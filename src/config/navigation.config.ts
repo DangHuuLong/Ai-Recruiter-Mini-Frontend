@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   BriefcaseIcon,
   ClipboardCheckIcon,
   ClipboardListIcon,
@@ -45,6 +46,11 @@ export const navigationGroups: NavigationGroup[] = [
         label: 'Interview Question Bank',
         href: ROUTES.INTERVIEW_QUESTIONS,
         icon: MessageSquareTextIcon,
+      },
+      {
+        label: 'AI Activity Log',
+        href: ROUTES.AI_ACTIVITY_LOG,
+        icon: ActivityIcon,
       },
     ],
   },
