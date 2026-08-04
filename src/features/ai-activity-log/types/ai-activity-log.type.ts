@@ -78,4 +78,5 @@ export type TimeseriesBucket = {
 export type TimeseriesQuery = {
   granularity: TimeseriesGranularity;
   date?: string;
+  tzOffsetMinutes?: number;
 };

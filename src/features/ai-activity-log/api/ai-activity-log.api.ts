@@ -30,7 +30,7 @@ export async function getAiActivityLogById(id: string): Promise<AiActivityLog> {
 export async function getAiActivityLogSummary(): Promise<AiActivityLogSummary> {
   const response = await apiClient.get<ApiResponse<AiActivityLogSummary>>(
     apiEndpoints.aiActivityLogs.statsSummary,
-    { noCache: true },
+    { params: { tzOffsetMinutes: -new Date().getTimezoneOffset() }, noCache: true },
   );
   return response.data;
 }
@@ -38,9 +38,13 @@ export async function getAiActivityLogSummary(): Promise<AiActivityLogSummary> {
 export async function getAiActivityLogTimeseries(
   query: TimeseriesQuery,
 ): Promise<TimeseriesBucket[]> {
+  const params: TimeseriesQuery = {
+    tzOffsetMinutes: -new Date().getTimezoneOffset(),
+    ...query,
+  };
   const response = await apiClient.get<ApiResponse<TimeseriesBucket[]>>(
     apiEndpoints.aiActivityLogs.statsTimeseries,
-    { params: query as QueryParams, noCache: true },
+    { params: params as QueryParams, noCache: true },
   );
   return response.data;
 }
