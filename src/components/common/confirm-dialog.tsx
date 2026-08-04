@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -23,14 +24,16 @@ export function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   variant = 'danger',
   isLoading = false,
   children,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const t = useTranslations('common.confirmDialog');
+
   if (!open) {
     return null;
   }
@@ -65,7 +68,7 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline bg-surface-lowest px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-variant disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {cancelLabel}
+            {cancelLabel ?? t('cancel')}
           </button>
 
           <button
@@ -78,7 +81,7 @@ export function ConfirmDialog({
               variant === 'warning' && 'bg-warning hover:bg-warning/90',
             )}
           >
-            {isLoading ? 'Processing...' : confirmLabel}
+            {isLoading ? t('processing') : (confirmLabel ?? t('confirm'))}
           </button>
         </div>
       </div>

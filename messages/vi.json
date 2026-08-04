@@ -6,6 +6,35 @@
     "delete": "Xóa",
     "edit": "Sửa",
     "confirm": "Xác nhận",
-    "close": "Đóng"
+    "close": "Đóng",
+    "dataTable": {
+      "noData": "Không có dữ liệu.",
+      "selectAllRows": "Chọn tất cả các dòng",
+      "selectRow": "Chọn dòng",
+      "sortAscending": "Sắp xếp tăng dần",
+      "sortDescending": "Sắp xếp giảm dần",
+      "filterLabel": "Lọc",
+      "filterAll": "Tất cả"
+    },
+    "listControls": {
+      "searchLabel": "Tìm kiếm",
+      "searchPlaceholder": "Tìm kiếm...",
+      "previous": "Trước",
+      "next": "Sau",
+      "pageInfo": "Trang <b>{page}</b> / <b>{totalPages}</b> · <b>{total}</b> kết quả"
+    },
+    "confirmDialog": {
+      "confirm": "Xác nhận",
+      "cancel": "Hủy",
+      "processing": "Đang xử lý..."
+    },
+    "bulkActionBar": {
+      "selected": "Đã chọn {count} mục",
+      "clear": "Bỏ chọn"
+    },
+    "emptyState": {
+      "title": "Không có dữ liệu",
+      "description": "Chưa có mục nào để hiển thị."
+    }
   }
 }

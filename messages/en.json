@@ -6,6 +6,35 @@
     "delete": "Delete",
     "edit": "Edit",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "dataTable": {
+      "noData": "No data available.",
+      "selectAllRows": "Select all rows",
+      "selectRow": "Select row",
+      "sortAscending": "Sort ascending",
+      "sortDescending": "Sort descending",
+      "filterLabel": "Filter",
+      "filterAll": "All"
+    },
+    "listControls": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search...",
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page <b>{page}</b> of <b>{totalPages}</b> · <b>{total}</b> total"
+    },
+    "confirmDialog": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "processing": "Processing..."
+    },
+    "bulkActionBar": {
+      "selected": "{count, plural, one {# item selected} other {# items selected}}",
+      "clear": "Clear"
+    },
+    "emptyState": {
+      "title": "No data",
+      "description": "There's nothing to show here yet."
+    }
   }
 }

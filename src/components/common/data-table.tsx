@@ -2,6 +2,7 @@
 
 import { ArrowDownIcon, ArrowUpIcon, ChevronDownIcon } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState } from '@/components/feedback';
 import { cn } from '@/lib/utils/cn';
@@ -56,6 +57,7 @@ type DataTableProps<T> = {
 };
 
 function SelectAllCheckbox({ checked, indeterminate, onChange }: { checked: boolean; indeterminate: boolean; onChange: () => void }) {
+  const t = useTranslations('common.dataTable');
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,7 +72,7 @@ function SelectAllCheckbox({ checked, indeterminate, onChange }: { checked: bool
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      aria-label="Select all rows"
+      aria-label={t('selectAllRows')}
       className="size-4 cursor-pointer rounded border-outline text-primary focus:ring-2 focus:ring-focus-ring/50"
     />
   );
@@ -87,6 +89,7 @@ function ColumnHeaderMenu<T>({
   onSortChange?: (key: string, order: DataTableSortOrder) => void;
   onFilterChange?: (key: string, value: string) => void;
 }) {
+  const t = useTranslations('common.dataTable');
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +148,7 @@ function ColumnHeaderMenu<T>({
                 )}
               >
                 <ArrowUpIcon className="size-3.5" />
-                Sort ascending
+                {t('sortAscending')}
               </button>
               <button
                 type="button"
@@ -159,7 +162,7 @@ function ColumnHeaderMenu<T>({
                 )}
               >
                 <ArrowDownIcon className="size-3.5" />
-                Sort descending
+                {t('sortDescending')}
               </button>
             </div>
           ) : null}
@@ -170,7 +173,7 @@ function ColumnHeaderMenu<T>({
                 return (
                   <div className={cn('px-1.5 pt-1.5', column.sortKey && 'border-t border-outline')}>
                     <p className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-wide text-on-surface-muted">
-                      Filter
+                      {t('filterLabel')}
                     </p>
                     <button
                       type="button"
@@ -183,7 +186,7 @@ function ColumnHeaderMenu<T>({
                         filter.activeValue === '' ? 'text-primary' : 'text-on-surface',
                       )}
                     >
-                      All
+                      {t('filterAll')}
                     </button>
                     {filter.options.map((option) => (
                       <button
@@ -215,15 +218,17 @@ export function DataTable<T>({
   data,
   columns,
   getRowKey,
-  emptyMessage = 'No data available.',
+  emptyMessage,
   className,
   sort,
   onSortChange,
   onFilterChange,
   selection,
 }: DataTableProps<T>) {
+  const t = useTranslations('common.dataTable');
+
   if (data.length === 0) {
-    return <EmptyState title={emptyMessage} />;
+    return <EmptyState title={emptyMessage ?? t('noData')} />;
   }
 
   const rowIds = selection ? data.map(getRowKey) : [];
@@ -309,7 +314,7 @@ export function DataTable<T>({
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleRow(rowId)}
-                        aria-label="Select row"
+                        aria-label={t('selectRow')}
                         className="size-4 cursor-pointer rounded border-outline text-primary focus:ring-2 focus:ring-focus-ring/50"
                       />
                     </td>
