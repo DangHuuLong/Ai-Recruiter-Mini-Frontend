@@ -3,7 +3,11 @@ import {
   computeFileChecksum,
   uploadFileToSignedUrl,
 } from '@/features/batch-scoring/api/batch-scoring.api';
-import type { UploadUrlFileRequest, UploadUrlResult } from '@/features/batch-scoring/types/batch-scoring.type';
+import type {
+  UploadUrlFileRequest,
+  UploadUrlKind,
+  UploadUrlResult,
+} from '@/features/batch-scoring/types/batch-scoring.type';
 import type {
   CreatePublicBatchPayload,
   CreatePublicBatchResult,
@@ -54,8 +58,11 @@ async function publicRequest<T>(method: string, path: string, body?: unknown): P
   return (data as { data: T }).data;
 }
 
-export async function getPublicUploadUrls(files: UploadUrlFileRequest[]): Promise<UploadUrlResult[]> {
-  return publicRequest<UploadUrlResult[]>('POST', '/public/batches/upload-urls', { files });
+export async function getPublicUploadUrls(
+  kind: UploadUrlKind,
+  files: UploadUrlFileRequest[],
+): Promise<UploadUrlResult[]> {
+  return publicRequest<UploadUrlResult[]>('POST', '/public/batches/upload-urls', { kind, files });
 }
 
 export async function createPublicBatch(payload: CreatePublicBatchPayload): Promise<CreatePublicBatchResult> {

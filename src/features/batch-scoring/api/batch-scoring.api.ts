@@ -17,6 +17,7 @@ import type {
   ScoringBatchSummary,
   SkillGapSummary,
   UploadUrlFileRequest,
+  UploadUrlKind,
   UploadUrlResult,
 } from '@/features/batch-scoring/types/batch-scoring.type';
 
@@ -39,10 +40,13 @@ export async function computeFileChecksum(file: File): Promise<string> {
     .join('');
 }
 
-export async function getUploadUrls(files: UploadUrlFileRequest[]): Promise<UploadUrlResult[]> {
+export async function getUploadUrls(
+  kind: UploadUrlKind,
+  files: UploadUrlFileRequest[],
+): Promise<UploadUrlResult[]> {
   const response = await apiClient.post<ApiResponse<UploadUrlResult[]>>(
     apiEndpoints.scoringBatches.uploadUrls,
-    { files },
+    { kind, files },
   );
   return response.data;
 }

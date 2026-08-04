@@ -18,7 +18,7 @@ import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/config/routes.config';
 import { createScoringBatch, getUploadUrls } from '@/features/batch-scoring/api/batch-scoring.api';
-import type { CreateScoringBatchPayload } from '@/features/batch-scoring/types/batch-scoring.type';
+import type { CreateScoringBatchPayload, UploadUrlKind } from '@/features/batch-scoring/types/batch-scoring.type';
 import { uploadFilesForBatch } from '@/features/batch-scoring/utils/batch-file-upload.util';
 import {
   toJobDescriptionStructuredInput,
@@ -39,8 +39,8 @@ const STEPS = [
   { step: 3, label: 'Review & submit' },
 ];
 
-async function uploadFiles(files: File[]) {
-  return uploadFilesForBatch(files, getUploadUrls);
+async function uploadFiles(files: File[], kind: UploadUrlKind) {
+  return uploadFilesForBatch(files, kind, getUploadUrls);
 }
 
 export function CreateBatchWizard() {
@@ -103,7 +103,7 @@ export function CreateBatchWizard() {
 
       if (cvMode === 'upload') {
         setSubmitStage('Uploading resumes...');
-        payload.resumeFiles = await uploadFiles(cvFiles);
+        payload.resumeFiles = await uploadFiles(cvFiles, 'RESUME');
       } else if (cvMode === 'paste') {
         payload.resumeTexts = cvTexts
           .filter((t) => t.trim())
@@ -116,7 +116,7 @@ export function CreateBatchWizard() {
 
       if (jdMode === 'upload') {
         setSubmitStage('Uploading job descriptions...');
-        payload.jobDescriptionFiles = await uploadFiles(jdFiles);
+        payload.jobDescriptionFiles = await uploadFiles(jdFiles, 'JOB_DESCRIPTION');
       } else if (jdMode === 'paste') {
         payload.jobDescriptions = jdTexts
           .filter((t) => t.trim())

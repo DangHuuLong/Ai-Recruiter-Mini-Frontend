@@ -74,7 +74,7 @@ export default function PublicBatchCreationPage() {
 
       if (cvMode === 'upload') {
         setSubmitStage('Uploading resumes...');
-        payload.resumeFiles = await uploadFilesForBatch(cvFiles, getPublicUploadUrls);
+        payload.resumeFiles = await uploadFilesForBatch(cvFiles, 'RESUME', getPublicUploadUrls);
       } else if (cvMode === 'paste') {
         payload.resumeTexts = cvTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
       } else {
@@ -85,7 +85,7 @@ export default function PublicBatchCreationPage() {
 
       if (jdMode === 'upload') {
         setSubmitStage('Uploading job descriptions...');
-        payload.jobDescriptionFiles = await uploadFilesForBatch(jdFiles, getPublicUploadUrls);
+        payload.jobDescriptionFiles = await uploadFilesForBatch(jdFiles, 'JOB_DESCRIPTION', getPublicUploadUrls);
       } else if (jdMode === 'paste') {
         payload.jobDescriptions = jdTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
       } else {
