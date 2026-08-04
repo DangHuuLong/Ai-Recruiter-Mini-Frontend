@@ -37,4 +37,6 @@ export const ROUTES = {
   INTERVIEW_QUESTION_CREATE: '/interview-questions/new',
   INTERVIEW_QUESTIONS_BULK_CREATE: '/interview-questions/bulk-create',
   INTERVIEW_QUESTIONS_SEARCH_TEST: '/interview-questions/test-retrieval',
+
+  AI_ACTIVITY_LOG: '/ai-activity-log',
 } as const;
