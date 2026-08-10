@@ -1253,5 +1253,73 @@
       "startFailedTitle": "Không thể bắt đầu lô",
       "startFailedFallback": "Đã xảy ra lỗi."
     }
+  },
+  "evaluationConfigs": {
+    "list": {
+      "title": "Cấu hình đánh giá",
+      "subtitle": "Tùy chỉnh trọng số tiêu chí chấm điểm theo mô tả công việc hoặc cho toàn tổ chức.",
+      "newConfig": "Cấu hình mới",
+      "loadingTitle": "Đang tải các cấu hình đánh giá...",
+      "loadingDescription": "Vui lòng chờ trong khi các cấu hình đang được tải.",
+      "errorTitle": "Không thể tải các cấu hình đánh giá",
+      "errorFallback": "Không thể tải các cấu hình đánh giá",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Chưa có cấu hình đánh giá nào",
+      "emptyDescription": "Tạo cấu hình tiêu chí chấm điểm tùy chỉnh đầu tiên.",
+      "deleteSelected": "Xóa mục đã chọn",
+      "scopeOrganizationDefault": "Mặc định tổ chức",
+      "scopeJobDescriptionFallback": "Mô tả công việc",
+      "columns": {
+        "name": "Tên cấu hình",
+        "scope": "Phạm vi",
+        "default": "Mặc định",
+        "lastUpdated": "Cập nhật lần cuối",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      },
+      "deleteConfirmTitle": "Xóa cấu hình?",
+      "deleteConfirmDescription": "Hành động này sẽ xóa cấu hình đánh giá. Các đánh giá đã dùng cấu hình này vẫn giữ nguyên điểm số đã ghi nhận.",
+      "deleteConfirmAction": "Xóa cấu hình",
+      "bulkDeleteConfirmTitle": "{count, plural, one {Xóa # cấu hình?} other {Xóa # cấu hình?}}",
+      "bulkDeleteConfirmDescription": "Hành động này sẽ xóa các cấu hình đánh giá đã chọn. Các đánh giá đã dùng chúng vẫn giữ nguyên điểm số đã ghi nhận.",
+      "bulkDeleteConfirmAction": "Xóa mục đã chọn",
+      "deleteSuccessTitle": "Đã xóa cấu hình",
+      "deleteFailedTitle": "Không thể xóa cấu hình",
+      "deleteFailedFallback": "Đã xảy ra lỗi khi xóa cấu hình.",
+      "bulkDeleteSuccess": "{count, plural, one {Đã xóa thành công # cấu hình} other {Đã xóa thành công # cấu hình}}",
+      "bulkDeletePartial": "Đã xóa {succeeded}, thất bại {failed}",
+      "bulkDeleteFailedTitle": "Xóa hàng loạt thất bại",
+      "bulkDeleteFailedFallback": "Đã xảy ra lỗi khi xóa các cấu hình."
+    },
+    "form": {
+      "backToConfigs": "Về danh sách cấu hình",
+      "titleNew": "Cấu hình đánh giá mới",
+      "titleEdit": "Sửa cấu hình",
+      "subtitle": "Xác định mức độ ảnh hưởng của từng tiêu chí đến điểm khớp tổng thể.",
+      "nameLabel": "Tên cấu hình",
+      "descriptionLabel": "Mô tả (tùy chọn)",
+      "scopeLabel": "Phạm vi",
+      "scopeOrganizationDefault": "Mặc định tổ chức (tất cả mô tả công việc)",
+      "setDefaultLabel": "Đặt làm mặc định cho phạm vi này",
+      "criteriaWeightsTitle": "Trọng số tiêu chí",
+      "totalLabel": "Tổng: {percent}%",
+      "duplicateError": "Mỗi tiêu chí chỉ được sử dụng một lần.",
+      "weightError": "Tổng trọng số phải bằng 100% (hiện tại là {percent}%).",
+      "addCriterion": "Thêm tiêu chí",
+      "saveChanges": "Lưu thay đổi",
+      "createConfig": "Tạo cấu hình",
+      "saving": "Đang lưu...",
+      "loadingTitle": "Đang tải cấu hình...",
+      "loadingDescription": "Vui lòng chờ trong khi cấu hình đang được tải.",
+      "loadErrorFallback": "Không thể tải cấu hình",
+      "updateSuccessTitle": "Đã cập nhật cấu hình",
+      "createSuccessTitle": "Đã tạo cấu hình",
+      "updateFailedTitle": "Không thể cập nhật cấu hình",
+      "createFailedTitle": "Không thể tạo cấu hình",
+      "saveFailedFallback": "Đã xảy ra lỗi khi lưu."
+    }
   }
 }

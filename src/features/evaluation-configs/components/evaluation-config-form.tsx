@@ -4,6 +4,7 @@ import { ArrowLeftIcon, PlusIcon, XIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { LoadingState, showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -15,11 +16,11 @@ import {
   updateEvaluationConfig,
 } from '@/features/evaluation-configs/api/evaluation-config.api';
 import {
-  CRITERION_LABELS,
   CRITERION_OPTIONS,
   type CriterionDefinition,
   type CriterionName,
 } from '@/features/evaluation-configs/types/evaluation-config.type';
+import { CRITERION_LABEL_KEYS } from '@/features/batch-scoring/types/batch-scoring.type';
 import { getJobDescriptions } from '@/features/job-descriptions/api/job-description.api';
 import type { JobDescription } from '@/features/job-descriptions/types/job-description.type';
 import { cn } from '@/lib/utils/cn';
@@ -40,6 +41,8 @@ type EvaluationConfigFormProps = {
 
 export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
   const router = useRouter();
+  const t = useTranslations('evaluationConfigs.form');
+  const tCommon = useTranslations('common');
 
   const [isLoadingExisting, setIsLoadingExisting] = useState(Boolean(configId));
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -70,9 +73,10 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
         setCriteria(config.criteriaDefinition);
       })
       .catch((error) => {
-        setLoadError(error instanceof Error ? error.message : 'Failed to load the config');
+        setLoadError(error instanceof Error ? error.message : t('loadErrorFallback'));
       })
       .finally(() => setIsLoadingExisting(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configId]);
 
   const totalWeight = criteria.reduce((sum, item) => sum + item.weight, 0);
@@ -118,11 +122,11 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
         await createEvaluationConfig(payload);
       }
 
-      showToast.success(configId ? 'Config updated' : 'Config created', { description: name });
+      showToast.success(configId ? t('updateSuccessTitle') : t('createSuccessTitle'), { description: name });
       router.push(ROUTES.EVALUATION_CONFIGS);
     } catch (error) {
-      showToast.error(configId ? 'Failed to update config' : 'Failed to create config', {
-        description: error instanceof Error ? error.message : 'Something went wrong while saving.',
+      showToast.error(configId ? t('updateFailedTitle') : t('createFailedTitle'), {
+        description: error instanceof Error ? error.message : t('saveFailedFallback'),
       });
     } finally {
       setIsSubmitting(false);
@@ -130,7 +134,7 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
   };
 
   if (isLoadingExisting) {
-    return <LoadingState title="Loading config..." description="Please wait while the config is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (loadError) {
@@ -141,7 +145,7 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeftIcon className="size-4" />
-          Back to configs
+          {t('backToConfigs')}
         </Link>
         <p className="rounded-xl border border-error bg-error-container p-4 text-sm text-error">{loadError}</p>
       </div>
@@ -155,24 +159,22 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
       >
         <ArrowLeftIcon className="size-4" />
-        Back to configs
+        {t('backToConfigs')}
       </Link>
 
       <div>
         <h1 className="text-2xl font-bold text-on-surface">
-          {configId ? 'Edit config' : 'New evaluation config'}
+          {configId ? t('titleEdit') : t('titleNew')}
         </h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Define how much each criterion counts toward the overall match score.
-        </p>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <div className="space-y-5 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
-        <Input label="Config name" value={name} onChange={(e) => setName(e.target.value)} />
+        <Input label={t('nameLabel')} value={name} onChange={(e) => setName(e.target.value)} />
 
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Description (optional)
+            {t('descriptionLabel')}
           </label>
           <textarea
             value={description}
@@ -184,14 +186,14 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
 
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Scope
+            {t('scopeLabel')}
           </label>
           <select
             value={jobDescriptionId}
             onChange={(e) => setJobDescriptionId(e.target.value)}
             className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           >
-            <option value="">Organization default (all job descriptions)</option>
+            <option value="">{t('scopeOrganizationDefault')}</option>
             {jobDescriptions.map((jd) => (
               <option key={jd.id} value={jd.id}>
                 {jd.title}
@@ -207,12 +209,12 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
             onChange={(e) => setIsDefault(e.target.checked)}
             className="size-4 cursor-pointer rounded border-outline text-primary"
           />
-          Set as default for this scope
+          {t('setDefaultLabel')}
         </label>
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-on-surface">Criteria weights</h2>
+            <h2 className="text-sm font-bold text-on-surface">{t('criteriaWeightsTitle')}</h2>
             <span
               className={cn(
                 'rounded-full px-2.5 py-1 text-xs font-bold',
@@ -221,7 +223,7 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
                   : 'bg-error-container text-error',
               )}
             >
-              Total: {Math.round(totalWeight * 100)}%
+              {t('totalLabel', { percent: Math.round(totalWeight * 100) })}
             </span>
           </div>
 
@@ -237,7 +239,7 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
                 >
                   {CRITERION_OPTIONS.map((option) => (
                     <option key={option} value={option}>
-                      {CRITERION_LABELS[option]}
+                      {tCommon(`criterionLabels.${CRITERION_LABEL_KEYS[option]}`)}
                     </option>
                   ))}
                 </select>
@@ -263,12 +265,10 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
           </div>
 
           {duplicateCriteria ? (
-            <p className="mt-2 text-xs font-semibold text-error">
-              Each criterion can only be used once.
-            </p>
+            <p className="mt-2 text-xs font-semibold text-error">{t('duplicateError')}</p>
           ) : !isWeightValid ? (
             <p className="mt-2 text-xs font-semibold text-error">
-              Weights must add up to 100% (currently {Math.round(totalWeight * 100)}%).
+              {t('weightError', { percent: Math.round(totalWeight * 100) })}
             </p>
           ) : null}
 
@@ -279,14 +279,14 @@ export function EvaluationConfigForm({ configId }: EvaluationConfigFormProps) {
               className="mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-semibold text-primary transition-colors hover:bg-primary-container hover:text-on-primary-container hover:underline"
             >
               <PlusIcon className="size-4" />
-              Add criterion
+              {t('addCriterion')}
             </button>
           ) : null}
         </div>
       </div>
 
       <Button disabled={!isValid} isLoading={isSubmitting} onClick={() => void handleSubmit()}>
-        {isSubmitting ? 'Saving...' : configId ? 'Save changes' : 'Create config'}
+        {isSubmitting ? t('saving') : configId ? t('saveChanges') : t('createConfig')}
       </Button>
     </div>
   );

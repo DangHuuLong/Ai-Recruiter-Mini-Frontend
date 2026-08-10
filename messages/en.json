@@ -1253,5 +1253,73 @@
       "startFailedTitle": "Failed to start batch",
       "startFailedFallback": "Something went wrong."
     }
+  },
+  "evaluationConfigs": {
+    "list": {
+      "title": "Evaluation Configs",
+      "subtitle": "Custom scoring criteria weights for job descriptions or the whole organization.",
+      "newConfig": "New config",
+      "loadingTitle": "Loading evaluation configs...",
+      "loadingDescription": "Please wait while configs are being loaded.",
+      "errorTitle": "Failed to load evaluation configs",
+      "errorFallback": "Failed to load evaluation configs",
+      "tryAgain": "Try again",
+      "emptyTitle": "No evaluation configs found",
+      "emptyDescription": "Create the first custom scoring criteria config.",
+      "deleteSelected": "Delete selected",
+      "scopeOrganizationDefault": "Organization default",
+      "scopeJobDescriptionFallback": "Job description",
+      "columns": {
+        "name": "Config name",
+        "scope": "Scope",
+        "default": "Default",
+        "lastUpdated": "Last updated",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "deleteConfirmTitle": "Delete config?",
+      "deleteConfirmDescription": "This action removes the evaluation config. Existing evaluations that used it keep their recorded scores.",
+      "deleteConfirmAction": "Delete config",
+      "bulkDeleteConfirmTitle": "{count, plural, one {Delete # config?} other {Delete # configs?}}",
+      "bulkDeleteConfirmDescription": "This action removes the selected evaluation configs. Existing evaluations that used them keep their recorded scores.",
+      "bulkDeleteConfirmAction": "Delete selected",
+      "deleteSuccessTitle": "Config deleted",
+      "deleteFailedTitle": "Failed to delete config",
+      "deleteFailedFallback": "Something went wrong while deleting the config.",
+      "bulkDeleteSuccess": "{count, plural, one {# config deleted successfully} other {# configs deleted successfully}}",
+      "bulkDeletePartial": "{succeeded} deleted, {failed} failed",
+      "bulkDeleteFailedTitle": "Bulk delete failed",
+      "bulkDeleteFailedFallback": "Something went wrong while deleting configs."
+    },
+    "form": {
+      "backToConfigs": "Back to configs",
+      "titleNew": "New evaluation config",
+      "titleEdit": "Edit config",
+      "subtitle": "Define how much each criterion counts toward the overall match score.",
+      "nameLabel": "Config name",
+      "descriptionLabel": "Description (optional)",
+      "scopeLabel": "Scope",
+      "scopeOrganizationDefault": "Organization default (all job descriptions)",
+      "setDefaultLabel": "Set as default for this scope",
+      "criteriaWeightsTitle": "Criteria weights",
+      "totalLabel": "Total: {percent}%",
+      "duplicateError": "Each criterion can only be used once.",
+      "weightError": "Weights must add up to 100% (currently {percent}%).",
+      "addCriterion": "Add criterion",
+      "saveChanges": "Save changes",
+      "createConfig": "Create config",
+      "saving": "Saving...",
+      "loadingTitle": "Loading config...",
+      "loadingDescription": "Please wait while the config is being loaded.",
+      "loadErrorFallback": "Failed to load the config",
+      "updateSuccessTitle": "Config updated",
+      "createSuccessTitle": "Config created",
+      "updateFailedTitle": "Failed to update config",
+      "createFailedTitle": "Failed to create config",
+      "saveFailedFallback": "Something went wrong while saving."
+    }
   }
 }
