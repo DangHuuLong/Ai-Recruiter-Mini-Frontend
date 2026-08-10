@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 import { ROUTES } from '@/config/routes.config';
 
@@ -16,6 +17,8 @@ export function AuthBrandPanel({
   description,
   backgroundImageSrc,
 }: AuthBrandPanelProps) {
+  const t = useTranslations('auth.brandPanel');
+
   return (
     <section className="relative hidden h-full flex-1 flex-col justify-between overflow-hidden bg-[#0F172A] px-12 py-10 text-white lg:flex">
       <Image
@@ -44,7 +47,7 @@ export function AuthBrandPanel({
       </div>
 
       <p className="relative z-10 text-xs text-slate-400">
-        © {new Date().getFullYear()} AI Recruiter. Cognitive Talent System.
+        {t('copyright', { year: new Date().getFullYear() })}
       </p>
     </section>
   );

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState } from '@/components/feedback';
 import { getDefaultRouteForRole } from '@/config/route-access.config';
@@ -11,14 +12,15 @@ type AccessDeniedProps = {
 };
 
 export function AccessDenied({ role }: AccessDeniedProps) {
+  const t = useTranslations('auth.accessDenied');
   const homeHref = role ? getDefaultRouteForRole(role) : ROUTES.DASHBOARD;
-  const homeLabel = role === 'DEV' ? 'Back to Interview Question Bank' : 'Back to Dashboard';
+  const homeLabel = role === 'DEV' ? t('backToInterviewQuestions') : t('backToDashboard');
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4">
       <EmptyState
-        title="Access denied"
-        description="Your account role doesn't have permission to view this page."
+        title={t('title')}
+        description={t('description')}
         icon={
           <span className="relative flex size-11 shrink-0 items-center justify-center">
             <Image src="/images/logo.svg" alt="" fill className="object-contain" />

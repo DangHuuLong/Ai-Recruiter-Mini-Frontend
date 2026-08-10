@@ -55,5 +55,122 @@
       "admin": "Quản trị",
       "devTools": "Công cụ nội bộ"
     }
+  },
+  "auth": {
+    "footer": {
+      "copyright": "© {year} AI Recruiter. Đã đăng ký bản quyền.",
+      "privacy": "Quyền riêng tư",
+      "terms": "Điều khoản",
+      "help": "Trợ giúp"
+    },
+    "brandPanel": {
+      "copyright": "© {year} AI Recruiter. Hệ thống tuyển dụng thông minh.",
+      "login": {
+        "eyebrow": "Tuyển dụng thông minh hơn",
+        "headline": "Chào mừng trở lại với AI Recruiter.",
+        "description": "Kết nối với nhân tài hàng đầu bằng công cụ AI matching của chúng tôi. Theo dõi ứng viên, hồ sơ CV, mô tả công việc, đơn ứng tuyển và chấm điểm trong cùng một không gian làm việc."
+      },
+      "register": {
+        "eyebrow": "Bắt đầu",
+        "headline": "Lớp thông minh cho đội ngũ tuyển dụng của bạn.",
+        "description": "Chấm điểm ứng viên, dự đoán độ phù hợp và tự động hoá sàng lọc số lượng lớn với không gian làm việc AI tuyển dụng của riêng bạn."
+      }
+    },
+    "userMenu": {
+      "logout": "Đăng xuất"
+    },
+    "guard": {
+      "checkingSession": "Đang kiểm tra phiên đăng nhập..."
+    },
+    "accessDenied": {
+      "title": "Không có quyền truy cập",
+      "description": "Vai trò tài khoản của bạn không có quyền xem trang này.",
+      "backToDashboard": "Về Bảng điều khiển",
+      "backToInterviewQuestions": "Về Ngân hàng câu hỏi phỏng vấn"
+    },
+    "login": {
+      "eyebrow": "Chào mừng trở lại",
+      "title": "Đăng nhập",
+      "subtitle": "Truy cập bảng điều khiển tuyển dụng của tổ chức bạn.",
+      "unverifiedEmailWarning": "Email của bạn chưa được xác thực.",
+      "resendLink": "Gửi lại email xác thực",
+      "emailLabel": "Địa chỉ email",
+      "passwordLabel": "Mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu",
+      "submit": "Đăng nhập",
+      "submitting": "Đang đăng nhập...",
+      "noAccount": "Chưa có tài khoản?",
+      "createOrg": "Tạo tổ chức mới",
+      "successToast": "Đăng nhập thành công",
+      "errorFallback": "Không thể đăng nhập. Vui lòng thử lại."
+    },
+    "register": {
+      "eyebrow": "Bắt đầu",
+      "title": "Đăng ký tổ chức của bạn",
+      "subtitle": "Bắt đầu xây dựng quy trình tuyển dụng thông minh ngay hôm nay.",
+      "orgNameLabel": "Tên tổ chức",
+      "adminNameLabel": "Họ tên quản trị viên",
+      "adminEmailLabel": "Email quản trị viên",
+      "adminPasswordLabel": "Mật khẩu quản trị viên",
+      "adminPasswordHint": "Mật khẩu phải có tối thiểu 8 ký tự",
+      "submit": "Tạo tổ chức",
+      "submitting": "Đang tạo tổ chức...",
+      "alreadyHaveAccount": "Đã có tài khoản?",
+      "login": "Đăng nhập",
+      "checkEmailTitle": "Kiểm tra email của bạn",
+      "checkEmailBody": "Chúng tôi đã gửi liên kết xác thực đến <b>{email}</b>. Vui lòng kiểm tra hộp thư để hoàn tất đăng ký.",
+      "resendLink": "Chưa nhận được email? Gửi lại",
+      "errorFallback": "Không thể tạo tổ chức. Vui lòng thử lại."
+    },
+    "forgotPassword": {
+      "title": "Quên mật khẩu?",
+      "subtitle": "Nhập email của bạn, chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.",
+      "emailLabel": "Địa chỉ email",
+      "submit": "Gửi liên kết đặt lại",
+      "submitting": "Đang gửi...",
+      "backToLogin": "Quay lại đăng nhập",
+      "sentTitle": "Kiểm tra email của bạn",
+      "sentBody": "Nếu tài khoản với email này tồn tại, chúng tôi đã gửi hướng dẫn đặt lại mật khẩu.",
+      "errorFallback": "Không thể gửi email. Vui lòng thử lại."
+    },
+    "resendVerification": {
+      "title": "Gửi lại email xác thực",
+      "subtitle": "Nhập email tài khoản của bạn để nhận liên kết xác thực mới.",
+      "emailLabel": "Địa chỉ email",
+      "submit": "Gửi liên kết",
+      "submitting": "Đang gửi...",
+      "backToLogin": "Quay lại đăng nhập",
+      "sentNotice": "Nếu tài khoản với email này tồn tại và chưa được xác thực, chúng tôi đã gửi một liên kết mới.",
+      "errorFallback": "Không thể gửi email. Vui lòng thử lại."
+    },
+    "resetPassword": {
+      "title": "Đặt lại mật khẩu",
+      "subtitle": "Nhập mật khẩu mới cho tài khoản của bạn.",
+      "newPasswordLabel": "Mật khẩu mới",
+      "newPasswordHint": "Tối thiểu 8 ký tự",
+      "confirmPasswordLabel": "Xác nhận mật khẩu",
+      "submit": "Cập nhật mật khẩu",
+      "submitting": "Đang cập nhật...",
+      "doneTitle": "Đã cập nhật mật khẩu",
+      "doneBody": "Bạn có thể đăng nhập bằng mật khẩu mới ngay bây giờ.",
+      "returnToLogin": "Quay lại đăng nhập",
+      "invalidTitle": "Liên kết không hợp lệ",
+      "invalidBody": "Liên kết đặt lại mật khẩu này không hợp lệ hoặc đã hết hạn.",
+      "requestNewLink": "Yêu cầu liên kết mới",
+      "errorFallback": "Không thể đặt lại mật khẩu. Vui lòng thử lại."
+    },
+    "verifyEmail": {
+      "verifyingTitle": "Đang xác thực email của bạn...",
+      "verifyingBody": "Vui lòng chờ trong giây lát.",
+      "successTitle": "Xác thực email thành công!",
+      "successBody": "Tài khoản của bạn đã sẵn sàng để sử dụng.",
+      "goToDashboard": "Đến Bảng điều khiển",
+      "failedTitle": "Xác thực thất bại",
+      "invalidLink": "Liên kết xác thực này không hợp lệ.",
+      "expiredFallback": "Liên kết này đã hết hạn hoặc đã được sử dụng.",
+      "requestNewLink": "Yêu cầu liên kết mới"
+    }
   }
 }

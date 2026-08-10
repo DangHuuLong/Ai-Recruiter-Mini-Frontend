@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleCheckIcon, LockIcon, TriangleAlertIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { useRouter } from '@/i18n/navigation';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ import {
 import { ApiError } from '@/lib/api/api-error';
 
 export function ResetPasswordForm() {
+  const t = useTranslations('auth.resetPassword');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -43,7 +45,7 @@ export function ResetPasswordForm() {
       await resetPassword({ token, newPassword: values.newPassword });
       setIsDone(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Unable to reset password. Please try again.';
+      const message = error instanceof ApiError ? error.message : t('errorFallback');
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -56,12 +58,10 @@ export function ResetPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <CircleCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Password updated</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          You can now log in using your new password.
-        </p>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">{t('doneTitle')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('doneBody')}</p>
         <Button className="mt-6" onClick={() => router.replace(ROUTES.LOGIN)}>
-          Return to login
+          {t('returnToLogin')}
         </Button>
       </div>
     );
@@ -73,12 +73,10 @@ export function ResetPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-error-container">
           <TriangleAlertIcon className="size-7 text-error" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Invalid link</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          This password reset link is invalid or has expired.
-        </p>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">{t('invalidTitle')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('invalidBody')}</p>
         <Button className="mt-6" onClick={() => router.push(ROUTES.FORGOT_PASSWORD)}>
-          Request a new link
+          {t('requestNewLink')}
         </Button>
       </div>
     );
@@ -87,20 +85,18 @@ export function ResetPasswordForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Reset your password</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Enter a new password for your account.
-        </p>
+        <h2 className="text-xl font-bold text-on-surface">{t('title')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           id="newPassword"
           type="password"
-          label="New password"
+          label={t('newPasswordLabel')}
           autoComplete="new-password"
           placeholder="••••••••"
-          hint="Minimum 8 characters"
+          hint={t('newPasswordHint')}
           icon={<LockIcon className="size-4.5" />}
           error={errors.newPassword?.message}
           {...register('newPassword')}
@@ -109,16 +105,16 @@ export function ResetPasswordForm() {
         <Input
           id="confirmPassword"
           type="password"
-          label="Confirm password"
+          label={t('confirmPasswordLabel')}
           autoComplete="new-password"
-          placeholder="Re-enter your new password"
+          placeholder="••••••••"
           icon={<LockIcon className="size-4.5" />}
           error={errors.confirmPassword?.message}
           {...register('confirmPassword')}
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Updating...' : 'Update password'}
+          {isSubmitting ? t('submitting') : t('submit')}
         </Button>
       </form>
     </div>

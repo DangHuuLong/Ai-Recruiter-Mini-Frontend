@@ -55,5 +55,122 @@
       "admin": "Admin",
       "devTools": "Dev Tools"
     }
+  },
+  "auth": {
+    "footer": {
+      "copyright": "© {year} AI Recruiter. All rights reserved.",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "help": "Help"
+    },
+    "brandPanel": {
+      "copyright": "© {year} AI Recruiter. Cognitive Talent System.",
+      "login": {
+        "eyebrow": "Recruit smarter",
+        "headline": "Welcome back to AI Recruiter.",
+        "description": "Connect with top talent using our AI matching engine. Track candidates, resumes, job descriptions, applications and scoring in one workspace."
+      },
+      "register": {
+        "eyebrow": "Get started",
+        "headline": "The intelligent layer for your hiring team.",
+        "description": "Score candidates, predict fit, and automate high-volume screening with your own AI recruitment workspace."
+      }
+    },
+    "userMenu": {
+      "logout": "Log out"
+    },
+    "guard": {
+      "checkingSession": "Checking your session..."
+    },
+    "accessDenied": {
+      "title": "Access denied",
+      "description": "Your account role doesn't have permission to view this page.",
+      "backToDashboard": "Back to Dashboard",
+      "backToInterviewQuestions": "Back to Interview Question Bank"
+    },
+    "login": {
+      "eyebrow": "Welcome back",
+      "title": "Log in",
+      "subtitle": "Access your organization's recruitment dashboard.",
+      "unverifiedEmailWarning": "Your email is not verified yet.",
+      "resendLink": "Resend verification email",
+      "emailLabel": "Email address",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "New here?",
+      "createOrg": "Create an organization",
+      "successToast": "Logged in successfully",
+      "errorFallback": "Unable to log in. Please try again."
+    },
+    "register": {
+      "eyebrow": "Get started",
+      "title": "Register your organization",
+      "subtitle": "Start building your intelligent talent pipeline today.",
+      "orgNameLabel": "Organization name",
+      "adminNameLabel": "Admin full name",
+      "adminEmailLabel": "Admin email",
+      "adminPasswordLabel": "Admin password",
+      "adminPasswordHint": "Password must be 8+ characters",
+      "submit": "Create organization",
+      "submitting": "Creating organization...",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Log in",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "We've sent a verification link to <b>{email}</b>. Please check your inbox to complete your registration.",
+      "resendLink": "Didn't get the email? Resend it",
+      "errorFallback": "Unable to create organization. Please try again."
+    },
+    "forgotPassword": {
+      "title": "Forgot password?",
+      "subtitle": "Enter your email and we'll send you a link to reset your password.",
+      "emailLabel": "Email address",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to login",
+      "sentTitle": "Check your email",
+      "sentBody": "If an account with this email exists, we've sent instructions to reset your password.",
+      "errorFallback": "Unable to send email. Please try again."
+    },
+    "resendVerification": {
+      "title": "Resend verification email",
+      "subtitle": "Enter your account email to receive a new verification link.",
+      "emailLabel": "Email address",
+      "submit": "Send link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to login",
+      "sentNotice": "If an account with this email exists and isn't verified yet, we've sent a new link.",
+      "errorFallback": "Unable to send email. Please try again."
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter a new password for your account.",
+      "newPasswordLabel": "New password",
+      "newPasswordHint": "Minimum 8 characters",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Update password",
+      "submitting": "Updating...",
+      "doneTitle": "Password updated",
+      "doneBody": "You can now log in using your new password.",
+      "returnToLogin": "Return to login",
+      "invalidTitle": "Invalid link",
+      "invalidBody": "This password reset link is invalid or has expired.",
+      "requestNewLink": "Request a new link",
+      "errorFallback": "Unable to reset password. Please try again."
+    },
+    "verifyEmail": {
+      "verifyingTitle": "Verifying your email...",
+      "verifyingBody": "Please wait a moment.",
+      "successTitle": "Email verified!",
+      "successBody": "Your account is ready to use.",
+      "goToDashboard": "Go to dashboard",
+      "failedTitle": "Verification failed",
+      "invalidLink": "This verification link is invalid.",
+      "expiredFallback": "This link has expired or already been used.",
+      "requestNewLink": "Request a new link"
+    }
   }
 }

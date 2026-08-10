@@ -2,6 +2,7 @@
 
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 import { ROUTES } from '@/config/routes.config';
 import { useAuthStore } from '@/features/auth/store/auth.store';
@@ -20,6 +21,7 @@ const getInitials = (fullName?: string) => {
 };
 
 export function UserMenu() {
+  const t = useTranslations('auth.userMenu');
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const clearSession = useAuthStore((state) => state.clearSession);
@@ -54,7 +56,7 @@ export function UserMenu() {
         onClick={handleLogout}
         className="rounded-lg border border-outline px-3 py-2 text-sm font-semibold text-on-surface-variant transition hover:bg-surface-variant hover:text-on-surface"
       >
-        Log out
+        {t('logout')}
       </button>
     </div>
   );

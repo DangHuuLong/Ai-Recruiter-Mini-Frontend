@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import {
 import { ApiError } from '@/lib/api/api-error';
 
 export function ResendVerificationForm() {
+  const t = useTranslations('auth.resendVerification');
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -38,7 +40,7 @@ export function ResendVerificationForm() {
       await resendVerification(values);
       setIsSent(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Unable to send email. Please try again.';
+      const message = error instanceof ApiError ? error.message : t('errorFallback');
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -48,17 +50,15 @@ export function ResendVerificationForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Resend verification email</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Enter your account email to receive a new verification link.
-        </p>
+        <h2 className="text-xl font-bold text-on-surface">{t('title')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           id="email"
           type="email"
-          label="Email address"
+          label={t('emailLabel')}
           autoComplete="email"
           placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
@@ -67,13 +67,13 @@ export function ResendVerificationForm() {
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Sending...' : 'Send link'}
+          {isSubmitting ? t('submitting') : t('submit')}
         </Button>
       </form>
 
       {isSent ? (
         <div className="mt-5 rounded-lg border border-info bg-surface-variant p-3.5 text-sm text-on-surface-variant">
-          If an account with this email exists and isn&apos;t verified yet, we&apos;ve sent a new link.
+          {t('sentNotice')}
         </div>
       ) : null}
 
@@ -83,7 +83,7 @@ export function ResendVerificationForm() {
           className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
         >
           <ChevronLeftIcon className="size-4" />
-          Back to login
+          {t('backToLogin')}
         </Link>
       </p>
     </div>
