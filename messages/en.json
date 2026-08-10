@@ -939,5 +939,115 @@
       "failedTitle": "Failed to update application status",
       "failedFallback": "Failed to update application status"
     }
+  },
+  "evaluations": {
+    "pageTitle": "Evaluations",
+    "pageDescription": "Review AI-generated scoring results for candidate applications, or start a new evaluation.",
+    "newEvaluation": "New evaluation",
+    "backToList": "← Back to evaluations",
+    "backToEvaluations": "Back to evaluations",
+    "totalEvaluations": "Total evaluations",
+    "notAvailable": "Not available",
+    "notRecorded": "Not recorded",
+    "statusOptions": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "columns": {
+      "candidate": "Candidate",
+      "jobDescription": "Job description",
+      "status": "Status",
+      "overallScore": "Overall score",
+      "created": "Created",
+      "action": "Action"
+    },
+    "actions": {
+      "view": "View"
+    },
+    "pagination": {
+      "pageInfo": "Page <b>{page}</b> of <b>{totalPages}</b> · <b>{total}</b> total",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "list": {
+      "loadingTitle": "Loading evaluations...",
+      "loadingDescription": "Please wait while evaluations are being loaded.",
+      "errorTitle": "Failed to load evaluations",
+      "errorFallback": "Failed to load evaluations",
+      "tryAgain": "Try again",
+      "emptyTitle": "No evaluations found",
+      "emptyDescription": "Create an evaluation from an application, or adjust your filter.",
+      "goToApplications": "Go to Applications"
+    },
+    "form": {
+      "applicationLabel": "Application",
+      "selectApplication": "Select an application",
+      "noApplications": "No applications available. Create an application first.",
+      "selectedApplication": "Selected application",
+      "asyncNoteTitle": "Scoring runs asynchronously",
+      "asyncNoteBody": "— you'll be redirected to the evaluation detail page once the job is queued, and results will appear as soon as the pipeline finishes.",
+      "cancel": "Cancel",
+      "create": "Create evaluation",
+      "creating": "Creating...",
+      "loadingTitle": "Loading applications...",
+      "loadingDescription": "Please wait while applications are being loaded.",
+      "errorFallback": "Failed to load applications",
+      "unableToLoadTitle": "Unable to load applications",
+      "selectApplicationWarning": "Please select an application",
+      "createSuccessTitle": "Evaluation created successfully",
+      "createFailedTitle": "Failed to create evaluation",
+      "createFailedFallback": "Failed to create evaluation"
+    },
+    "newPage": {
+      "title": "New evaluation",
+      "description": "Select an application to run the AI scoring pipeline against."
+    },
+    "detail": {
+      "loadingTitle": "Loading evaluation result...",
+      "loadingDescription": "Please wait while the evaluation result is being loaded.",
+      "notFoundTitle": "Evaluation not found",
+      "notFoundFallback": "Unable to load this evaluation.",
+      "errorTitle": "Failed to load evaluation",
+      "resultLabel": "Evaluation result",
+      "candidateFallback": "Candidate evaluation",
+      "jobDescriptionFallback": "Job description",
+      "statusLabel": "Status",
+      "started": "Started {date}",
+      "completed": "Completed {date}",
+      "viewApplication": "View application",
+      "retrying": "Retrying...",
+      "retryEvaluation": "Retry evaluation",
+      "retrySuccess": "Evaluation retried successfully",
+      "retryFailedTitle": "Failed to retry evaluation",
+      "retryFailedFallback": "Failed to retry evaluation",
+      "summary": "Summary",
+      "noSummary": "No summary available.",
+      "skillGapSummary": "Skill gap summary",
+      "noSkillGapSummary": "No skill gap summary available.",
+      "explanation": "Explanation",
+      "noExplanation": "No explanation available.",
+      "scoreBreakdown": "Score breakdown",
+      "scoreBreakdownDescription": "Per-criterion normalized score, weight, contribution, reason, and evidence.",
+      "noScoreBreakdown": "No score breakdown available.",
+      "weightContribution": "Weight {weight}% · Contribution {contribution}",
+      "matchedSkills": "Matched skills",
+      "found": "{count} found",
+      "noMatchedSkills": "No matched skills available.",
+      "missingSkills": "Missing skills",
+      "absent": "{count} absent",
+      "noMissingSkills": "No missing skills available.",
+      "relatedSkills": "Related skills",
+      "related": "{count} related",
+      "noRelatedSkills": "No related skills available.",
+      "evidence": "Evidence",
+      "evidenceDescription": "Raw evidence map returned by the scoring pipeline.",
+      "exportJson": "Export JSON",
+      "interviewQuestions": "Interview questions",
+      "noInterviewQuestions": "No interview questions generated.",
+      "questionNumber": "Question {number}",
+      "noScoreBreakdownShort": "No score breakdown available."
+    }
   }
 }

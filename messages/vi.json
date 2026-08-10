@@ -939,5 +939,115 @@
       "failedTitle": "Không thể cập nhật trạng thái đơn ứng tuyển",
       "failedFallback": "Không thể cập nhật trạng thái đơn ứng tuyển"
     }
+  },
+  "evaluations": {
+    "pageTitle": "Đánh giá",
+    "pageDescription": "Xem kết quả chấm điểm do AI tạo cho các đơn ứng tuyển, hoặc bắt đầu một đánh giá mới.",
+    "newEvaluation": "Đánh giá mới",
+    "backToList": "← Về danh sách đánh giá",
+    "backToEvaluations": "Về danh sách đánh giá",
+    "totalEvaluations": "Tổng số đánh giá",
+    "notAvailable": "Không có sẵn",
+    "notRecorded": "Chưa ghi nhận",
+    "statusOptions": {
+      "pending": "Đang chờ",
+      "processing": "Đang xử lý",
+      "completed": "Hoàn thành",
+      "failed": "Thất bại"
+    },
+    "columns": {
+      "candidate": "Ứng viên",
+      "jobDescription": "Mô tả công việc",
+      "status": "Trạng thái",
+      "overallScore": "Điểm tổng",
+      "created": "Ngày tạo",
+      "action": "Thao tác"
+    },
+    "actions": {
+      "view": "Xem"
+    },
+    "pagination": {
+      "pageInfo": "Trang <b>{page}</b> / <b>{totalPages}</b> · <b>{total}</b> kết quả",
+      "previous": "Trước",
+      "next": "Sau"
+    },
+    "list": {
+      "loadingTitle": "Đang tải đánh giá...",
+      "loadingDescription": "Vui lòng chờ trong khi các đánh giá đang được tải.",
+      "errorTitle": "Không thể tải đánh giá",
+      "errorFallback": "Không thể tải đánh giá",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Không tìm thấy đánh giá",
+      "emptyDescription": "Tạo một đánh giá từ đơn ứng tuyển, hoặc điều chỉnh bộ lọc.",
+      "goToApplications": "Đến Đơn ứng tuyển"
+    },
+    "form": {
+      "applicationLabel": "Đơn ứng tuyển",
+      "selectApplication": "Chọn một đơn ứng tuyển",
+      "noApplications": "Không có đơn ứng tuyển nào. Hãy tạo một đơn ứng tuyển trước.",
+      "selectedApplication": "Đơn ứng tuyển đã chọn",
+      "asyncNoteTitle": "Chấm điểm chạy bất đồng bộ",
+      "asyncNoteBody": "— bạn sẽ được chuyển tới trang chi tiết đánh giá ngay khi công việc được xếp hàng, và kết quả sẽ hiển thị ngay khi quy trình hoàn tất.",
+      "cancel": "Hủy",
+      "create": "Tạo đánh giá",
+      "creating": "Đang tạo...",
+      "loadingTitle": "Đang tải đơn ứng tuyển...",
+      "loadingDescription": "Vui lòng chờ trong khi đơn ứng tuyển đang được tải.",
+      "errorFallback": "Không thể tải đơn ứng tuyển",
+      "unableToLoadTitle": "Không thể tải đơn ứng tuyển",
+      "selectApplicationWarning": "Vui lòng chọn một đơn ứng tuyển",
+      "createSuccessTitle": "Tạo đánh giá thành công",
+      "createFailedTitle": "Không thể tạo đánh giá",
+      "createFailedFallback": "Không thể tạo đánh giá"
+    },
+    "newPage": {
+      "title": "Đánh giá mới",
+      "description": "Chọn một đơn ứng tuyển để chạy quy trình chấm điểm AI."
+    },
+    "detail": {
+      "loadingTitle": "Đang tải kết quả đánh giá...",
+      "loadingDescription": "Vui lòng chờ trong khi kết quả đánh giá đang được tải.",
+      "notFoundTitle": "Không tìm thấy đánh giá",
+      "notFoundFallback": "Không thể tải đánh giá này.",
+      "errorTitle": "Không thể tải đánh giá",
+      "resultLabel": "Kết quả đánh giá",
+      "candidateFallback": "Đánh giá ứng viên",
+      "jobDescriptionFallback": "Mô tả công việc",
+      "statusLabel": "Trạng thái",
+      "started": "Bắt đầu {date}",
+      "completed": "Hoàn thành {date}",
+      "viewApplication": "Xem đơn ứng tuyển",
+      "retrying": "Đang thử lại...",
+      "retryEvaluation": "Thử lại đánh giá",
+      "retrySuccess": "Thử lại đánh giá thành công",
+      "retryFailedTitle": "Không thể thử lại đánh giá",
+      "retryFailedFallback": "Không thể thử lại đánh giá",
+      "summary": "Tóm tắt",
+      "noSummary": "Không có tóm tắt.",
+      "skillGapSummary": "Tóm tắt thiếu hụt kỹ năng",
+      "noSkillGapSummary": "Không có tóm tắt thiếu hụt kỹ năng.",
+      "explanation": "Giải thích",
+      "noExplanation": "Không có giải thích.",
+      "scoreBreakdown": "Chi tiết điểm",
+      "scoreBreakdownDescription": "Điểm chuẩn hóa, trọng số, đóng góp, lý do và bằng chứng theo từng tiêu chí.",
+      "noScoreBreakdown": "Không có chi tiết điểm.",
+      "weightContribution": "Trọng số {weight}% · Đóng góp {contribution}",
+      "matchedSkills": "Kỹ năng khớp",
+      "found": "{count} tìm thấy",
+      "noMatchedSkills": "Không có kỹ năng khớp.",
+      "missingSkills": "Kỹ năng thiếu",
+      "absent": "{count} thiếu",
+      "noMissingSkills": "Không có kỹ năng thiếu.",
+      "relatedSkills": "Kỹ năng liên quan",
+      "related": "{count} liên quan",
+      "noRelatedSkills": "Không có kỹ năng liên quan.",
+      "evidence": "Bằng chứng",
+      "evidenceDescription": "Bản đồ bằng chứng thô do quy trình chấm điểm trả về.",
+      "exportJson": "Xuất JSON",
+      "interviewQuestions": "Câu hỏi phỏng vấn",
+      "noInterviewQuestions": "Chưa có câu hỏi phỏng vấn nào được tạo.",
+      "questionNumber": "Câu hỏi {number}",
+      "noScoreBreakdownShort": "Không có chi tiết điểm."
+    }
   }
 }
