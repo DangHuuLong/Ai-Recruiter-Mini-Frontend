@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import { Input } from '@/components/ui/input';
 import { DynamicListSection } from '@/components/batch-input/dynamic-list-section';
 import { LineListField } from '@/components/batch-input/line-list-field';
@@ -18,57 +20,59 @@ type CvStructuredFormProps = {
 };
 
 export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
+  const t = useTranslations('common.batchInput.cvForm');
+
   return (
     <div className="mt-4 space-y-6">
       <Input
-        label="Label (optional)"
-        placeholder="e.g., Candidate A"
+        label={t('labelOptional')}
+        placeholder={t('labelPlaceholder')}
         value={value.label}
         onChange={(e) => onChange({ ...value, label: e.target.value })}
       />
 
       <div>
-        <h3 className="text-sm font-bold text-on-surface">Personal info</h3>
+        <h3 className="text-sm font-bold text-on-surface">{t('personalInfo')}</h3>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <Input
-            label="Full name"
-            placeholder="Jane Doe"
+            label={t('fullName')}
+            placeholder={t('fullNamePlaceholder')}
             value={value.personal.fullName}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, fullName: e.target.value } })}
           />
           <Input
-            label="Email"
+            label={t('email')}
             type="email"
-            placeholder="jane@example.com"
+            placeholder={t('emailPlaceholder')}
             value={value.personal.email}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, email: e.target.value } })}
           />
           <Input
-            label="Phone"
-            placeholder="+1 555 000 1234"
+            label={t('phone')}
+            placeholder={t('phonePlaceholder')}
             value={value.personal.phone}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, phone: e.target.value } })}
           />
           <Input
-            label="Location"
-            placeholder="San Francisco, CA"
+            label={t('location')}
+            placeholder={t('locationPlaceholder')}
             value={value.personal.location}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, location: e.target.value } })}
           />
           <Input
-            label="LinkedIn URL"
+            label={t('linkedinUrl')}
             placeholder="https://linkedin.com/in/..."
             value={value.personal.linkedinUrl}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, linkedinUrl: e.target.value } })}
           />
           <Input
-            label="GitHub URL"
+            label={t('githubUrl')}
             placeholder="https://github.com/..."
             value={value.personal.githubUrl}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, githubUrl: e.target.value } })}
           />
           <Input
-            label="Portfolio URL"
+            label={t('portfolioUrl')}
             placeholder="https://..."
             value={value.personal.portfolioUrl}
             onChange={(e) => onChange({ ...value, personal: { ...value.personal, portfolioUrl: e.target.value } })}
@@ -78,27 +82,27 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
 
       <div>
         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-          Summary
+          {t('summary')}
         </label>
         <textarea
           value={value.summary}
           onChange={(e) => onChange({ ...value, summary: e.target.value })}
           rows={3}
-          placeholder="Short professional summary..."
+          placeholder={t('summaryPlaceholder')}
           className="w-full rounded-lg border border-outline bg-surface-lowest p-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
         />
       </div>
 
       <DynamicListSection
-        title="Skills"
+        title={t('skills')}
         items={value.skills}
-        addLabel="Add skill"
+        addLabel={t('addSkill')}
         onAdd={() => onChange({ ...value, skills: [...value.skills, { ...EMPTY_RESUME_SKILL }] })}
         onRemove={(index) => onChange({ ...value, skills: value.skills.filter((_, i) => i !== index) })}
         renderFields={(item, index) => (
           <>
             <Input
-              label="Name"
+              label={t('name')}
               value={item.name}
               onChange={(e) =>
                 onChange({
@@ -108,7 +112,7 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
               }
             />
             <Input
-              label="Category"
+              label={t('category')}
               value={item.category}
               onChange={(e) =>
                 onChange({
@@ -118,8 +122,8 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
               }
             />
             <Input
-              label="Level"
-              placeholder="Beginner / Intermediate / Expert"
+              label={t('level')}
+              placeholder={t('levelPlaceholder')}
               value={item.level}
               onChange={(e) =>
                 onChange({
@@ -130,7 +134,7 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             />
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                Evidence
+                {t('evidence')}
               </label>
               <textarea
                 value={item.evidence}
@@ -149,9 +153,9 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
       />
 
       <DynamicListSection
-        title="Education"
+        title={t('education')}
         items={value.education}
-        addLabel="Add education"
+        addLabel={t('addEducation')}
         onAdd={() => onChange({ ...value, education: [...value.education, { ...EMPTY_RESUME_EDUCATION }] })}
         onRemove={(index) => onChange({ ...value, education: value.education.filter((_, i) => i !== index) })}
         renderFields={(item, index) => {
@@ -162,20 +166,20 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Institution" value={item.institution} onChange={(e) => update({ institution: e.target.value })} />
-              <Input label="Degree" value={item.degree} onChange={(e) => update({ degree: e.target.value })} />
-              <Input label="Field of study" value={item.fieldOfStudy} onChange={(e) => update({ fieldOfStudy: e.target.value })} />
+              <Input label={t('institution')} value={item.institution} onChange={(e) => update({ institution: e.target.value })} />
+              <Input label={t('degree')} value={item.degree} onChange={(e) => update({ degree: e.target.value })} />
+              <Input label={t('fieldOfStudy')} value={item.fieldOfStudy} onChange={(e) => update({ fieldOfStudy: e.target.value })} />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Start year" value={item.startYear} onChange={(e) => update({ startYear: e.target.value })} />
-                <Input label="End year" value={item.endYear} onChange={(e) => update({ endYear: e.target.value })} />
+                <Input label={t('startYear')} value={item.startYear} onChange={(e) => update({ startYear: e.target.value })} />
+                <Input label={t('endYear')} value={item.endYear} onChange={(e) => update({ endYear: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <Input label="GPA" value={item.gpa} onChange={(e) => update({ gpa: e.target.value })} />
-                <Input label="GPA scale" value={item.gpaScale} onChange={(e) => update({ gpaScale: e.target.value })} />
+                <Input label={t('gpa')} value={item.gpa} onChange={(e) => update({ gpa: e.target.value })} />
+                <Input label={t('gpaScale')} value={item.gpaScale} onChange={(e) => update({ gpaScale: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Description
+                  {t('description')}
                 </label>
                 <textarea
                   value={item.description}
@@ -190,9 +194,9 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
       />
 
       <DynamicListSection
-        title="Experience"
+        title={t('experience')}
         items={value.experience}
-        addLabel="Add experience"
+        addLabel={t('addExperience')}
         onAdd={() => onChange({ ...value, experience: [...value.experience, { ...EMPTY_RESUME_EXPERIENCE }] })}
         onRemove={(index) => onChange({ ...value, experience: value.experience.filter((_, i) => i !== index) })}
         renderFields={(item, index) => {
@@ -203,21 +207,21 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Company" value={item.company} onChange={(e) => update({ company: e.target.value })} />
-              <Input label="Role" value={item.role} onChange={(e) => update({ role: e.target.value })} />
-              <Input label="Location" value={item.location} onChange={(e) => update({ location: e.target.value })} />
-              <Input label="Duration (months)" value={item.durationMonths} onChange={(e) => update({ durationMonths: e.target.value })} />
+              <Input label={t('company')} value={item.company} onChange={(e) => update({ company: e.target.value })} />
+              <Input label={t('role')} value={item.role} onChange={(e) => update({ role: e.target.value })} />
+              <Input label={t('location')} value={item.location} onChange={(e) => update({ location: e.target.value })} />
+              <Input label={t('durationMonths')} value={item.durationMonths} onChange={(e) => update({ durationMonths: e.target.value })} />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Start date" value={item.startDate} onChange={(e) => update({ startDate: e.target.value })} />
-                <Input label="End date" value={item.endDate} onChange={(e) => update({ endDate: e.target.value })} />
+                <Input label={t('startDate')} value={item.startDate} onChange={(e) => update({ startDate: e.target.value })} />
+                <Input label={t('endDate')} value={item.endDate} onChange={(e) => update({ endDate: e.target.value })} />
               </div>
               <LineListField
-                label="Responsibilities"
+                label={t('responsibilities')}
                 value={item.responsibilities}
                 onChange={(v) => update({ responsibilities: v })}
               />
               <LineListField
-                label="Technologies"
+                label={t('technologies')}
                 value={item.technologies}
                 onChange={(v) => update({ technologies: v })}
               />
@@ -227,9 +231,9 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
       />
 
       <DynamicListSection
-        title="Projects"
+        title={t('projects')}
         items={value.projects}
-        addLabel="Add project"
+        addLabel={t('addProject')}
         onAdd={() => onChange({ ...value, projects: [...value.projects, { ...EMPTY_RESUME_PROJECT }] })}
         onRemove={(index) => onChange({ ...value, projects: value.projects.filter((_, i) => i !== index) })}
         renderFields={(item, index) => {
@@ -240,15 +244,15 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Name" value={item.name} onChange={(e) => update({ name: e.target.value })} />
-              <Input label="Role" value={item.role} onChange={(e) => update({ role: e.target.value })} />
+              <Input label={t('name')} value={item.name} onChange={(e) => update({ name: e.target.value })} />
+              <Input label={t('role')} value={item.role} onChange={(e) => update({ role: e.target.value })} />
               <div className="grid grid-cols-2 gap-3">
-                <Input label="Start date" value={item.startDate} onChange={(e) => update({ startDate: e.target.value })} />
-                <Input label="End date" value={item.endDate} onChange={(e) => update({ endDate: e.target.value })} />
+                <Input label={t('startDate')} value={item.startDate} onChange={(e) => update({ startDate: e.target.value })} />
+                <Input label={t('endDate')} value={item.endDate} onChange={(e) => update({ endDate: e.target.value })} />
               </div>
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Description
+                  {t('description')}
                 </label>
                 <textarea
                   value={item.description}
@@ -257,17 +261,17 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
                   className="w-full rounded-lg border border-outline bg-surface-lowest p-2.5 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
                 />
               </div>
-              <LineListField label="Technologies" value={item.technologies} onChange={(v) => update({ technologies: v })} />
-              <LineListField label="URLs" value={item.urls} onChange={(v) => update({ urls: v })} />
+              <LineListField label={t('technologies')} value={item.technologies} onChange={(v) => update({ technologies: v })} />
+              <LineListField label={t('urls')} value={item.urls} onChange={(v) => update({ urls: v })} />
             </>
           );
         }}
       />
 
       <DynamicListSection
-        title="Certifications"
+        title={t('certifications')}
         items={value.certifications}
-        addLabel="Add certification"
+        addLabel={t('addCertification')}
         onAdd={() =>
           onChange({ ...value, certifications: [...value.certifications, { ...EMPTY_RESUME_CERTIFICATION }] })
         }
@@ -282,19 +286,19 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Name" value={item.name} onChange={(e) => update({ name: e.target.value })} />
-              <Input label="Issuer" value={item.issuer} onChange={(e) => update({ issuer: e.target.value })} />
-              <Input label="Issued year" value={item.issuedYear} onChange={(e) => update({ issuedYear: e.target.value })} />
-              <Input label="URL" value={item.url} onChange={(e) => update({ url: e.target.value })} />
+              <Input label={t('name')} value={item.name} onChange={(e) => update({ name: e.target.value })} />
+              <Input label={t('issuer')} value={item.issuer} onChange={(e) => update({ issuer: e.target.value })} />
+              <Input label={t('issuedYear')} value={item.issuedYear} onChange={(e) => update({ issuedYear: e.target.value })} />
+              <Input label={t('url')} value={item.url} onChange={(e) => update({ url: e.target.value })} />
             </>
           );
         }}
       />
 
       <DynamicListSection
-        title="Achievements"
+        title={t('achievements')}
         items={value.achievements}
-        addLabel="Add achievement"
+        addLabel={t('addAchievement')}
         onAdd={() => onChange({ ...value, achievements: [...value.achievements, { ...EMPTY_RESUME_ACHIEVEMENT }] })}
         onRemove={(index) =>
           onChange({ ...value, achievements: value.achievements.filter((_, i) => i !== index) })
@@ -307,11 +311,11 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Title" value={item.title} onChange={(e) => update({ title: e.target.value })} />
-              <Input label="Year" value={item.year} onChange={(e) => update({ year: e.target.value })} />
+              <Input label={t('title')} value={item.title} onChange={(e) => update({ title: e.target.value })} />
+              <Input label={t('year')} value={item.year} onChange={(e) => update({ year: e.target.value })} />
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Description
+                  {t('description')}
                 </label>
                 <textarea
                   value={item.description}
@@ -326,15 +330,15 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
       />
 
       <DynamicListSection
-        title="Languages"
+        title={t('languages')}
         items={value.languages}
-        addLabel="Add language"
+        addLabel={t('addLanguage')}
         onAdd={() => onChange({ ...value, languages: [...value.languages, { ...EMPTY_RESUME_LANGUAGE }] })}
         onRemove={(index) => onChange({ ...value, languages: value.languages.filter((_, i) => i !== index) })}
         renderFields={(item, index) => (
           <>
             <Input
-              label="Name"
+              label={t('name')}
               value={item.name}
               onChange={(e) =>
                 onChange({
@@ -344,8 +348,8 @@ export function CvStructuredForm({ value, onChange }: CvStructuredFormProps) {
               }
             />
             <Input
-              label="Proficiency"
-              placeholder="Native / Fluent / Intermediate"
+              label={t('proficiency')}
+              placeholder={t('proficiencyPlaceholder')}
               value={item.proficiency}
               onChange={(e) =>
                 onChange({

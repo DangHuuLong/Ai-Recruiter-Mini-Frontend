@@ -3,6 +3,7 @@
 import { EyeIcon, PlusIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -17,7 +18,7 @@ import { ROUTES } from '@/config/routes.config';
 import { getScoringBatches } from '@/features/batch-scoring/api/batch-scoring.api';
 import {
   STATUS_CLASSES,
-  STATUS_LABELS,
+  STATUS_LABEL_KEYS,
   type ScoringBatchQuery,
   type ScoringBatchStatus,
   type ScoringBatchSummary,
@@ -28,65 +29,69 @@ import { formatDate } from '@/lib/utils/format-date';
 
 const PAGE_SIZE = 10;
 
-const STATUS_FILTER_OPTIONS = (Object.keys(STATUS_LABELS) as ScoringBatchStatus[]).map((status) => ({
-  label: STATUS_LABELS[status],
-  value: status,
-}));
+function buildColumns(
+  t: ReturnType<typeof useTranslations<'batchScoring'>>,
+  tCommon: ReturnType<typeof useTranslations<'common'>>,
+  status: ScoringBatchStatus | '',
+): DataTableColumn<ScoringBatchSummary>[] {
+  const statusFilterOptions = (Object.keys(STATUS_LABEL_KEYS) as ScoringBatchStatus[]).map((batchStatus) => ({
+    label: tCommon(`statusLabels.${STATUS_LABEL_KEYS[batchStatus]}`),
+    value: batchStatus,
+  }));
 
-function buildColumns(status: ScoringBatchStatus | ''): DataTableColumn<ScoringBatchSummary>[] {
   return [
     {
       key: 'name',
-      header: 'Batch name',
+      header: t('columns.batchName'),
       sortKey: 'name',
       render: (batch) => (
         <Link href={`${ROUTES.BATCH_SCORING}/${batch.id}`} className="font-semibold text-primary hover:underline">
-          {batch.name || 'Untitled batch'}
+          {batch.name || t('untitledBatch')}
         </Link>
       ),
     },
     {
       key: 'status',
-      header: 'Status',
-      filter: { key: 'status', options: STATUS_FILTER_OPTIONS, activeValue: status },
+      header: t('columns.status'),
+      filter: { key: 'status', options: statusFilterOptions, activeValue: status },
       render: (batch) => (
         <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', STATUS_CLASSES[batch.status])}>
-          {STATUS_LABELS[batch.status]}
+          {tCommon(`statusLabels.${STATUS_LABEL_KEYS[batch.status]}`)}
         </span>
       ),
     },
     {
       key: 'progress',
-      header: 'Progress',
+      header: t('columns.progress'),
       render: (batch) => (
         <p className="text-on-surface-variant">
-          {batch.completedPairCount}/{batch.totalPairCount} pairs
+          {t('pairsLabel', { count: `${batch.completedPairCount}/${batch.totalPairCount}` })}
         </p>
       ),
     },
     {
       key: 'cvs',
-      header: 'CVs',
+      header: t('columns.cvs'),
       render: (batch) => <p className="text-on-surface-variant">{batch.totalCvCount}</p>,
     },
     {
       key: 'jds',
-      header: 'JDs',
+      header: t('columns.jds'),
       render: (batch) => <p className="text-on-surface-variant">{batch.totalJdCount}</p>,
     },
     {
       key: 'createdAt',
-      header: 'Created',
+      header: t('columns.created'),
       sortKey: 'createdAt',
       render: (batch) => <p className="whitespace-nowrap text-on-surface-variant">{formatDate(batch.createdAt)}</p>,
     },
     {
       key: 'action',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (batch) => (
         <div className="flex justify-end">
-          <ActionIconButton href={`${ROUTES.BATCH_SCORING}/${batch.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+          <ActionIconButton href={`${ROUTES.BATCH_SCORING}/${batch.id}`} icon={<EyeIcon className="size-4" />} label={t('actions.view')} />
         </div>
       ),
     },
@@ -94,6 +99,8 @@ function buildColumns(status: ScoringBatchStatus | ''): DataTableColumn<ScoringB
 }
 
 export function BatchList() {
+  const t = useTranslations('batchScoring');
+  const tCommon = useTranslations('common');
   const [batches, setBatches] = useState<ScoringBatchSummary[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [status, setStatus] = useState<ScoringBatchStatus | ''>('');
@@ -116,9 +123,9 @@ export function BatchList() {
       setBatches(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load scoring batches';
+      const message = error instanceof Error ? error.message : t('list.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load scoring batches', { description: message });
+      showToast.error(t('list.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -142,13 +149,13 @@ export function BatchList() {
   };
 
   if (isLoading && batches.length === 0) {
-    return <LoadingState title="Loading scoring batches..." description="Please wait while batches are being loaded." />;
+    return <LoadingState title={t('list.loadingTitle')} description={t('list.loadingDescription')} />;
   }
 
   if (errorMessage && batches.length === 0) {
     return (
       <EmptyState
-        title="Failed to load scoring batches"
+        title={t('list.errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -156,7 +163,7 @@ export function BatchList() {
             onClick={() => void loadBatches()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('list.tryAgain')}
           </button>
         }
       />
@@ -167,17 +174,15 @@ export function BatchList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-on-surface">Scoring Batches</h1>
-          <p className="mt-1 text-sm text-on-surface-variant">
-            Run AI matching across many candidates and job descriptions at once.
-          </p>
+          <h1 className="text-2xl font-bold text-on-surface">{t('list.title')}</h1>
+          <p className="mt-1 text-sm text-on-surface-variant">{t('list.subtitle')}</p>
         </div>
         <Link
           href={ROUTES.BATCH_SCORING_CREATE}
           className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary transition hover:bg-primary-hover"
         >
           <PlusIcon className="size-4" />
-          New batch
+          {t('list.newBatch')}
         </Link>
       </div>
 
@@ -185,13 +190,13 @@ export function BatchList() {
 
       {batches.length === 0 ? (
         <EmptyState
-          title="No batches yet"
-          description="Create your first batch to start scoring candidates against job descriptions."
+          title={t('list.emptyTitle')}
+          description={t('list.emptyDescription')}
         />
       ) : (
         <DataTable
           data={batches}
-          columns={buildColumns(status)}
+          columns={buildColumns(t, tCommon, status)}
           getRowKey={(batch) => batch.id}
           sort={sort}
           onSortChange={handleSortChange}

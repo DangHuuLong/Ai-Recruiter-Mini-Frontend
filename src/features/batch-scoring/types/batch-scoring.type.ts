@@ -17,6 +17,18 @@ export const STATUS_LABELS: Record<ScoringBatchStatus, string> = {
   CANCELLED: 'Cancelled',
 };
 
+// Maps each status to the message key under common.statusLabels — pass to
+// t('statusLabels.' + STATUS_LABEL_KEYS[status]) instead of the English STATUS_LABELS map.
+export const STATUS_LABEL_KEYS: Record<ScoringBatchStatus, string> = {
+  PENDING: 'pending',
+  PARSING: 'parsing',
+  SCORING: 'scoring',
+  COMPLETED: 'completed',
+  COMPLETED_WITH_ERRORS: 'completedWithErrors',
+  FAILED: 'failed',
+  CANCELLED: 'cancelled',
+};
+
 export const STATUS_CLASSES: Record<ScoringBatchStatus, string> = {
   PENDING: 'bg-surface-variant text-on-surface-muted',
   PARSING: 'bg-info/15 text-info',
@@ -40,6 +52,16 @@ export const CRITERION_LABELS: Record<CriterionName, string> = {
   PROJECT_RELEVANCE: 'Project Relevance',
   EDUCATION_CERTIFICATION: 'Education/Certification',
   KEYWORD_DOMAIN_ALIGNMENT: 'Keyword/Domain Alignment',
+};
+
+// Maps each criterion to the message key under common.criterionLabels — pass to
+// t('criterionLabels.' + CRITERION_LABEL_KEYS[criterion]) instead of the English CRITERION_LABELS map.
+export const CRITERION_LABEL_KEYS: Record<CriterionName, string> = {
+  SKILLS_MATCH: 'skillsMatch',
+  EXPERIENCE_RELEVANCE: 'experienceRelevance',
+  PROJECT_RELEVANCE: 'projectRelevance',
+  EDUCATION_CERTIFICATION: 'educationCertification',
+  KEYWORD_DOMAIN_ALIGNMENT: 'keywordDomainAlignment',
 };
 
 export type ScoringBatchSummary = {
@@ -342,10 +364,12 @@ export type PromoteBatchItemResult = {
   evaluationId?: string;
 };
 
+// tierKey maps to common.scoreTiers.<tierKey> — pass to t('scoreTiers.' + tier.tierKey)
+// rather than reading an English label directly off this helper.
 export function getScoreTier(score: number) {
-  if (score >= 85) return { label: 'Excellent', containerClass: 'bg-emerald-100', textClass: 'text-emerald-700' };
-  if (score >= 70) return { label: 'Strong', containerClass: 'bg-lime-100', textClass: 'text-lime-700' };
-  if (score >= 55) return { label: 'Moderate', containerClass: 'bg-amber-100', textClass: 'text-amber-700' };
-  if (score >= 40) return { label: 'Weak', containerClass: 'bg-orange-100', textClass: 'text-orange-700' };
-  return { label: 'Poor', containerClass: 'bg-red-100', textClass: 'text-red-700' };
+  if (score >= 85) return { tierKey: 'excellent', containerClass: 'bg-emerald-100', textClass: 'text-emerald-700' };
+  if (score >= 70) return { tierKey: 'strong', containerClass: 'bg-lime-100', textClass: 'text-lime-700' };
+  if (score >= 55) return { tierKey: 'moderate', containerClass: 'bg-amber-100', textClass: 'text-amber-700' };
+  if (score >= 40) return { tierKey: 'weak', containerClass: 'bg-orange-100', textClass: 'text-orange-700' };
+  return { tierKey: 'poor', containerClass: 'bg-red-100', textClass: 'text-red-700' };
 }
