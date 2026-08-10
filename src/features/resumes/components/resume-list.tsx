@@ -2,6 +2,7 @@
 
 import { EyeIcon, FileTextIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -27,18 +28,22 @@ const PARSE_STATUS_CLASSES: Record<ParseStatus, string> = {
   FAILED: 'bg-error-container text-error',
 };
 
-const PARSE_STATUS_FILTER_OPTIONS = [
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Processing', value: 'PROCESSING' },
-  { label: 'Success', value: 'SUCCESS' },
-  { label: 'Failed', value: 'FAILED' },
-];
+function buildColumns(
+  t: ReturnType<typeof useTranslations<'resumes'>>,
+  parseStatus: ParseStatus | '',
+  onDelete: (resume: Resume) => void,
+): DataTableColumn<Resume>[] {
+  const parseStatusFilterOptions = [
+    { label: t('parseStatusOptions.pending'), value: 'PENDING' },
+    { label: t('parseStatusOptions.processing'), value: 'PROCESSING' },
+    { label: t('parseStatusOptions.success'), value: 'SUCCESS' },
+    { label: t('parseStatusOptions.failed'), value: 'FAILED' },
+  ];
 
-function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) => void): DataTableColumn<Resume>[] {
   return [
     {
       key: 'resume',
-      header: 'Resume',
+      header: t('columns.resume'),
       render: (resume) => (
         <div className="flex items-center gap-3">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-variant text-on-surface-variant">
@@ -55,13 +60,13 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
     },
     {
       key: 'candidate',
-      header: 'Candidate',
+      header: t('columns.candidate'),
       render: (resume) => <p className="font-mono text-xs text-on-surface-variant">{resume.candidateId}</p>,
     },
     {
       key: 'status',
-      header: 'Parse Status',
-      filter: { key: 'parseStatus', options: PARSE_STATUS_FILTER_OPTIONS, activeValue: parseStatus },
+      header: t('columns.parseStatus'),
+      filter: { key: 'parseStatus', options: parseStatusFilterOptions, activeValue: parseStatus },
       render: (resume) => (
         <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${PARSE_STATUS_CLASSES[resume.parseStatus]}`}>
           {resume.parseStatus}
@@ -70,30 +75,30 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
     },
     {
       key: 'parser',
-      header: 'Parser',
-      render: (resume) => <p className="text-sm text-on-surface-variant">{resume.parserVersion || 'Not provided'}</p>,
+      header: t('columns.parser'),
+      render: (resume) => <p className="text-sm text-on-surface-variant">{resume.parserVersion || t('notProvided')}</p>,
     },
     {
       key: 'updatedAt',
-      header: 'Updated',
+      header: t('columns.updated'),
       sortKey: 'updatedAt',
       render: (resume) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">
-          {resume.updatedAt ? formatDate(resume.updatedAt) : 'Not recorded'}
+          {resume.updatedAt ? formatDate(resume.updatedAt) : t('notRecorded')}
         </p>
       ),
     },
     {
       key: 'action',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (resume) => (
         <div className="flex flex-wrap items-center justify-end gap-1">
-          <ActionIconButton href={`/resumes/${resume.id}`} icon={<EyeIcon className="size-4" />} label="View" />
-          <ActionIconButton href={`/resumes/${resume.id}/edit`} icon={<PencilIcon className="size-4" />} label="Edit" />
+          <ActionIconButton href={`/resumes/${resume.id}`} icon={<EyeIcon className="size-4" />} label={t('actions.view')} />
+          <ActionIconButton href={`/resumes/${resume.id}/edit`} icon={<PencilIcon className="size-4" />} label={t('actions.edit')} />
           <ActionIconButton
             icon={<Trash2Icon className="size-4" />}
-            label="Delete"
+            label={t('actions.delete')}
             variant="danger"
             onClick={() => onDelete(resume)}
           />
@@ -104,6 +109,7 @@ function buildColumns(parseStatus: ParseStatus | '', onDelete: (resume: Resume) 
 }
 
 export function ResumeList() {
+  const t = useTranslations('resumes');
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
@@ -130,9 +136,9 @@ export function ResumeList() {
       setResumes(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load resumes';
+      const message = error instanceof Error ? error.message : t('list.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load resumes', { description: message });
+      showToast.error(t('list.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -140,6 +146,7 @@ export function ResumeList() {
 
   useEffect(() => {
     void loadResumes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, parseStatus, sort]);
 
   const handleSortChange = (key: string, order: DataTableSortOrder) => {
@@ -160,12 +167,12 @@ export function ResumeList() {
     try {
       setIsDeleting(true);
       await deleteResume(resumeToDelete.id);
-      showToast.success('Resume deleted successfully');
+      showToast.success(t('list.deleteSuccess'));
       setResumeToDelete(null);
       await loadResumes();
     } catch (error) {
-      showToast.error('Failed to delete resume', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting the resume.',
+      showToast.error(t('list.deleteFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.deleteFailedFallback'),
       });
     } finally {
       setIsDeleting(false);
@@ -173,15 +180,15 @@ export function ResumeList() {
   };
 
   if (isLoading && resumes.length === 0) {
-    return <LoadingState title="Loading resumes..." description="Please wait while resume records are being loaded." />;
+    return <LoadingState title={t('list.loadingTitle')} description={t('list.loadingDescription')} />;
   }
 
   if (errorMessage && resumes.length === 0) {
     return (
       <EmptyState
-        title="Failed to load resumes"
+        title={t('list.errorTitle')}
         description={errorMessage}
-        action={<button type="button" onClick={() => void loadResumes()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
+        action={<button type="button" onClick={() => void loadResumes()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">{t('list.tryAgain')}</button>}
       />
     );
   }
@@ -189,14 +196,14 @@ export function ResumeList() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-on-surface">Resume list</h2>
-        <p className="mt-1 text-sm text-on-surface-muted">{meta.total} resume record{meta.total === 1 ? '' : 's'} found.</p>
+        <h2 className="text-lg font-semibold text-on-surface">{t('list.title')}</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('list.countFound', { count: meta.total })}</p>
       </div>
 
       <ListControls
         search={{
           value: search,
-          placeholder: 'Search by candidate, resume text, file name, or checksum...',
+          placeholder: t('list.searchPlaceholder'),
           onChange: (value) => {
             setSearch(value);
             setPage(1);
@@ -206,11 +213,11 @@ export function ResumeList() {
       />
 
       {resumes.length === 0 ? (
-        <EmptyState title="No resumes found" description="Upload a resume or adjust your search keyword." />
+        <EmptyState title={t('list.emptyTitle')} description={t('list.emptyDescription')} />
       ) : (
         <DataTable
           data={resumes}
-          columns={buildColumns(parseStatus, setResumeToDelete)}
+          columns={buildColumns(t, parseStatus, setResumeToDelete)}
           getRowKey={(resume) => resume.id}
           sort={sort}
           onSortChange={handleSortChange}
@@ -220,9 +227,9 @@ export function ResumeList() {
 
       <ConfirmDialog
         open={Boolean(resumeToDelete)}
-        title="Delete resume?"
-        description="This action removes the resume record if the backend allows it. This cannot be undone."
-        confirmLabel="Delete resume"
+        title={t('list.deleteConfirmTitle')}
+        description={t('list.deleteConfirmDescription')}
+        confirmLabel={t('list.deleteConfirmAction')}
         isLoading={isDeleting}
         onCancel={() => setResumeToDelete(null)}
         onConfirm={() => void handleDelete()}

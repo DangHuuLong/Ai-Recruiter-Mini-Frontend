@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowRightIcon, InfoIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';

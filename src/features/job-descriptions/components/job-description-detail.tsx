@@ -1,7 +1,7 @@
 'use client';
 
 import { CopyIcon, SparklesIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect } from 'react';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';

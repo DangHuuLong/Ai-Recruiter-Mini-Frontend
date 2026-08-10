@@ -2,8 +2,9 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeftIcon, LoaderCircleIcon, XIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-background';
 import { LoadingState } from '@/components/feedback';
@@ -27,6 +28,7 @@ type PublicBatchResultsProps = {
 };
 
 export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
+  const t = useTranslations('publicBatchResults');
   const [snapshot, setSnapshot] = useState<PublicBatchSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
       const result = await getPublicBatch(batchId);
       setSnapshot(result);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'This batch could not be found.');
+      setErrorMessage(error instanceof Error ? error.message : t('notFoundFallback'));
     } finally {
       setIsLoading(false);
     }
@@ -83,13 +85,13 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
 
     setSelectedCell({
       ...result,
-      candidateLabel: resumeItem?.candidateLabel ?? 'Candidate',
-      jdLabel: jdItem?.label ?? 'Job description',
+      candidateLabel: resumeItem?.candidateLabel ?? t('candidateFallback'),
+      jdLabel: jdItem?.label ?? t('jobDescriptionFallback'),
     });
   };
 
   if (isLoading) {
-    return <LoadingState title="Loading your results..." description="Please wait." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !snapshot) {
@@ -97,13 +99,13 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
       <div className="relative min-h-[calc(100vh-4rem)]">
         <AnimatedGlowBackground />
         <div className="relative mx-auto max-w-md px-4 py-20 text-center">
-          <p className="text-sm font-semibold text-on-surface">{errorMessage ?? 'Batch not found'}</p>
+          <p className="text-sm font-semibold text-on-surface">{errorMessage ?? t('batchNotFound')}</p>
           <Link
             href={ROUTES.PUBLIC_TRY}
             className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
           >
             <ArrowLeftIcon className="size-4" />
-            Try again
+            {t('tryAgain')}
           </Link>
         </div>
       </div>
@@ -122,14 +124,14 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
           className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeftIcon className="size-4" />
-          Back
+          {t('back')}
         </Link>
 
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-wide text-primary">Your results</p>
-          <h1 className="mt-1 text-2xl font-bold text-on-surface">CV × Job Description matches</h1>
+          <p className="text-xs font-bold uppercase tracking-wide text-primary">{t('eyebrow')}</p>
+          <h1 className="mt-1 text-2xl font-bold text-on-surface">{t('title')}</h1>
           <p className="mt-1 text-sm text-on-surface-variant">
-            {isInProgress ? 'Scoring in progress...' : 'Click any cell to see the full score breakdown.'}
+            {isInProgress ? t('scoringInProgress') : t('clickToSeeBreakdown')}
           </p>
         </div>
 
@@ -137,20 +139,29 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
           <div className="rounded-2xl border border-outline bg-surface-lowest/95 p-8 text-center shadow-card backdrop-blur-sm">
             <LoaderCircleIcon className="mx-auto size-8 animate-spin text-primary" />
             <p className="mt-4 text-sm font-semibold text-on-surface">
-              {snapshot.progress.completedPairCount} / {snapshot.progress.totalPairCount} pairs scored
+              {t('pairsScored', {
+                completed: snapshot.progress.completedPairCount,
+                total: snapshot.progress.totalPairCount,
+              })}
             </p>
           </div>
         ) : (
           <>
             <div className="mb-4 flex flex-wrap gap-3 text-xs font-semibold text-on-surface-variant">
-              {(['Excellent', 'Strong', 'Moderate', 'Weak', 'Poor'] as const).map((label) => {
-                const tier = getScoreTier(
-                  label === 'Excellent' ? 90 : label === 'Strong' ? 75 : label === 'Moderate' ? 60 : label === 'Weak' ? 45 : 20,
-                );
+              {(
+                [
+                  ['excellent', 90],
+                  ['strong', 75],
+                  ['moderate', 60],
+                  ['weak', 45],
+                  ['poor', 20],
+                ] as const
+              ).map(([key, score]) => {
+                const tier = getScoreTier(score);
                 return (
-                  <span key={label} className="flex items-center gap-1.5">
+                  <span key={key} className="flex items-center gap-1.5">
                     <span className={cn('size-3 rounded-full', tier.containerClass)} />
-                    {label}
+                    {t(`scoreTiers.${key}`)}
                   </span>
                 );
               })}
@@ -161,14 +172,14 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                 <thead>
                   <tr>
                     <th className="sticky left-0 z-10 border-b border-r border-outline bg-surface-variant p-3 text-left font-semibold text-on-surface-variant">
-                      Candidate
+                      {t('candidateColumn')}
                     </th>
                     {snapshot.jdItems.map((jd) => (
                       <th
                         key={jd.id}
                         className="border-b border-outline bg-surface-variant p-3 text-left font-semibold text-on-surface-variant"
                       >
-                        {jd.label ?? 'Job description'}
+                        {jd.label ?? t('jobDescriptionFallback')}
                       </th>
                     ))}
                   </tr>
@@ -177,7 +188,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                   {snapshot.resumeItems.map((resume) => (
                     <tr key={resume.id}>
                       <td className="sticky left-0 z-10 border-r border-outline bg-surface-lowest p-3 font-semibold text-on-surface">
-                        {resume.candidateLabel ?? 'Candidate'}
+                        {resume.candidateLabel ?? t('candidateFallback')}
                       </td>
                       {snapshot.jdItems.map((jd) => {
                         const result = snapshot.results.find(
@@ -189,14 +200,14 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                           <td key={jd.id} className="border-b border-outline p-2">
                             {!result || result.status === 'FAILED' ? (
                               <div
-                                title={result?.error ?? 'Failed'}
+                                title={result?.error ?? t('failed')}
                                 className="flex h-14 w-full items-center justify-center rounded-lg bg-error-container text-xs font-semibold text-error"
                               >
-                                Failed
+                                {t('failed')}
                               </div>
                             ) : result.status === 'PENDING' || !tier ? (
                               <div className="flex h-14 w-full items-center justify-center rounded-lg bg-surface-variant text-xs font-semibold text-on-surface-muted">
-                                Pending
+                                {t('pending')}
                               </div>
                             ) : (
                               <button
@@ -226,14 +237,12 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
 
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-outline bg-surface-variant/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-4 text-center sm:px-6 lg:px-8">
-          <p className="text-sm font-bold text-on-surface">
-            Sign up to save these results and unlock full batch scoring
-          </p>
+          <p className="text-sm font-bold text-on-surface">{t('signupBanner')}</p>
           <Link
             href={ROUTES.REGISTER}
             className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-on-primary transition hover:bg-primary-hover"
           >
-            Create an organization
+            {t('createOrg')}
           </Link>
         </div>
       </div>
@@ -258,7 +267,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-on-surface-muted">
-                    Match score · {getScoreTier(selectedCell.overallScore ?? 0).label}
+                    {t('matchScore', { tier: getScoreTier(selectedCell.overallScore ?? 0).label })}
                   </p>
                   <p className="mt-1 text-3xl font-bold text-on-surface">
                     {selectedCell.overallScore != null ? Math.round(selectedCell.overallScore) : '—'}
@@ -275,7 +284,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
               </div>
 
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-bold text-on-surface">Score breakdown</h3>
+                <h3 className="text-sm font-bold text-on-surface">{t('scoreBreakdown')}</h3>
                 {(selectedCell.criteria ?? []).map((criterion) => (
                   <div key={criterion.criterion}>
                     <div className="flex items-center justify-between text-sm">
@@ -297,12 +306,12 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
               </div>
 
               <div className="mt-6">
-                <h3 className="text-sm font-bold text-on-surface">Skills</h3>
+                <h3 className="text-sm font-bold text-on-surface">{t('skills')}</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {(selectedCell.skills ?? []).map((skill) => (
                     <span
                       key={skill.skillName}
-                      title={`${skill.importance} importance${skill.evidence ? ` — ${skill.evidence}` : ''}`}
+                      title={`${t('importance', { level: skill.importance })}${skill.evidence ? ` — ${skill.evidence}` : ''}`}
                       className={cn(
                         'rounded-full px-2.5 py-1 text-xs font-semibold',
                         SKILL_TYPE_CLASSES[skill.type],
@@ -316,7 +325,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
 
               {(selectedCell.interviewQuestions ?? []).length > 0 ? (
                 <div className="mt-6">
-                  <h3 className="text-sm font-bold text-on-surface">Suggested interview questions</h3>
+                  <h3 className="text-sm font-bold text-on-surface">{t('suggestedQuestions')}</h3>
                   <ol className="mt-2 space-y-3">
                     {(selectedCell.interviewQuestions ?? []).map((item) => (
                       <li key={item.displayOrder} className="text-sm text-on-surface-variant">
@@ -326,7 +335,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                             <p className="text-on-surface">{item.question}</p>
                             <p className="mt-0.5 text-xs text-on-surface-muted">
                               {item.category} · {item.difficulty}
-                              {item.linkedSkill ? ` · Related to ${item.linkedSkill}` : ''}
+                              {item.linkedSkill ? ` ${t('relatedTo', { skill: item.linkedSkill })}` : ''}
                             </p>
                           </div>
                         </div>

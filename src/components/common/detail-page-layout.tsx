@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -17,11 +18,13 @@ export function DetailPageLayout({
   title,
   description,
   backHref,
-  backLabel = 'Back',
+  backLabel,
   actions,
   children,
   className,
 }: DetailPageLayoutProps) {
+  const t = useTranslations('common');
+
   return (
     <div className={cn('space-y-6', className)}>
       <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card sm:p-6">
@@ -31,7 +34,7 @@ export function DetailPageLayout({
               href={backHref}
               className="inline-flex cursor-pointer items-center text-sm font-semibold text-primary transition hover:text-primary-hover"
             >
-              ← {backLabel}
+              ← {backLabel ?? t('back')}
             </Link>
           ) : null}
 

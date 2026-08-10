@@ -1,8 +1,9 @@
 'use client';
 
 import { EyeIcon, PencilIcon, Trash2Icon, UsersIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -22,11 +23,14 @@ import type { PaginationMeta } from '@/lib/api/api-types';
 
 const PAGE_SIZE = 10;
 
-function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTableColumn<Candidate>[] {
+function buildCandidateColumns(
+  t: ReturnType<typeof useTranslations<'candidates'>>,
+  onDelete: (candidate: Candidate) => void,
+): DataTableColumn<Candidate>[] {
   return [
     {
       key: 'candidate',
-      header: 'Candidate',
+      header: t('columns.candidate'),
       sortKey: 'fullName',
       render: (candidate) => (
         <div className="flex items-center gap-3">
@@ -40,7 +44,7 @@ function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTa
     },
     {
       key: 'email',
-      header: 'Email',
+      header: t('columns.email'),
       sortKey: 'primaryEmail',
       render: (candidate) =>
         candidate.primaryEmail ? (
@@ -51,36 +55,44 @@ function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTa
             {candidate.primaryEmail}
           </a>
         ) : (
-          <p className="text-sm text-on-surface-muted">Not provided</p>
+          <p className="text-sm text-on-surface-muted">{t('notProvided')}</p>
         ),
     },
     {
       key: 'phone',
-      header: 'Phone',
+      header: t('columns.phone'),
       render: (candidate) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">
-          {candidate.primaryPhone || 'Not provided'}
+          {candidate.primaryPhone || t('notProvided')}
         </p>
       ),
     },
     {
       key: 'location',
-      header: 'Location',
+      header: t('columns.location'),
       render: (candidate) => (
-        <p className="text-sm text-on-surface-variant">{candidate.location || 'Not provided'}</p>
+        <p className="text-sm text-on-surface-variant">{candidate.location || t('notProvided')}</p>
       ),
     },
     {
       key: 'action',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (candidate) => (
         <div className="flex flex-wrap items-center justify-end gap-1">
-          <ActionIconButton href={`/candidates/${candidate.id}`} icon={<EyeIcon className="size-4" />} label="View" />
-          <ActionIconButton href={`/candidates/${candidate.id}/edit`} icon={<PencilIcon className="size-4" />} label="Edit" />
+          <ActionIconButton
+            href={`/candidates/${candidate.id}`}
+            icon={<EyeIcon className="size-4" />}
+            label={t('actions.view')}
+          />
+          <ActionIconButton
+            href={`/candidates/${candidate.id}/edit`}
+            icon={<PencilIcon className="size-4" />}
+            label={t('actions.edit')}
+          />
           <ActionIconButton
             icon={<Trash2Icon className="size-4" />}
-            label="Delete"
+            label={t('actions.delete')}
             variant="danger"
             onClick={() => onDelete(candidate)}
           />
@@ -91,6 +103,7 @@ function buildCandidateColumns(onDelete: (candidate: Candidate) => void): DataTa
 }
 
 export function CandidateList() {
+  const t = useTranslations('candidates');
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
@@ -118,9 +131,9 @@ export function CandidateList() {
       setCandidates(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load candidates';
+      const message = error instanceof Error ? error.message : t('list.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load candidates', { description: message });
+      showToast.error(t('list.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -128,6 +141,7 @@ export function CandidateList() {
 
   useEffect(() => {
     void loadCandidates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, sort]);
 
   const handleSortChange = (key: string, order: DataTableSortOrder) => {
@@ -142,9 +156,9 @@ export function CandidateList() {
       const succeeded = results.filter((result) => result.success).length;
       const failed = results.length - succeeded;
       if (failed === 0) {
-        showToast.success(`${succeeded} candidate${succeeded === 1 ? '' : 's'} deleted successfully`);
+        showToast.success(t('list.deletedSuccess', { count: succeeded }));
       } else {
-        showToast.warning(`${succeeded} deleted, ${failed} failed`, {
+        showToast.warning(t('list.deletedPartial', { succeeded, failed }), {
           description: results.find((result) => !result.success)?.error,
         });
       }
@@ -152,8 +166,8 @@ export function CandidateList() {
       setIsBulkConfirmOpen(false);
       await loadCandidates();
     } catch (error) {
-      showToast.error('Bulk delete failed', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting candidates.',
+      showToast.error(t('list.bulkDeleteFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.bulkDeleteFailedFallback'),
       });
     } finally {
       setIsBulkDeleting(false);
@@ -166,14 +180,14 @@ export function CandidateList() {
     try {
       setIsDeleting(true);
       await deleteCandidate(candidateToDelete.id);
-      showToast.success('Candidate deleted successfully', {
-        description: `${candidateToDelete.fullName} has been removed.`,
+      showToast.success(t('list.deleteSuccessTitle'), {
+        description: t('list.deleteSuccessDescription', { name: candidateToDelete.fullName }),
       });
       setCandidateToDelete(null);
       await loadCandidates();
     } catch (error) {
-      showToast.error('Failed to delete candidate', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting the candidate.',
+      showToast.error(t('list.deleteFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.deleteFailedFallback'),
       });
     } finally {
       setIsDeleting(false);
@@ -181,13 +195,13 @@ export function CandidateList() {
   };
 
   if (isLoading && candidates.length === 0) {
-    return <LoadingState title="Loading candidates..." description="Please wait while candidate profiles are being loaded." />;
+    return <LoadingState title={t('list.loadingTitle')} description={t('list.loadingDescription')} />;
   }
 
   if (errorMessage && candidates.length === 0) {
     return (
       <EmptyState
-        title="Failed to load candidates"
+        title={t('list.errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -195,7 +209,7 @@ export function CandidateList() {
             onClick={() => void loadCandidates()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('list.tryAgain')}
           </button>
         }
       />
@@ -209,7 +223,7 @@ export function CandidateList() {
           <UsersIcon className="size-6" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-on-surface-variant">Total candidates</p>
+          <p className="text-sm font-semibold text-on-surface-variant">{t('totalCandidates')}</p>
           <p className="text-2xl font-bold text-on-surface">{meta.total}</p>
         </div>
       </div>
@@ -217,7 +231,7 @@ export function CandidateList() {
       <ListControls
         search={{
           value: search,
-          placeholder: 'Search by name, email, phone, or location...',
+          placeholder: t('searchPlaceholder'),
           onChange: (value) => {
             setSearch(value);
             setPage(1);
@@ -233,27 +247,27 @@ export function CandidateList() {
           className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-error px-4 text-sm font-semibold text-on-primary transition hover:opacity-90"
         >
           <Trash2Icon className="size-4" />
-          Delete selected
+          {t('deleteSelected')}
         </button>
       </BulkActionBar>
 
       {candidates.length === 0 ? (
         <EmptyState
-          title="No candidates found"
-          description="Create the first candidate profile or adjust your search keyword."
+          title={t('list.emptyTitle')}
+          description={t('list.emptyDescription')}
           action={
             <Link
               href="/candidates/new"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
             >
-              Create Candidate
+              {t('createCandidate')}
             </Link>
           }
         />
       ) : (
         <DataTable
           data={candidates}
-          columns={buildCandidateColumns(setCandidateToDelete)}
+          columns={buildCandidateColumns(t, setCandidateToDelete)}
           getRowKey={(candidate) => candidate.id}
           sort={sort}
           onSortChange={handleSortChange}
@@ -263,9 +277,9 @@ export function CandidateList() {
 
       <ConfirmDialog
         open={Boolean(candidateToDelete)}
-        title="Delete candidate?"
-        description="This action removes the candidate profile if it has no related resumes or applications. This cannot be undone."
-        confirmLabel="Delete candidate"
+        title={t('list.deleteConfirmTitle')}
+        description={t('list.deleteConfirmDescription')}
+        confirmLabel={t('list.deleteConfirmAction')}
         isLoading={isDeleting}
         onCancel={() => setCandidateToDelete(null)}
         onConfirm={() => void handleDeleteCandidate()}
@@ -273,9 +287,9 @@ export function CandidateList() {
 
       <ConfirmDialog
         open={isBulkConfirmOpen}
-        title={`Delete ${selectedIds.size} candidate${selectedIds.size === 1 ? '' : 's'}?`}
-        description="This removes each selected candidate profile that has no related resumes or applications. This cannot be undone."
-        confirmLabel="Delete selected"
+        title={t('list.bulkDeleteConfirmTitle', { count: selectedIds.size })}
+        description={t('list.bulkDeleteConfirmDescription')}
+        confirmLabel={t('list.bulkDeleteConfirmAction')}
         isLoading={isBulkDeleting}
         onCancel={() => setIsBulkConfirmOpen(false)}
         onConfirm={() => void handleBulkDelete()}

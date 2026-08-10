@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { ApplicationStatusBadge } from '@/features/applications/components/application-status-badge';
@@ -14,6 +15,7 @@ type CandidateApplicationListProps = {
 };
 
 export function CandidateApplicationList({ candidateId }: CandidateApplicationListProps) {
+  const t = useTranslations('candidates.applications');
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -25,9 +27,9 @@ export function CandidateApplicationList({ candidateId }: CandidateApplicationLi
       const data = await getCandidateApplications(candidateId);
       setApplications(data);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load applications';
+      const message = error instanceof Error ? error.message : t('errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load candidate applications', { description: message });
+      showToast.error(t('errorTitle'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -39,18 +41,13 @@ export function CandidateApplicationList({ candidateId }: CandidateApplicationLi
   }, [candidateId]);
 
   if (isLoading) {
-    return (
-      <LoadingState
-        title="Loading applications..."
-        description="Please wait while this candidate's applications are being loaded."
-      />
-    );
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage) {
     return (
       <EmptyState
-        title="Failed to load applications"
+        title={t('errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -58,7 +55,7 @@ export function CandidateApplicationList({ candidateId }: CandidateApplicationLi
             onClick={() => void loadApplications()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('tryAgain')}
           </button>
         }
       />
@@ -68,14 +65,14 @@ export function CandidateApplicationList({ candidateId }: CandidateApplicationLi
   if (applications.length === 0) {
     return (
       <EmptyState
-        title="Not applied to any job description yet"
-        description="Applications this candidate submits will show up here."
+        title={t('emptyTitle')}
+        description={t('emptyDescription')}
         action={
           <Link
             href="/applications/new"
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Create Application
+            {t('createApplication')}
           </Link>
         }
       />
@@ -95,12 +92,14 @@ export function CandidateApplicationList({ candidateId }: CandidateApplicationLi
               {application.jobDescription?.title || application.jobDescriptionId}
             </p>
             <p className="mt-0.5 truncate text-xs text-on-surface-muted">
-              {application.jobDescription?.companyName || 'Company not provided'}
+              {application.jobDescription?.companyName || t('companyNotProvided')}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <p className="whitespace-nowrap text-xs text-on-surface-muted">
-              Applied {application.appliedAt ? formatDate(application.appliedAt) : 'Not recorded'}
+              {t('appliedOn', {
+                date: application.appliedAt ? formatDate(application.appliedAt) : t('notRecorded'),
+              })}
             </p>
             <ApplicationStatusBadge status={application.status} />
           </div>

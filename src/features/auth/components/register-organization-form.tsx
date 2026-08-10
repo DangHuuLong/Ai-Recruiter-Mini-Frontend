@@ -2,9 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BuildingIcon, LockIcon, MailIcon, MailCheckIcon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import {
 import { ApiError } from '@/lib/api/api-error';
 
 export function RegisterOrganizationForm() {
+  const t = useTranslations('auth.register');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 
@@ -36,7 +38,7 @@ export function RegisterOrganizationForm() {
       await registerOrganization(values);
       setRegisteredEmail(values.adminEmail);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Unable to create organization. Please try again.';
+      const message = error instanceof ApiError ? error.message : t('errorFallback');
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -49,17 +51,18 @@ export function RegisterOrganizationForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <MailCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Check your email</h2>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">{t('checkEmailTitle')}</h2>
         <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          We&apos;ve sent a verification link to{' '}
-          <span className="font-semibold text-on-surface">{registeredEmail}</span>. Please check your
-          inbox to complete your registration.
+          {t.rich('checkEmailBody', {
+            email: registeredEmail,
+            b: (chunks) => <span className="font-semibold text-on-surface">{chunks}</span>,
+          })}
         </p>
         <Link
           href={`${ROUTES.RESEND_VERIFICATION}?email=${encodeURIComponent(registeredEmail)}`}
           className="mt-4 inline-block text-sm font-semibold text-primary hover:underline"
         >
-          Didn&apos;t get the email? Resend it
+          {t('resendLink')}
         </Link>
       </div>
     );
@@ -68,17 +71,15 @@ export function RegisterOrganizationForm() {
   return (
     <div>
       <div className="mb-8">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Get started</p>
-        <h2 className="mt-3 text-2xl font-bold text-on-surface">Register your organization</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Start building your intelligent talent pipeline today.
-        </p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">{t('eyebrow')}</p>
+        <h2 className="mt-3 text-2xl font-bold text-on-surface">{t('title')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           id="organizationName"
-          label="Organization name"
+          label={t('orgNameLabel')}
           placeholder="e.g., Acme Corp"
           icon={<BuildingIcon className="size-4.5" />}
           error={errors.organizationName?.message}
@@ -87,7 +88,7 @@ export function RegisterOrganizationForm() {
 
         <Input
           id="adminFullName"
-          label="Admin full name"
+          label={t('adminNameLabel')}
           placeholder="John Doe"
           icon={<UserIcon className="size-4.5" />}
           error={errors.adminFullName?.message}
@@ -97,7 +98,7 @@ export function RegisterOrganizationForm() {
         <Input
           id="adminEmail"
           type="email"
-          label="Admin email"
+          label={t('adminEmailLabel')}
           autoComplete="email"
           placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
@@ -108,24 +109,24 @@ export function RegisterOrganizationForm() {
         <Input
           id="adminPassword"
           type="password"
-          label="Admin password"
+          label={t('adminPasswordLabel')}
           autoComplete="new-password"
           placeholder="••••••••"
-          hint="Password must be 8+ characters"
+          hint={t('adminPasswordHint')}
           icon={<LockIcon className="size-4.5" />}
           error={errors.adminPassword?.message}
           {...register('adminPassword')}
         />
 
         <Button type="submit" isLoading={isSubmitting}>
-          {isSubmitting ? 'Creating organization...' : 'Create organization'}
+          {isSubmitting ? t('submitting') : t('submit')}
         </Button>
       </form>
 
       <div className="mt-6 border-t border-outline-variant pt-6 text-center text-sm text-on-surface-variant">
-        Already have an account?{' '}
+        {t('alreadyHaveAccount')}{' '}
         <Link href={ROUTES.LOGIN} className="font-semibold text-primary hover:underline">
-          Log in
+          {t('login')}
         </Link>
       </div>
     </div>

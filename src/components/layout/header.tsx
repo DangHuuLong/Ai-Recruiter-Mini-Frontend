@@ -1,6 +1,7 @@
 import { BellIcon, HelpCircleIcon, SearchIcon } from 'lucide-react';
 
 import { UserMenu } from '@/features/auth/components/user-menu';
+import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 
 export function Header() {
   return (
@@ -33,6 +34,8 @@ export function Header() {
           >
             <HelpCircleIcon className="size-5" />
           </button>
+
+          <LocaleSwitcher />
 
           <div className="mx-1 h-8 w-px bg-outline" />
 

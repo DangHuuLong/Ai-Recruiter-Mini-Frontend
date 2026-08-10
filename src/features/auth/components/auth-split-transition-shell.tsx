@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 
 import { ROUTES } from '@/config/routes.config';
@@ -12,28 +13,9 @@ import { cn } from '@/lib/utils/cn';
 
 type SplitAuthMode = 'login' | 'register';
 
-type SplitAuthCopy = {
-  eyebrow: string;
-  headline: string;
-  description: string;
-  backgroundImageSrc: string;
-};
-
-const MODE_CONFIG: Record<SplitAuthMode, SplitAuthCopy> = {
-  login: {
-    eyebrow: 'Recruit smarter',
-    headline: 'Welcome back to AI Recruiter.',
-    description:
-      'Connect with top talent using our AI matching engine. Track candidates, resumes, job descriptions, applications and scoring in one workspace.',
-    backgroundImageSrc: '/images/auth-bg-login.jpg',
-  },
-  register: {
-    eyebrow: 'Get started',
-    headline: 'The intelligent layer for your hiring team.',
-    description:
-      'Score candidates, predict fit, and automate high-volume screening with your own AI recruitment workspace.',
-    backgroundImageSrc: '/images/auth-bg-register.jpg',
-  },
+const BACKGROUND_IMAGE_SRC: Record<SplitAuthMode, string> = {
+  login: '/images/auth-bg-login.jpg',
+  register: '/images/auth-bg-register.jpg',
 };
 
 const PANEL_TRANSITION = { type: 'spring', stiffness: 300, damping: 34 } as const;
@@ -45,7 +27,7 @@ type AuthSplitTransitionShellProps = {
 export function AuthSplitTransitionShell({ children }: AuthSplitTransitionShellProps) {
   const pathname = usePathname();
   const mode: SplitAuthMode = pathname === ROUTES.REGISTER ? 'register' : 'login';
-  const copy = MODE_CONFIG[mode];
+  const t = useTranslations(`auth.brandPanel.${mode}`);
 
   return (
     <main
@@ -56,10 +38,10 @@ export function AuthSplitTransitionShell({ children }: AuthSplitTransitionShellP
     >
       <motion.div layout transition={PANEL_TRANSITION} className="relative z-10 flex flex-1">
         <AuthBrandPanel
-          eyebrow={copy.eyebrow}
-          headline={copy.headline}
-          description={copy.description}
-          backgroundImageSrc={copy.backgroundImageSrc}
+          eyebrow={t('eyebrow')}
+          headline={t('headline')}
+          description={t('description')}
+          backgroundImageSrc={BACKGROUND_IMAGE_SRC[mode]}
         />
       </motion.div>
 

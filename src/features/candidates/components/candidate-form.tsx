@@ -1,8 +1,9 @@
 'use client';
 
 import { Code2Icon, GlobeIcon, LinkIcon, MailIcon, MapPinIcon, PhoneIcon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback/toast';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ import {
 } from '@/features/candidates/validations/candidate.validation';
 
 export function CandidateForm() {
+  const t = useTranslations('candidates');
   const [formValues, setFormValues] =
     useState<CreateCandidateFormValues>(initialCandidateFormValues);
   const [errors, setErrors] = useState<CandidateFormErrors>({});
@@ -62,10 +64,8 @@ export function CandidateForm() {
 
       setErrors(nextErrors);
 
-      showToast.error('Invalid candidate information', {
-        description:
-          validation.error.issues[0]?.message ??
-          'Please check the candidate information and try again.',
+      showToast.error(t('form.invalidTitle'), {
+        description: validation.error.issues[0]?.message ?? t('form.invalidFallback'),
       });
 
       return;
@@ -76,17 +76,14 @@ export function CandidateForm() {
 
       resetCandidates();
 
-      showToast.success('Candidate created successfully', {
-        description: `${candidate.fullName} has been added to the candidate list.`,
+      showToast.success(t('form.createSuccessTitle'), {
+        description: t('form.createSuccessDescription', { name: candidate.fullName }),
       });
 
       setFormValues(initialCandidateFormValues);
     } catch (error) {
-      showToast.error('Failed to create candidate', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong while creating the candidate. Please try again.',
+      showToast.error(t('form.createFailedTitle'), {
+        description: error instanceof Error ? error.message : t('form.createFailedFallback'),
       });
     }
   };
@@ -94,14 +91,9 @@ export function CandidateForm() {
   return (
     <section className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
       <div className="border-b border-outline px-6 py-5">
-        <h2 className="text-lg font-semibold text-on-surface">
-          Candidate information
-        </h2>
+        <h2 className="text-lg font-semibold text-on-surface">{t('form.createTitle')}</h2>
 
-        <p className="mt-1 text-sm text-on-surface-muted">
-          Create a candidate profile before uploading resumes or creating
-          applications.
-        </p>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('form.createDescription')}</p>
       </div>
 
       <form
@@ -115,7 +107,7 @@ export function CandidateForm() {
           <div className="md:col-span-2">
             <Input
               id="fullName"
-              label="Full name"
+              label={t('fields.fullName')}
               icon={<UserIcon className="size-4" />}
               value={formValues.fullName}
               onChange={(event) => updateField('fullName', event.target.value)}
@@ -127,7 +119,7 @@ export function CandidateForm() {
 
           <Input
             id="primaryEmail"
-            label="Email"
+            label={t('fields.email')}
             icon={<MailIcon className="size-4" />}
             value={formValues.primaryEmail ?? ''}
             onChange={(event) => updateField('primaryEmail', event.target.value)}
@@ -138,7 +130,7 @@ export function CandidateForm() {
 
           <Input
             id="primaryPhone"
-            label="Phone"
+            label={t('fields.phone')}
             icon={<PhoneIcon className="size-4" />}
             value={formValues.primaryPhone ?? ''}
             onChange={(event) => updateField('primaryPhone', event.target.value)}
@@ -149,7 +141,7 @@ export function CandidateForm() {
 
           <Input
             id="linkedinUrl"
-            label="LinkedIn URL"
+            label={t('fields.linkedinUrl')}
             icon={<LinkIcon className="size-4" />}
             value={formValues.linkedinUrl ?? ''}
             onChange={(event) => updateField('linkedinUrl', event.target.value)}
@@ -160,7 +152,7 @@ export function CandidateForm() {
 
           <Input
             id="githubUrl"
-            label="GitHub URL"
+            label={t('fields.githubUrl')}
             icon={<Code2Icon className="size-4" />}
             value={formValues.githubUrl ?? ''}
             onChange={(event) => updateField('githubUrl', event.target.value)}
@@ -171,7 +163,7 @@ export function CandidateForm() {
 
           <Input
             id="portfolioUrl"
-            label="Portfolio URL"
+            label={t('fields.portfolioUrl')}
             icon={<GlobeIcon className="size-4" />}
             value={formValues.portfolioUrl ?? ''}
             onChange={(event) => updateField('portfolioUrl', event.target.value)}
@@ -182,7 +174,7 @@ export function CandidateForm() {
 
           <Input
             id="location"
-            label="Location"
+            label={t('fields.location')}
             icon={<MapPinIcon className="size-4" />}
             value={formValues.location ?? ''}
             onChange={(event) => updateField('location', event.target.value)}
@@ -193,17 +185,14 @@ export function CandidateForm() {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-outline pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-on-surface-muted">
-            The candidate profile will be used for resumes, applications, and
-            evaluations.
-          </p>
+          <p className="text-xs text-on-surface-muted">{t('form.footerNoteCreate')}</p>
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
             <Link
               href="/candidates"
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
             >
-              Cancel
+              {t('form.cancel')}
             </Link>
 
             <button
@@ -211,7 +200,7 @@ export function CandidateForm() {
               disabled={isCreating}
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover focus:outline-none focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-disabled"
             >
-              {isCreating ? 'Creating...' : 'Create candidate'}
+              {isCreating ? t('form.creating') : t('form.create')}
             </button>
           </div>
         </div>

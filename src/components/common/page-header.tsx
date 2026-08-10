@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 
 type PageHeaderProps = {
@@ -9,7 +10,9 @@ type PageHeaderProps = {
   backLabel?: string;
 };
 
-export function PageHeader({ title, description, actions, backHref, backLabel = 'Back' }: PageHeaderProps) {
+export function PageHeader({ title, description, actions, backHref, backLabel }: PageHeaderProps) {
+  const t = useTranslations('common');
+
   return (
     <div className="space-y-3">
       {backHref ? (
@@ -17,7 +20,7 @@ export function PageHeader({ title, description, actions, backHref, backLabel = 
           href={backHref}
           className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
         >
-          ← {backLabel}
+          ← {backLabel ?? t('back')}
         </Link>
       ) : null}
 

@@ -2,9 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, ChevronLeftIcon, MailCheckIcon, MailIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import {
 import { ApiError } from '@/lib/api/api-error';
 
 export function ForgotPasswordForm() {
+  const t = useTranslations('auth.forgotPassword');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
 
@@ -36,7 +38,7 @@ export function ForgotPasswordForm() {
       await forgotPassword(values);
       setIsSent(true);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Unable to send email. Please try again.';
+      const message = error instanceof ApiError ? error.message : t('errorFallback');
       showToast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -49,12 +51,10 @@ export function ForgotPasswordForm() {
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-container">
           <MailCheckIcon className="size-7 text-success" />
         </div>
-        <h2 className="mt-5 text-xl font-bold text-on-surface">Check your email</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          If an account with this email exists, we&apos;ve sent instructions to reset your password.
-        </p>
+        <h2 className="mt-5 text-xl font-bold text-on-surface">{t('sentTitle')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('sentBody')}</p>
         <Link href={ROUTES.LOGIN} className="mt-5 inline-block text-sm font-semibold text-primary hover:underline">
-          Back to login
+          {t('backToLogin')}
         </Link>
       </div>
     );
@@ -63,17 +63,15 @@ export function ForgotPasswordForm() {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-on-surface">Forgot password?</h2>
-        <p className="mt-2 text-sm leading-6 text-on-surface-variant">
-          Enter your email and we&apos;ll send you a link to reset your password.
-        </p>
+        <h2 className="text-xl font-bold text-on-surface">{t('title')}</h2>
+        <p className="mt-2 text-sm leading-6 text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <Input
           id="email"
           type="email"
-          label="Email address"
+          label={t('emailLabel')}
           autoComplete="email"
           placeholder="name@company.com"
           icon={<MailIcon className="size-4.5" />}
@@ -82,7 +80,7 @@ export function ForgotPasswordForm() {
         />
 
         <Button type="submit" isLoading={isSubmitting} className="gap-2">
-          {isSubmitting ? 'Sending...' : 'Send reset link'}
+          {isSubmitting ? t('submitting') : t('submit')}
           {!isSubmitting ? <ArrowRightIcon className="size-4" /> : null}
         </Button>
       </form>
@@ -93,7 +91,7 @@ export function ForgotPasswordForm() {
           className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
         >
           <ChevronLeftIcon className="size-4" />
-          Back to login
+          {t('backToLogin')}
         </Link>
       </p>
     </div>

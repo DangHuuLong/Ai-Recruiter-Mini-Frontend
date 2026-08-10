@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import { getDisplayValue } from '@/lib/utils/display-value.util';
 
 type DetailItemProps = {
@@ -6,10 +8,14 @@ type DetailItemProps = {
 };
 
 export function DetailItem({ label, value }: DetailItemProps) {
+  const t = useTranslations('common');
+
   return (
     <div className="min-w-0">
       <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{label}</p>
-      <p className="mt-1 break-words text-sm font-medium text-on-surface">{getDisplayValue(value)}</p>
+      <p className="mt-1 break-words text-sm font-medium text-on-surface">
+        {getDisplayValue(value, t('notProvided'))}
+      </p>
     </div>
   );
 }
@@ -20,6 +26,8 @@ type DetailLinkItemProps = {
 };
 
 export function DetailLinkItem({ label, href }: DetailLinkItemProps) {
+  const t = useTranslations('common');
+
   return (
     <div className="min-w-0">
       <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{label}</p>
@@ -34,7 +42,7 @@ export function DetailLinkItem({ label, href }: DetailLinkItemProps) {
           {href}
         </a>
       ) : (
-        <p className="mt-1 text-sm font-medium text-on-surface">{getDisplayValue(href)}</p>
+        <p className="mt-1 text-sm font-medium text-on-surface">{getDisplayValue(href, t('notProvided'))}</p>
       )}
     </div>
   );

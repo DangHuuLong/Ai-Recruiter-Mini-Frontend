@@ -1,8 +1,9 @@
 'use client';
 
 import { IdCardIcon, Share2Icon, UserIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { DetailItem, DetailLinkItem, DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -23,6 +24,7 @@ function InfoCardHeader({ icon: Icon, title }: { icon: typeof UserIcon; title: s
 }
 
 export function CandidateDetail({ candidateId }: CandidateDetailProps) {
+  const t = useTranslations('candidates');
   const { candidate, isLoading, errorMessage, refetchCandidate } =
     useCandidateDetail(candidateId);
 
@@ -31,16 +33,17 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
       return;
     }
 
-    showToast.error('Failed to load candidate detail', {
+    showToast.error(t('detail.errorTitle'), {
       description: errorMessage,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage]);
 
   if (isLoading) {
     return (
       <LoadingState
-        title="Loading candidate detail..."
-        description="Please wait while the candidate profile is being loaded."
+        title={t('detail.loadingTitle')}
+        description={t('detail.loadingDescription')}
       />
     );
   }
@@ -48,7 +51,7 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
   if (errorMessage) {
     return (
       <EmptyState
-        title="Failed to load candidate detail"
+        title={t('detail.errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -58,7 +61,7 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
             }}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('detail.tryAgain')}
           </button>
         }
       />
@@ -68,14 +71,14 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
   if (!candidate) {
     return (
       <EmptyState
-        title="Candidate not found"
-        description="The candidate profile could not be found."
+        title={t('detail.notFoundTitle')}
+        description={t('detail.notFoundDescription')}
         action={
           <Link
             href="/candidates"
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Back to Candidates
+            {t('backToCandidates')}
           </Link>
         }
       />
@@ -85,47 +88,47 @@ export function CandidateDetail({ candidateId }: CandidateDetailProps) {
   return (
     <DetailPageLayout
       title={candidate.fullName}
-      description="View candidate profile information, contact details, and related links."
+      description={t('detail.pageDescription')}
       backHref="/candidates"
-      backLabel="Back to Candidates"
+      backLabel={t('backToCandidates')}
     >
       <div className="grid gap-5 md:grid-cols-3">
         <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
-          <InfoCardHeader icon={UserIcon} title="Basic information" />
+          <InfoCardHeader icon={UserIcon} title={t('detail.basicInfo')} />
           <div className="space-y-4">
-            <DetailItem label="Full name" value={candidate.fullName} />
-            <DetailItem label="Location" value={candidate.location} />
+            <DetailItem label={t('fields.fullName')} value={candidate.fullName} />
+            <DetailItem label={t('fields.location')} value={candidate.location} />
           </div>
         </div>
 
         <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
-          <InfoCardHeader icon={IdCardIcon} title="Contact information" />
+          <InfoCardHeader icon={IdCardIcon} title={t('detail.contactInfo')} />
           <div className="space-y-4">
-            <DetailItem label="Email" value={candidate.primaryEmail} />
-            <DetailItem label="Phone" value={candidate.primaryPhone} />
+            <DetailItem label={t('fields.email')} value={candidate.primaryEmail} />
+            <DetailItem label={t('fields.phone')} value={candidate.primaryPhone} />
           </div>
         </div>
 
         <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
-          <InfoCardHeader icon={Share2Icon} title="Online profiles" />
+          <InfoCardHeader icon={Share2Icon} title={t('detail.onlineProfiles')} />
           <div className="space-y-4">
-            <DetailLinkItem label="LinkedIn" href={candidate.linkedinUrl} />
-            <DetailLinkItem label="GitHub" href={candidate.githubUrl} />
-            <DetailLinkItem label="Portfolio" href={candidate.portfolioUrl} />
+            <DetailLinkItem label={t('detail.linkedin')} href={candidate.linkedinUrl} />
+            <DetailLinkItem label={t('detail.github')} href={candidate.githubUrl} />
+            <DetailLinkItem label={t('detail.portfolio')} href={candidate.portfolioUrl} />
           </div>
         </div>
       </div>
 
       <DetailSection
-        title="Resumes"
-        description="Resume records linked to this candidate."
+        title={t('detail.resumesSection')}
+        description={t('detail.resumesSectionDescription')}
       >
         <CandidateResumeList candidateId={candidate.id} />
       </DetailSection>
 
       <DetailSection
-        title="Applications"
-        description="Job descriptions this candidate has applied to."
+        title={t('detail.applicationsSection')}
+        description={t('detail.applicationsSectionDescription')}
       >
         <CandidateApplicationList candidateId={candidate.id} />
       </DetailSection>

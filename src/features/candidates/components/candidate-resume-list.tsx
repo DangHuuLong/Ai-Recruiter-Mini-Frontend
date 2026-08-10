@@ -1,8 +1,9 @@
 'use client';
 
 import { EyeIcon, FileTextIcon } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { ActionIconButton, DataTable, type DataTableColumn, type DataTableSort } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -18,18 +19,21 @@ const PARSE_STATUS_CLASSES: Record<ParseStatus, string> = {
   FAILED: 'bg-error-container text-error',
 };
 
-const PARSE_STATUS_FILTER_OPTIONS = [
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Processing', value: 'PROCESSING' },
-  { label: 'Success', value: 'SUCCESS' },
-  { label: 'Failed', value: 'FAILED' },
-];
+function buildResumeColumns(
+  t: ReturnType<typeof useTranslations<'candidates.resumes'>>,
+  parseStatus: ParseStatus | '',
+): DataTableColumn<Resume>[] {
+  const parseStatusFilterOptions = [
+    { label: t('parseStatusOptions.pending'), value: 'PENDING' },
+    { label: t('parseStatusOptions.processing'), value: 'PROCESSING' },
+    { label: t('parseStatusOptions.success'), value: 'SUCCESS' },
+    { label: t('parseStatusOptions.failed'), value: 'FAILED' },
+  ];
 
-function buildResumeColumns(parseStatus: ParseStatus | ''): DataTableColumn<Resume>[] {
   return [
     {
       key: 'resume',
-      header: 'Resume',
+      header: t('columns.resume'),
       sortKey: 'fileAsset.fileName',
       render: (resume) => (
         <div className="flex items-center gap-3">
@@ -38,7 +42,7 @@ function buildResumeColumns(parseStatus: ParseStatus | ''): DataTableColumn<Resu
           </div>
           <div>
             <p className="max-w-[220px] truncate text-sm font-semibold text-on-surface">
-              {resume.fileAsset?.fileName || 'Resume record'}
+              {resume.fileAsset?.fileName || t('resumeFallback')}
             </p>
             <p className="font-mono text-xs text-on-surface-muted">{resume.id}</p>
           </div>
@@ -47,7 +51,7 @@ function buildResumeColumns(parseStatus: ParseStatus | ''): DataTableColumn<Resu
     },
     {
       key: 'uploaded',
-      header: 'Uploaded',
+      header: t('columns.uploaded'),
       sortKey: 'uploadedAt',
       render: (resume) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">
@@ -57,8 +61,8 @@ function buildResumeColumns(parseStatus: ParseStatus | ''): DataTableColumn<Resu
     },
     {
       key: 'status',
-      header: 'Parse status',
-      filter: { key: 'parseStatus', options: PARSE_STATUS_FILTER_OPTIONS, activeValue: parseStatus },
+      header: t('columns.parseStatus'),
+      filter: { key: 'parseStatus', options: parseStatusFilterOptions, activeValue: parseStatus },
       render: (resume) => (
         <span
           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${PARSE_STATUS_CLASSES[resume.parseStatus]}`}
@@ -69,11 +73,11 @@ function buildResumeColumns(parseStatus: ParseStatus | ''): DataTableColumn<Resu
     },
     {
       key: 'action',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (resume) => (
         <div className="flex justify-end">
-          <ActionIconButton href={`/resumes/${resume.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+          <ActionIconButton href={`/resumes/${resume.id}`} icon={<EyeIcon className="size-4" />} label={t('view')} />
         </div>
       ),
     },
@@ -87,6 +91,7 @@ type CandidateResumeListProps = {
 export function CandidateResumeList({
   candidateId,
 }: CandidateResumeListProps) {
+  const t = useTranslations('candidates.resumes');
   const { resumes, isLoading, errorMessage, refetchResumes } =
     useCandidateResumes(candidateId);
   const [parseStatus, setParseStatus] = useState<ParseStatus | ''>('');
@@ -103,24 +108,20 @@ export function CandidateResumeList({
       return;
     }
 
-    showToast.error('Failed to load candidate resumes', {
+    showToast.error(t('errorTitle'), {
       description: errorMessage,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage]);
 
   if (isLoading) {
-    return (
-      <LoadingState
-        title="Loading candidate resumes..."
-        description="Please wait while this candidate's resumes are being loaded."
-      />
-    );
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage) {
     return (
       <EmptyState
-        title="Failed to load candidate resumes"
+        title={t('errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -130,7 +131,7 @@ export function CandidateResumeList({
             }}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('tryAgain')}
           </button>
         }
       />
@@ -140,14 +141,14 @@ export function CandidateResumeList({
   if (resumes.length === 0) {
     return (
       <EmptyState
-        title="No resumes linked"
-        description="This candidate does not have any uploaded resumes yet."
+        title={t('emptyTitle')}
+        description={t('emptyDescription')}
         action={
           <Link
             href="/resumes"
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Upload Resume
+            {t('uploadResume')}
           </Link>
         }
       />
@@ -157,19 +158,14 @@ export function CandidateResumeList({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-base font-semibold text-on-surface">
-          Linked resumes
-        </h3>
+        <h3 className="text-base font-semibold text-on-surface">{t('linkedResumes')}</h3>
 
-        <p className="mt-1 text-sm text-on-surface-muted">
-          {resumes.length} resume record
-          {resumes.length > 1 ? 's' : ''} linked to this candidate.
-        </p>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('linkedCount', { count: resumes.length })}</p>
       </div>
 
       <DataTable
         data={visibleResumes}
-        columns={buildResumeColumns(parseStatus)}
+        columns={buildResumeColumns(t, parseStatus)}
         getRowKey={(resume) => resume.id}
         sort={sort}
         onSortChange={(key, order) => setSort({ key, order })}

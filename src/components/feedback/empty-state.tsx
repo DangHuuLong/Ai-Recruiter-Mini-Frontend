@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -11,12 +12,16 @@ type EmptyStateProps = {
 };
 
 export function EmptyState({
-  title = 'No data found',
-  description = 'There is no data to display at the moment.',
+  title,
+  description,
   icon,
   action,
   className,
 }: EmptyStateProps) {
+  const t = useTranslations('common.emptyState');
+  const resolvedTitle = title ?? t('title');
+  const resolvedDescription = description ?? t('description');
+
   return (
     <div
       className={cn(
@@ -29,10 +34,10 @@ export function EmptyState({
       </div>
 
       <div className="max-w-md space-y-2">
-        <h3 className="text-base font-semibold text-on-surface">{title}</h3>
+        <h3 className="text-base font-semibold text-on-surface">{resolvedTitle}</h3>
 
-        {description ? (
-          <p className="text-sm leading-6 text-on-surface-variant">{description}</p>
+        {resolvedDescription ? (
+          <p className="text-sm leading-6 text-on-surface-variant">{resolvedDescription}</p>
         ) : null}
       </div>
 

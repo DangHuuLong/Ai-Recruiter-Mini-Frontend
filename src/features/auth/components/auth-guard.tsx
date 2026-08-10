@@ -1,7 +1,9 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
+import { usePathname, useRouter } from '@/i18n/navigation';
 
 import { ROUTES } from '@/config/routes.config';
 import { getRequiredRoles } from '@/config/route-access.config';
@@ -13,6 +15,7 @@ type AuthGuardProps = {
 };
 
 export function AuthGuard({ children }: AuthGuardProps) {
+  const t = useTranslations('auth.guard');
   const router = useRouter();
   const pathname = usePathname();
   const isHydrated = useAuthStore((state) => state.isHydrated);
@@ -32,7 +35,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface px-4">
         <div className="rounded-2xl border border-outline bg-surface-lowest px-6 py-5 text-sm font-medium text-on-surface-variant shadow-card">
-          Checking your session...
+          {t('checkingSession')}
         </div>
       </div>
     );

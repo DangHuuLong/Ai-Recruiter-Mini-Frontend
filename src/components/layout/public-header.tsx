@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 import { ROUTES } from '@/config/routes.config';
+import { LocaleSwitcher } from '@/components/layout/locale-switcher';
 
 export function PublicHeader() {
   return (
@@ -15,6 +16,7 @@ export function PublicHeader() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <LocaleSwitcher />
           <Link
             href={ROUTES.LOGIN}
             className="text-sm font-semibold text-on-surface-variant hover:text-on-surface"
