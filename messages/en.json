@@ -32,6 +32,12 @@
       "weak": "Weak",
       "poor": "Poor"
     },
+    "roleLabels": {
+      "admin": "Admin",
+      "recruiter": "Recruiter",
+      "hiringManager": "Hiring Manager",
+      "dev": "Dev"
+    },
     "dataTable": {
       "noData": "No data available.",
       "selectAllRows": "Select all rows",
@@ -1320,6 +1326,79 @@
       "updateFailedTitle": "Failed to update config",
       "createFailedTitle": "Failed to create config",
       "saveFailedFallback": "Something went wrong while saving."
+    }
+  },
+  "users": {
+    "list": {
+      "title": "Team members",
+      "subtitle": "Manage who has access to your organization's workspace.",
+      "inviteMember": "Invite member",
+      "searchPlaceholder": "Search by name or email...",
+      "loadingTitle": "Loading team members...",
+      "loadingDescription": "Please wait while your team is being loaded.",
+      "errorTitle": "Failed to load team members",
+      "errorFallback": "Failed to load team members",
+      "tryAgain": "Try again",
+      "emptyTitle": "No team members found",
+      "emptyDescription": "Invite the first member or adjust your search/filter.",
+      "youSuffix": "(You)",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "columns": {
+        "member": "Member",
+        "role": "Role",
+        "status": "Status",
+        "joined": "Joined",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit"
+      },
+      "invitePanel": {
+        "title": "Invite member",
+        "fullNameLabel": "Full name",
+        "emailLabel": "Email",
+        "passwordLabel": "Temporary password",
+        "passwordHint": "At least 8 characters",
+        "roleLabel": "Role",
+        "submit": "Send invitation"
+      },
+      "editPanel": {
+        "title": "Edit member",
+        "roleLabel": "Role",
+        "activeLabel": "Active",
+        "selfNote": "You can't change your own role or deactivate yourself.",
+        "lastAdminNote": "This is the last active admin — promote another member first.",
+        "submit": "Save changes"
+      },
+      "toast": {
+        "inviteValidation": "Email and a password of at least 8 characters are required",
+        "inviteSuccess": "Invitation sent",
+        "inviteFailedTitle": "Failed to invite member",
+        "inviteFailedFallback": "Something went wrong while sending the invitation.",
+        "editSuccess": "Member updated",
+        "editFailedTitle": "Failed to update member",
+        "editFailedFallback": "Something went wrong while saving changes."
+      }
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "View and manage your account details.",
+      "emailLabel": "Email",
+      "fullNameLabel": "Full name",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "contactAdminNote": "Contact your admin to update your name.",
+      "passwordNote": "Need to change your password? Log out and use the <b>Forgot password</b> link on the login screen.",
+      "loadingTitle": "Loading your profile...",
+      "loadingDescription": "Please wait while your account details load.",
+      "errorTitle": "Failed to load your profile",
+      "errorFallback": "Please try again.",
+      "updateSuccess": "Profile updated",
+      "updateFailedTitle": "Failed to update profile",
+      "updateFailedFallback": "Something went wrong."
     }
   }
 }

@@ -2,18 +2,13 @@
 
 import { PencilIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import type { AuthUser } from '@/features/auth/types/auth.type';
 import { getCurrentUser, updateCurrentUserFullName } from '@/features/users/api/user.api';
-
-const ROLE_LABELS: Record<string, string> = {
-  ADMIN: 'Admin',
-  RECRUITER: 'Recruiter',
-  HIRING_MANAGER: 'Hiring Manager',
-  DEV: 'Dev',
-};
+import { ROLE_LABEL_KEYS } from '@/features/users/types/user.type';
 
 function getInitials(fullName: string) {
   return fullName
@@ -25,6 +20,8 @@ function getInitials(fullName: string) {
 }
 
 export function MyProfile() {
+  const t = useTranslations('users.profile');
+  const tCommon = useTranslations('common');
   const updateStoreUser = useAuthStore((state) => state.updateUser);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +38,7 @@ export function MyProfile() {
       setUser(data);
       setFullNameDraft(data.fullName);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to load your profile');
+      setErrorMessage(error instanceof Error ? error.message : t('errorTitle'));
     } finally {
       setIsLoading(false);
     }
@@ -49,6 +46,7 @@ export function MyProfile() {
 
   useEffect(() => {
     void loadUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const canEditName = user?.role === 'ADMIN';
@@ -62,10 +60,10 @@ export function MyProfile() {
       setUser(updated);
       updateStoreUser(updated);
       setIsEditing(false);
-      showToast.success('Profile updated');
+      showToast.success(t('updateSuccess'));
     } catch (error) {
-      showToast.error('Failed to update profile', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('updateFailedTitle'), {
+        description: error instanceof Error ? error.message : t('updateFailedFallback'),
       });
     } finally {
       setIsSaving(false);
@@ -73,18 +71,18 @@ export function MyProfile() {
   };
 
   if (isLoading) {
-    return <LoadingState title="Loading your profile..." description="Please wait while your account details load." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !user) {
-    return <EmptyState title="Failed to load your profile" description={errorMessage ?? 'Please try again.'} />;
+    return <EmptyState title={t('errorTitle')} description={errorMessage ?? t('errorFallback')} />;
   }
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">My Profile</h1>
-        <p className="mt-1 text-sm text-on-surface-variant">View and manage your account details.</p>
+        <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
@@ -94,13 +92,13 @@ export function MyProfile() {
           </div>
           <h2 className="mt-4 text-xl font-bold text-on-surface">{user.fullName}</h2>
           <span className="mt-2 inline-flex rounded-full bg-primary-container px-3 py-1 text-xs font-semibold text-on-primary-container">
-            {ROLE_LABELS[user.role] ?? user.role}
+            {tCommon(`roleLabels.${ROLE_LABEL_KEYS[user.role]}`)}
           </span>
         </div>
 
         <div className="mt-6 space-y-4 border-t border-outline pt-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Email</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{t('emailLabel')}</p>
             <p className="mt-1 rounded-xl border border-outline bg-surface-variant px-3 py-2.5 text-sm text-on-surface-variant">
               {user.email}
             </p>
@@ -108,7 +106,7 @@ export function MyProfile() {
 
           <div>
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Full name</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{t('fullNameLabel')}</p>
               {canEditName && !isEditing ? (
                 <button
                   type="button"
@@ -119,7 +117,7 @@ export function MyProfile() {
                   className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-primary transition hover:underline"
                 >
                   <PencilIcon className="size-3.5" />
-                  Edit
+                  {t('edit')}
                 </button>
               ) : null}
             </div>
@@ -142,7 +140,7 @@ export function MyProfile() {
                     }}
                     className="inline-flex h-9 cursor-pointer items-center justify-center rounded-xl border border-outline px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-variant disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                   <button
                     type="button"
@@ -150,7 +148,7 @@ export function MyProfile() {
                     onClick={() => void handleSave()}
                     className="inline-flex h-9 cursor-pointer items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-on-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled"
                   >
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? t('saving') : t('save')}
                   </button>
                 </div>
               </div>
@@ -159,7 +157,7 @@ export function MyProfile() {
                 {user.fullName}
                 {!canEditName ? (
                   <span className="ml-2 text-xs font-medium text-on-surface-muted">
-                    Contact your admin to update your name.
+                    {t('contactAdminNote')}
                   </span>
                 ) : null}
               </p>
@@ -168,10 +166,7 @@ export function MyProfile() {
         </div>
 
         <div className="mt-6 flex gap-3 rounded-xl border border-primary/20 bg-primary-container p-4 text-sm text-on-primary-container">
-          <p>
-            Need to change your password? Log out and use the{' '}
-            <span className="font-semibold">Forgot password</span> link on the login screen.
-          </p>
+          <p>{t.rich('passwordNote', { b: (chunks) => <span className="font-semibold">{chunks}</span> })}</p>
         </div>
       </div>
     </div>

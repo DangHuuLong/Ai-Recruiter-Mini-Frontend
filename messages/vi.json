@@ -32,6 +32,12 @@
       "weak": "Yếu",
       "poor": "Kém"
     },
+    "roleLabels": {
+      "admin": "Quản trị viên",
+      "recruiter": "Nhà tuyển dụng",
+      "hiringManager": "Quản lý tuyển dụng",
+      "dev": "Dev"
+    },
     "dataTable": {
       "noData": "Không có dữ liệu.",
       "selectAllRows": "Chọn tất cả các dòng",
@@ -1320,6 +1326,79 @@
       "updateFailedTitle": "Không thể cập nhật cấu hình",
       "createFailedTitle": "Không thể tạo cấu hình",
       "saveFailedFallback": "Đã xảy ra lỗi khi lưu."
+    }
+  },
+  "users": {
+    "list": {
+      "title": "Thành viên nhóm",
+      "subtitle": "Quản lý ai có quyền truy cập vào không gian làm việc của tổ chức bạn.",
+      "inviteMember": "Mời thành viên",
+      "searchPlaceholder": "Tìm theo tên hoặc email...",
+      "loadingTitle": "Đang tải thành viên nhóm...",
+      "loadingDescription": "Vui lòng chờ trong khi nhóm của bạn đang được tải.",
+      "errorTitle": "Không thể tải thành viên nhóm",
+      "errorFallback": "Không thể tải thành viên nhóm",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Chưa có thành viên nào",
+      "emptyDescription": "Mời thành viên đầu tiên hoặc điều chỉnh tìm kiếm/bộ lọc.",
+      "youSuffix": "(Bạn)",
+      "statusActive": "Đang hoạt động",
+      "statusInactive": "Đã vô hiệu hóa",
+      "columns": {
+        "member": "Thành viên",
+        "role": "Vai trò",
+        "status": "Trạng thái",
+        "joined": "Ngày tham gia",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "edit": "Sửa"
+      },
+      "invitePanel": {
+        "title": "Mời thành viên",
+        "fullNameLabel": "Họ và tên",
+        "emailLabel": "Email",
+        "passwordLabel": "Mật khẩu tạm thời",
+        "passwordHint": "Tối thiểu 8 ký tự",
+        "roleLabel": "Vai trò",
+        "submit": "Gửi lời mời"
+      },
+      "editPanel": {
+        "title": "Sửa thành viên",
+        "roleLabel": "Vai trò",
+        "activeLabel": "Đang hoạt động",
+        "selfNote": "Bạn không thể tự đổi vai trò hoặc tự vô hiệu hóa chính mình.",
+        "lastAdminNote": "Đây là quản trị viên đang hoạt động cuối cùng — hãy thăng cấp thành viên khác trước.",
+        "submit": "Lưu thay đổi"
+      },
+      "toast": {
+        "inviteValidation": "Cần có email và mật khẩu tối thiểu 8 ký tự",
+        "inviteSuccess": "Đã gửi lời mời",
+        "inviteFailedTitle": "Không thể mời thành viên",
+        "inviteFailedFallback": "Đã xảy ra lỗi khi gửi lời mời.",
+        "editSuccess": "Đã cập nhật thành viên",
+        "editFailedTitle": "Không thể cập nhật thành viên",
+        "editFailedFallback": "Đã xảy ra lỗi khi lưu thay đổi."
+      }
+    },
+    "profile": {
+      "title": "Hồ sơ của tôi",
+      "subtitle": "Xem và quản lý thông tin tài khoản của bạn.",
+      "emailLabel": "Email",
+      "fullNameLabel": "Họ và tên",
+      "edit": "Sửa",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "contactAdminNote": "Liên hệ quản trị viên của bạn để cập nhật tên.",
+      "passwordNote": "Cần đổi mật khẩu? Đăng xuất và dùng liên kết <b>Quên mật khẩu</b> ở màn hình đăng nhập.",
+      "loadingTitle": "Đang tải hồ sơ của bạn...",
+      "loadingDescription": "Vui lòng chờ trong khi thông tin tài khoản đang được tải.",
+      "errorTitle": "Không thể tải hồ sơ của bạn",
+      "errorFallback": "Vui lòng thử lại.",
+      "updateSuccess": "Đã cập nhật hồ sơ",
+      "updateFailedTitle": "Không thể cập nhật hồ sơ",
+      "updateFailedFallback": "Đã xảy ra lỗi."
     }
   }
 }

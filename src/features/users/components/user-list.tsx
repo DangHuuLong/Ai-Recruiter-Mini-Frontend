@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { PencilIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -17,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import { createUser, getUsers, updateUser } from '@/features/users/api/user.api';
-import { ROLE_LABELS, type OrgUserRole, type User, type UserQuery } from '@/features/users/types/user.type';
+import { ROLE_LABEL_KEYS, type OrgUserRole, type User, type UserQuery } from '@/features/users/types/user.type';
 import type { PaginationMeta } from '@/lib/api/api-types';
 import { ApiError } from '@/lib/api/api-error';
 import { cn } from '@/lib/utils/cn';
@@ -25,15 +26,7 @@ import { formatDate } from '@/lib/utils/format-date';
 
 const PAGE_SIZE = 10;
 
-const ROLE_FILTER_OPTIONS = (Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => ({
-  label: ROLE_LABELS[role],
-  value: role,
-}));
-
-const STATUS_FILTER_OPTIONS = [
-  { label: 'Active', value: 'true' },
-  { label: 'Inactive', value: 'false' },
-];
+const ORG_USER_ROLES: OrgUserRole[] = ['ADMIN', 'RECRUITER', 'HIRING_MANAGER'];
 
 function getInitials(name: string | null, email: string) {
   const source = name?.trim() || email;
@@ -46,15 +39,27 @@ function getInitials(name: string | null, email: string) {
 }
 
 function buildColumns(
+  t: ReturnType<typeof useTranslations<'users.list'>>,
+  tCommon: ReturnType<typeof useTranslations<'common'>>,
   role: OrgUserRole | '',
   status: string,
   currentUserId: string | undefined,
   onEdit: (user: User) => void,
 ): DataTableColumn<User>[] {
+  const roleFilterOptions = ORG_USER_ROLES.map((r) => ({
+    label: tCommon(`roleLabels.${ROLE_LABEL_KEYS[r]}`),
+    value: r,
+  }));
+
+  const statusFilterOptions = [
+    { label: t('statusActive'), value: 'true' },
+    { label: t('statusInactive'), value: 'false' },
+  ];
+
   return [
     {
       key: 'member',
-      header: 'Member',
+      header: t('columns.member'),
       sortKey: 'fullName',
       render: (user) => (
         <div className="flex items-center gap-3">
@@ -65,7 +70,7 @@ function buildColumns(
             <p className="font-semibold text-on-surface">
               {user.fullName ?? user.email}
               {user.id === currentUserId ? (
-                <span className="ml-1.5 text-xs font-normal text-on-surface-muted">(You)</span>
+                <span className="ml-1.5 text-xs font-normal text-on-surface-muted">{t('youSuffix')}</span>
               ) : null}
             </p>
             <p className="text-xs text-on-surface-muted">{user.email}</p>
@@ -75,18 +80,18 @@ function buildColumns(
     },
     {
       key: 'role',
-      header: 'Role',
-      filter: { key: 'role', options: ROLE_FILTER_OPTIONS, activeValue: role },
+      header: t('columns.role'),
+      filter: { key: 'role', options: roleFilterOptions, activeValue: role },
       render: (user) => (
         <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-          {ROLE_LABELS[user.role] ?? user.role}
+          {tCommon(`roleLabels.${ROLE_LABEL_KEYS[user.role]}`)}
         </span>
       ),
     },
     {
       key: 'status',
-      header: 'Status',
-      filter: { key: 'isActive', options: STATUS_FILTER_OPTIONS, activeValue: status },
+      header: t('columns.status'),
+      filter: { key: 'isActive', options: statusFilterOptions, activeValue: status },
       render: (user) => (
         <span
           className={cn(
@@ -94,13 +99,13 @@ function buildColumns(
             user.isActive ? 'bg-success-container text-success' : 'bg-surface-variant text-on-surface-muted',
           )}
         >
-          {user.isActive ? 'Active' : 'Inactive'}
+          {user.isActive ? t('statusActive') : t('statusInactive')}
         </span>
       ),
     },
     {
       key: 'joined',
-      header: 'Joined',
+      header: t('columns.joined'),
       sortKey: 'createdAt',
       render: (user) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">{formatDate(user.createdAt)}</p>
@@ -108,11 +113,11 @@ function buildColumns(
     },
     {
       key: 'action',
-      header: 'Actions',
+      header: t('columns.actions'),
       className: 'text-right',
       render: (user) => (
         <div className="flex justify-end">
-          <ActionIconButton icon={<PencilIcon className="size-4" />} label="Edit" onClick={() => onEdit(user)} />
+          <ActionIconButton icon={<PencilIcon className="size-4" />} label={t('actions.edit')} onClick={() => onEdit(user)} />
         </div>
       ),
     },
@@ -120,6 +125,8 @@ function buildColumns(
 }
 
 export function UserList() {
+  const t = useTranslations('users.list');
+  const tCommon = useTranslations('common');
   const currentUserId = useAuthStore((state) => state.user?.id);
 
   const [users, setUsers] = useState<User[]>([]);
@@ -161,9 +168,9 @@ export function UserList() {
       setUsers(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load team members';
+      const message = error instanceof Error ? error.message : t('errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load team members', { description: message });
+      showToast.error(t('errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -192,7 +199,7 @@ export function UserList() {
 
   const handleInvite = async () => {
     if (!inviteEmail.trim() || invitePassword.length < 8) {
-      showToast.error('Email and a password of at least 8 characters are required');
+      showToast.error(t('toast.inviteValidation'));
       return;
     }
 
@@ -204,7 +211,7 @@ export function UserList() {
         fullName: inviteName.trim() || undefined,
         role: inviteRole,
       });
-      showToast.success('Invitation sent', { description: inviteEmail });
+      showToast.success(t('toast.inviteSuccess'), { description: inviteEmail });
       setIsInviteOpen(false);
       setInviteName('');
       setInviteEmail('');
@@ -212,8 +219,8 @@ export function UserList() {
       setInviteRole('RECRUITER');
       await loadUsers();
     } catch (error) {
-      showToast.error('Failed to invite member', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong while sending the invitation.',
+      showToast.error(t('toast.inviteFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('toast.inviteFailedFallback'),
       });
     } finally {
       setIsInviting(false);
@@ -244,12 +251,12 @@ export function UserList() {
     try {
       setIsSavingEdit(true);
       await updateUser(editingUser.id, { role: editRole, isActive: editIsActive });
-      showToast.success('Member updated', { description: editingUser.email });
+      showToast.success(t('toast.editSuccess'), { description: editingUser.email });
       setEditingUser(null);
       await loadUsers();
     } catch (error) {
-      showToast.error('Failed to update member', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong while saving changes.',
+      showToast.error(t('toast.editFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('toast.editFailedFallback'),
       });
     } finally {
       setIsSavingEdit(false);
@@ -261,13 +268,13 @@ export function UserList() {
   const activeLocked = isSelf || isOnlyActiveAdmin;
 
   if (isLoading && users.length === 0) {
-    return <LoadingState title="Loading team members..." description="Please wait while your team is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage && users.length === 0) {
     return (
       <EmptyState
-        title="Failed to load team members"
+        title={t('errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -275,7 +282,7 @@ export function UserList() {
             onClick={() => void loadUsers()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('tryAgain')}
           </button>
         }
       />
@@ -286,21 +293,19 @@ export function UserList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-on-surface">Team members</h1>
-          <p className="mt-1 text-sm text-on-surface-variant">
-            Manage who has access to your organization&apos;s workspace.
-          </p>
+          <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+          <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
         </div>
         <Button className="w-auto gap-2 px-4" onClick={() => setIsInviteOpen(true)}>
           <PlusIcon className="size-4" />
-          Invite member
+          {t('inviteMember')}
         </Button>
       </div>
 
       <ListControls
         search={{
           value: search,
-          placeholder: 'Search by name or email...',
+          placeholder: t('searchPlaceholder'),
           onChange: (value) => {
             setSearch(value);
             setPage(1);
@@ -311,13 +316,13 @@ export function UserList() {
 
       {users.length === 0 ? (
         <EmptyState
-          title="No team members found"
-          description="Invite the first member or adjust your search/filter."
+          title={t('emptyTitle')}
+          description={t('emptyDescription')}
         />
       ) : (
         <DataTable
           data={users}
-          columns={buildColumns(roleFilter, statusFilter, currentUserId, (user) => void openEdit(user))}
+          columns={buildColumns(t, tCommon, roleFilter, statusFilter, currentUserId, (user) => void openEdit(user))}
           getRowKey={(user) => user.id}
           sort={sort}
           onSortChange={handleSortChange}
@@ -343,7 +348,7 @@ export function UserList() {
               className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto bg-surface-lowest p-6 shadow-panel"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-on-surface">Invite member</h2>
+                <h2 className="text-lg font-bold text-on-surface">{t('invitePanel.title')}</h2>
                 <button
                   type="button"
                   onClick={() => setIsInviteOpen(false)}
@@ -354,32 +359,32 @@ export function UserList() {
               </div>
 
               <div className="mt-6 space-y-4">
-                <Input label="Full name" value={inviteName} onChange={(e) => setInviteName(e.target.value)} />
+                <Input label={t('invitePanel.fullNameLabel')} value={inviteName} onChange={(e) => setInviteName(e.target.value)} />
                 <Input
-                  label="Email"
+                  label={t('invitePanel.emailLabel')}
                   type="email"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                 />
                 <Input
-                  label="Temporary password"
+                  label={t('invitePanel.passwordLabel')}
                   type="password"
-                  hint="At least 8 characters"
+                  hint={t('invitePanel.passwordHint')}
                   value={invitePassword}
                   onChange={(e) => setInvitePassword(e.target.value)}
                 />
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Role
+                    {t('invitePanel.roleLabel')}
                   </label>
                   <select
                     value={inviteRole}
                     onChange={(e) => setInviteRole(e.target.value as OrgUserRole)}
                     className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
                   >
-                    {(Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => (
+                    {ORG_USER_ROLES.map((role) => (
                       <option key={role} value={role}>
-                        {ROLE_LABELS[role]}
+                        {tCommon(`roleLabels.${ROLE_LABEL_KEYS[role]}`)}
                       </option>
                     ))}
                   </select>
@@ -387,7 +392,7 @@ export function UserList() {
               </div>
 
               <Button className="mt-6" isLoading={isInviting} onClick={() => void handleInvite()}>
-                Send invitation
+                {t('invitePanel.submit')}
               </Button>
             </motion.div>
           </>
@@ -412,7 +417,7 @@ export function UserList() {
               className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto bg-surface-lowest p-6 shadow-panel"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-on-surface">Edit member</h2>
+                <h2 className="text-lg font-bold text-on-surface">{t('editPanel.title')}</h2>
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
@@ -430,7 +435,7 @@ export function UserList() {
               <div className="mt-6 space-y-4">
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Role
+                    {t('editPanel.roleLabel')}
                   </label>
                   <select
                     value={editRole}
@@ -438,9 +443,9 @@ export function UserList() {
                     disabled={roleLocked}
                     className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
                   >
-                    {(Object.keys(ROLE_LABELS) as OrgUserRole[]).map((role) => (
+                    {ORG_USER_ROLES.map((role) => (
                       <option key={role} value={role}>
-                        {ROLE_LABELS[role]}
+                        {tCommon(`roleLabels.${ROLE_LABEL_KEYS[role]}`)}
                       </option>
                     ))}
                   </select>
@@ -459,22 +464,22 @@ export function UserList() {
                     onChange={(e) => setEditIsActive(e.target.checked)}
                     className="size-4 rounded border-outline text-primary disabled:cursor-not-allowed"
                   />
-                  Active
+                  {t('editPanel.activeLabel')}
                 </label>
 
                 {isSelf ? (
                   <p className="rounded-lg border border-outline bg-surface-variant p-3 text-xs text-on-surface-variant">
-                    You can&apos;t change your own role or deactivate yourself.
+                    {t('editPanel.selfNote')}
                   </p>
                 ) : isOnlyActiveAdmin ? (
                   <p className="rounded-lg border border-warning bg-warning-container p-3 text-xs text-on-surface">
-                    This is the last active admin — promote another member first.
+                    {t('editPanel.lastAdminNote')}
                   </p>
                 ) : null}
               </div>
 
               <Button className="mt-6" isLoading={isSavingEdit} onClick={() => void handleSaveEdit()}>
-                Save changes
+                {t('editPanel.submit')}
               </Button>
             </motion.div>
           </>
