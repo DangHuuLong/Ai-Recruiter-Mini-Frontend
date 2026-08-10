@@ -1,14 +1,18 @@
+import { getTranslations } from 'next-intl/server';
+
 import { PageHeader } from '@/components/common';
 import { JobDescriptionForm } from '@/features/job-descriptions/components/job-description-form';
 
-export default function NewJobDescriptionPage() {
+export default async function NewJobDescriptionPage() {
+  const t = await getTranslations('jobDescriptions');
+
   return (
     <div className="max-w-6xl space-y-6">
       <PageHeader
-        title="Create Job Description"
-        description="Add a new hiring position and paste the original raw JD text for later parsing."
+        title={t('createJd')}
+        description={t('newPageDescription')}
         backHref="/job-descriptions"
-        backLabel="Back to job descriptions"
+        backLabel={t('backToList')}
       />
 
       <JobDescriptionForm />

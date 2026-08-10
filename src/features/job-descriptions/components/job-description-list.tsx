@@ -3,6 +3,7 @@
 import { BriefcaseIcon, EyeIcon, MapPinIcon, PauseIcon, PencilIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -40,12 +41,13 @@ function statusClassName(status: JobDescription['parseStatus']) {
 }
 
 function buildColumns(
+  t: ReturnType<typeof useTranslations<'jobDescriptions'>>,
   onDeactivate: (jobDescription: JobDescription) => void,
 ): DataTableColumn<JobDescription>[] {
   return [
     {
       key: 'title',
-      header: 'Job Description',
+      header: t('columns.jobDescription'),
       sortKey: 'title',
       render: (jobDescription) => (
         <div className="flex items-start gap-3">
@@ -54,7 +56,7 @@ function buildColumns(
           </div>
           <div>
             <p className="text-sm font-semibold text-on-surface">{jobDescription.title}</p>
-            <p className="mt-0.5 text-xs text-on-surface-muted">{jobDescription.companyName || 'No company'}</p>
+            <p className="mt-0.5 text-xs text-on-surface-muted">{jobDescription.companyName || t('noCompany')}</p>
             <span
               className={`mt-1.5 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
                 jobDescription.isActive
@@ -62,7 +64,7 @@ function buildColumns(
                   : 'bg-surface-variant text-on-surface-muted'
               }`}
             >
-              {jobDescription.isActive ? 'Active' : 'Inactive'}
+              {jobDescription.isActive ? t('active') : t('inactive')}
             </span>
           </div>
         </div>
@@ -70,27 +72,27 @@ function buildColumns(
     },
     {
       key: 'location',
-      header: 'Location',
+      header: t('columns.location'),
       render: (jobDescription) => (
         <p className="flex items-center gap-1.5 text-sm text-on-surface-variant">
           {jobDescription.location ? <MapPinIcon className="size-3.5 shrink-0 text-on-surface-muted" /> : null}
-          {jobDescription.location || 'Not provided'}
+          {jobDescription.location || t('notProvided')}
         </p>
       ),
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('columns.type'),
       render: (jobDescription) => (
         <div className="space-y-1 text-sm text-on-surface-variant">
-          <p>{jobDescription.employmentType || 'Not provided'}</p>
-          <p className="text-xs text-on-surface-muted">{jobDescription.seniority || 'No seniority'}</p>
+          <p>{jobDescription.employmentType || t('notProvided')}</p>
+          <p className="text-xs text-on-surface-muted">{jobDescription.seniority || t('noSeniority')}</p>
         </div>
       ),
     },
     {
       key: 'parseStatus',
-      header: 'Parse Status',
+      header: t('columns.parseStatus'),
       render: (jobDescription) => (
         <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClassName(jobDescription.parseStatus)}`}>
           {jobDescription.parseStatus}
@@ -99,16 +101,16 @@ function buildColumns(
     },
     {
       key: 'skills',
-      header: 'Skills',
+      header: t('columns.skills'),
       render: (jobDescription) => (
         <span className="inline-flex rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-          {jobDescription._count?.skills ?? jobDescription.skills?.length ?? 0} skills
+          {t('skillsCount', { count: jobDescription._count?.skills ?? jobDescription.skills?.length ?? 0 })}
         </span>
       ),
     },
     {
       key: 'updatedAt',
-      header: 'Updated',
+      header: t('columns.updated'),
       sortKey: 'updatedAt',
       render: (jobDescription) => (
         <p className="whitespace-nowrap text-sm text-on-surface-variant">{formatDate(jobDescription.updatedAt)}</p>
@@ -116,20 +118,20 @@ function buildColumns(
     },
     {
       key: 'action',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (jobDescription) => (
         <div className="flex flex-wrap items-center justify-end gap-1">
-          <ActionIconButton href={`/job-descriptions/${jobDescription.id}`} icon={<EyeIcon className="size-4" />} label="View" />
+          <ActionIconButton href={`/job-descriptions/${jobDescription.id}`} icon={<EyeIcon className="size-4" />} label={t('actions.view')} />
           <ActionIconButton
             href={`/job-descriptions/${jobDescription.id}/edit`}
             icon={<PencilIcon className="size-4" />}
-            label="Edit"
+            label={t('actions.edit')}
           />
           {jobDescription.isActive ? (
             <ActionIconButton
               icon={<PauseIcon className="size-4" />}
-              label="Deactivate"
+              label={t('actions.deactivate')}
               variant="warning"
               onClick={() => onDeactivate(jobDescription)}
             />
@@ -141,6 +143,7 @@ function buildColumns(
 }
 
 export function JobDescriptionList() {
+  const t = useTranslations('jobDescriptions');
   const [jobDescriptions, setJobDescriptions] = useState<JobDescription[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
@@ -168,9 +171,9 @@ export function JobDescriptionList() {
       setJobDescriptions(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load job descriptions';
+      const message = error instanceof Error ? error.message : t('list.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load job descriptions', { description: message });
+      showToast.error(t('list.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -178,6 +181,7 @@ export function JobDescriptionList() {
 
   useEffect(() => {
     void loadJobDescriptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, sort]);
 
   const handleSortChange = (key: string, order: DataTableSortOrder) => {
@@ -191,12 +195,12 @@ export function JobDescriptionList() {
     try {
       setIsMutating(true);
       await deactivateJobDescription(jobToDeactivate.id);
-      showToast.success('Job description deactivated successfully');
+      showToast.success(t('list.deactivateSuccess'));
       setJobToDeactivate(null);
       await loadJobDescriptions();
     } catch (error) {
-      showToast.error('Failed to deactivate job description', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deactivating the JD.',
+      showToast.error(t('list.deactivateFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.deactivateFailedFallback'),
       });
     } finally {
       setIsMutating(false);
@@ -210,9 +214,9 @@ export function JobDescriptionList() {
       const succeeded = results.filter((result) => result.success).length;
       const failed = results.length - succeeded;
       if (failed === 0) {
-        showToast.success(`${succeeded} job description${succeeded === 1 ? '' : 's'} deactivated successfully`);
+        showToast.success(t('list.bulkDeactivateSuccess', { count: succeeded }));
       } else {
-        showToast.warning(`${succeeded} deactivated, ${failed} failed`, {
+        showToast.warning(t('list.bulkDeactivatePartial', { succeeded, failed }), {
           description: results.find((result) => !result.success)?.error,
         });
       }
@@ -220,8 +224,8 @@ export function JobDescriptionList() {
       setIsBulkConfirmOpen(false);
       await loadJobDescriptions();
     } catch (error) {
-      showToast.error('Bulk deactivation failed', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deactivating job descriptions.',
+      showToast.error(t('list.bulkDeactivateFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.bulkDeactivateFailedFallback'),
       });
     } finally {
       setIsBulkDeactivating(false);
@@ -229,15 +233,15 @@ export function JobDescriptionList() {
   };
 
   if (isLoading && jobDescriptions.length === 0) {
-    return <LoadingState title="Loading job descriptions..." description="Please wait while job descriptions are being loaded." />;
+    return <LoadingState title={t('list.loadingTitle')} description={t('list.loadingDescription')} />;
   }
 
   if (errorMessage && jobDescriptions.length === 0) {
     return (
       <EmptyState
-        title="Failed to load job descriptions"
+        title={t('list.errorTitle')}
         description={errorMessage}
-        action={<button type="button" onClick={() => void loadJobDescriptions()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
+        action={<button type="button" onClick={() => void loadJobDescriptions()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">{t('list.tryAgain')}</button>}
       />
     );
   }
@@ -249,7 +253,7 @@ export function JobDescriptionList() {
           <BriefcaseIcon className="size-6" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-on-surface-variant">Total job descriptions</p>
+          <p className="text-sm font-semibold text-on-surface-variant">{t('totalJobDescriptions')}</p>
           <p className="text-2xl font-bold text-on-surface">{meta.total}</p>
         </div>
       </div>
@@ -257,7 +261,7 @@ export function JobDescriptionList() {
       <ListControls
         search={{
           value: search,
-          placeholder: 'Search by title, company, department, or location...',
+          placeholder: t('searchPlaceholder'),
           onChange: (value) => {
             setSearch(value);
             setPage(1);
@@ -273,20 +277,20 @@ export function JobDescriptionList() {
           className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-warning px-4 text-sm font-semibold text-on-surface transition hover:opacity-90"
         >
           <PauseIcon className="size-4" />
-          Deactivate selected
+          {t('deactivateSelected')}
         </button>
       </BulkActionBar>
 
       {jobDescriptions.length === 0 ? (
         <EmptyState
-          title="No job descriptions found"
-          description="Create the first job description or adjust your search keyword."
-          action={<Link href="/job-descriptions/new" className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Create Job Description</Link>}
+          title={t('list.emptyTitle')}
+          description={t('list.emptyDescription')}
+          action={<Link href="/job-descriptions/new" className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">{t('createJd')}</Link>}
         />
       ) : (
         <DataTable
           data={jobDescriptions}
-          columns={buildColumns(setJobToDeactivate)}
+          columns={buildColumns(t, setJobToDeactivate)}
           getRowKey={(jobDescription) => jobDescription.id}
           sort={sort}
           onSortChange={handleSortChange}
@@ -296,9 +300,9 @@ export function JobDescriptionList() {
 
       <ConfirmDialog
         open={Boolean(jobToDeactivate)}
-        title="Deactivate job description?"
-        description="This removes it from the list and disables its detail page. It stays linked to any existing applications, but cannot be viewed, edited, or reused. This cannot be undone."
-        confirmLabel="Deactivate JD"
+        title={t('list.deactivateConfirmTitle')}
+        description={t('list.deactivateConfirmDescription')}
+        confirmLabel={t('list.deactivateConfirmAction')}
         variant="warning"
         isLoading={isMutating}
         onCancel={() => setJobToDeactivate(null)}
@@ -307,9 +311,9 @@ export function JobDescriptionList() {
 
       <ConfirmDialog
         open={isBulkConfirmOpen}
-        title={`Deactivate ${selectedIds.size} job description${selectedIds.size === 1 ? '' : 's'}?`}
-        description="This removes it from the list and disables its detail page. It stays linked to any existing applications, but cannot be viewed, edited, or reused. This cannot be undone."
-        confirmLabel="Deactivate selected"
+        title={t('list.bulkDeactivateConfirmTitle', { count: selectedIds.size })}
+        description={t('list.deactivateConfirmDescription')}
+        confirmLabel={t('list.bulkDeactivateConfirmAction')}
         variant="warning"
         isLoading={isBulkDeactivating}
         onCancel={() => setIsBulkConfirmOpen(false)}

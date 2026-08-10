@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import type { ParsedJobDescriptionData, ParsedJobSkill } from '@/features/job-descriptions/types/job-description.type';
 
 type ParsedJobDescriptionPanelProps = {
@@ -5,13 +7,13 @@ type ParsedJobDescriptionPanelProps = {
 };
 
 export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPanelProps) {
+  const t = useTranslations('jobDescriptions.parsedPanel');
+
   if (!parsedData) {
     return (
       <section className="rounded-2xl border border-dashed border-outline bg-surface-lowest p-6">
-        <h2 className="text-lg font-semibold text-on-surface">Parsed JD Data</h2>
-        <p className="mt-2 text-sm text-on-surface-muted">
-          Parsed data is not available yet. Click Parse JD to extract structured data from the raw job description text.
-        </p>
+        <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
+        <p className="mt-2 text-sm text-on-surface-muted">{t('emptyDescription')}</p>
       </section>
     );
   }
@@ -19,29 +21,29 @@ export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPa
   return (
     <section className="space-y-5 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
       <div>
-        <h2 className="text-lg font-semibold text-on-surface">Parsed JD Data</h2>
-        <p className="mt-1 text-sm text-on-surface-muted">Structured data returned by the AI Service parser.</p>
+        <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('subtitle')}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <InfoCard label="Parsed Title" value={parsedData.title ?? 'Not detected'} />
-        <InfoCard label="Seniority" value={parsedData.seniority ?? 'Not detected'} />
-        <InfoCard label="Employment Type" value={parsedData.employment_type ?? 'Not detected'} />
-        <InfoCard label="Minimum Experience" value={parsedData.min_experience_years != null ? `${parsedData.min_experience_years} year(s)` : 'Not detected'} />
-        <InfoCard label="Education" value={parsedData.education_requirement ?? 'Not detected'} className="md:col-span-2" />
+        <InfoCard label={t('parsedTitle')} value={parsedData.title ?? t('notDetected')} />
+        <InfoCard label={t('seniority')} value={parsedData.seniority ?? t('notDetected')} />
+        <InfoCard label={t('employmentType')} value={parsedData.employment_type ?? t('notDetected')} />
+        <InfoCard label={t('minExperience')} value={parsedData.min_experience_years != null ? t('years', { count: parsedData.min_experience_years }) : t('notDetected')} />
+        <InfoCard label={t('education')} value={parsedData.education_requirement ?? t('notDetected')} className="md:col-span-2" />
       </div>
 
       <div className="grid gap-5 md:grid-cols-3">
-        <ListSection title="Responsibilities" items={parsedData.responsibilities} />
-        <ListSection title="Requirements" items={parsedData.requirements} />
-        <ListSection title="Nice to have" items={parsedData.nice_to_have} />
+        <ListSection title={t('responsibilities')} items={parsedData.responsibilities} />
+        <ListSection title={t('requirements')} items={parsedData.requirements} />
+        <ListSection title={t('niceToHave')} items={parsedData.nice_to_have} />
       </div>
 
-      <SkillSection title="Required skills" skills={parsedData.required_skills} />
-      <SkillSection title="Preferred skills" skills={parsedData.preferred_skills} />
+      <SkillSection title={t('requiredSkills')} skills={parsedData.required_skills} />
+      <SkillSection title={t('preferredSkills')} skills={parsedData.preferred_skills} />
 
       <div>
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">Domain keywords</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{t('domainKeywords')}</h3>
         {parsedData.domain_keywords.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {parsedData.domain_keywords.map((keyword) => (
@@ -51,7 +53,7 @@ export function ParsedJobDescriptionPanel({ parsedData }: ParsedJobDescriptionPa
             ))}
           </div>
         ) : (
-          <p className="mt-2 text-sm text-on-surface-muted">No domain keywords detected.</p>
+          <p className="mt-2 text-sm text-on-surface-muted">{t('noKeywords')}</p>
         )}
       </div>
     </section>
@@ -70,6 +72,8 @@ function InfoCard({ label, value, className }: InfoCardProps) {
 }
 
 function ListSection({ title, items }: { title: string; items: string[] }) {
+  const t = useTranslations('jobDescriptions.parsedPanel');
+
   return (
     <div>
       <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{title}</h3>
@@ -80,13 +84,15 @@ function ListSection({ title, items }: { title: string; items: string[] }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-2 text-sm text-on-surface-muted">No {title.toLowerCase()} detected.</p>
+        <p className="mt-2 text-sm text-on-surface-muted">{t('noItemsDetected', { title: title.toLowerCase() })}</p>
       )}
     </div>
   );
 }
 
 function SkillSection({ title, skills }: { title: string; skills: ParsedJobSkill[] }) {
+  const t = useTranslations('jobDescriptions.parsedPanel');
+
   return (
     <div>
       <h3 className="text-sm font-semibold uppercase tracking-wide text-on-surface-muted">{title}</h3>
@@ -94,12 +100,12 @@ function SkillSection({ title, skills }: { title: string; skills: ParsedJobSkill
         <div className="mt-3 flex flex-wrap gap-2">
           {skills.map((skill) => (
             <span key={`${skill.normalized_name ?? skill.name}-${skill.name}`} className="rounded-full border border-primary/20 bg-primary-container px-3 py-1 text-xs font-semibold text-on-primary-container">
-              {skill.name} · {skill.normalized_name ?? 'not normalized'} · {skill.is_core ? 'core' : 'optional'}
+              {skill.name} · {skill.normalized_name ?? t('notNormalized')} · {skill.is_core ? t('core') : t('optional')}
             </span>
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-sm text-on-surface-muted">No {title.toLowerCase()} detected.</p>
+        <p className="mt-2 text-sm text-on-surface-muted">{t('noItemsDetected', { title: title.toLowerCase() })}</p>
       )}
     </div>
   );
