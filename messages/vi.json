@@ -1644,5 +1644,97 @@
         "genericFailedFallback": "Đã xảy ra lỗi."
       }
     }
+  },
+  "aiActivityLog": {
+    "internalToolBadge": "Công cụ nội bộ",
+    "labels": {
+      "functionType": {
+        "parseResume": "Trích xuất CV",
+        "parseJobDescription": "Trích xuất JD",
+        "scoreApplication": "Chấm điểm hồ sơ"
+      },
+      "tier": {
+        "enterprise": "Doanh nghiệp",
+        "public": "Công khai"
+      },
+      "status": {
+        "success": "Thành công",
+        "failed": "Thất bại"
+      }
+    },
+    "dashboard": {
+      "title": "Nhật ký hoạt động AI",
+      "subtitle": "Mọi lượt gọi tới các chức năng trích xuất/chấm điểm AI, kèm đầy đủ input/output, phục vụ đánh giá chất lượng.",
+      "loadingTitle": "Đang tải nhật ký hoạt động AI...",
+      "loadingDescription": "Vui lòng chờ trong khi dữ liệu đang được tải.",
+      "errorTitle": "Không thể tải nhật ký hoạt động AI",
+      "errorFallback": "Không thể tải nhật ký hoạt động AI",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Không có lượt gọi nào khớp bộ lọc này",
+      "emptyDescription": "Hãy thử xóa bớt bộ lọc.",
+      "filteredNotice": "Đang hiển thị các lượt gọi liên quan tới 1 batch/CV/mô tả công việc cụ thể.",
+      "clearFilter": "Xóa bộ lọc",
+      "compileReport": "Tổng hợp báo cáo",
+      "buildingReport": "Đang tạo báo cáo...",
+      "debugReportTitle": "Báo cáo debug",
+      "copy": "Sao chép",
+      "close": "Đóng",
+      "columns": {
+        "function": "Chức năng",
+        "tier": "Tầng",
+        "status": "Trạng thái",
+        "organization": "Tổ chức",
+        "calledAt": "Thời gian gọi",
+        "responseTime": "Thời gian phản hồi"
+      },
+      "charts": {
+        "callsToday": "Lượt gọi hôm nay (theo giờ)",
+        "callsThisMonth": "Lượt gọi tháng này (theo ngày)",
+        "callsThisYear": "Lượt gọi năm nay (theo tháng)"
+      },
+      "toast": {
+        "summaryFailedTitle": "Không thể tải số liệu tổng quan",
+        "chartsFailedTitle": "Không thể tải biểu đồ hoạt động",
+        "genericFailedFallback": "Đã xảy ra lỗi.",
+        "reportFailedTitle": "Không thể tạo báo cáo",
+        "reportCopied": "Đã sao chép báo cáo vào bộ nhớ tạm"
+      }
+    },
+    "detail": {
+      "loadingTitle": "Đang tải log...",
+      "loadingDescription": "Vui lòng chờ trong khi mục log đang được tải.",
+      "errorTitle": "Không thể tải nhật ký hoạt động AI",
+      "notFoundFallback": "Không tìm thấy log.",
+      "backLabel": "Về Nhật ký hoạt động AI",
+      "viewRelatedCalls": "Xem các lượt gọi liên quan",
+      "calledAtDescription": "Gọi lúc {date} · mất {latency}ms",
+      "overview": "Tổng quan",
+      "tier": "Tầng",
+      "status": "Trạng thái",
+      "organization": "Tổ chức",
+      "batch": "Lô",
+      "evaluation": "Đánh giá",
+      "resume": "CV",
+      "jobDescription": "Mô tả công việc",
+      "responseTime": "Thời gian phản hồi",
+      "input": "Input",
+      "output": "Output",
+      "noOutput": "Không có output — lượt gọi này thất bại."
+    },
+    "summaryTiles": {
+      "callsToday": "Lượt gọi hôm nay",
+      "callsThisMonth": "Lượt gọi tháng này",
+      "successRate": "Tỉ lệ thành công",
+      "avgResponseTime": "Thời gian phản hồi trung bình"
+    },
+    "timeseriesChart": {
+      "showChart": "Xem biểu đồ",
+      "showTable": "Xem bảng",
+      "bucket": "Khoảng thời gian",
+      "loading": "Đang tải...",
+      "tooltipParseResume": "Trích xuất CV: {count}",
+      "tooltipParseJd": "Trích xuất JD: {count}",
+      "tooltipScore": "Chấm điểm: {count}"
+    }
   }
 }

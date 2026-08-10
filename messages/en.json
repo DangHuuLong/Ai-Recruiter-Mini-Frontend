@@ -1644,5 +1644,97 @@
         "genericFailedFallback": "Something went wrong."
       }
     }
+  },
+  "aiActivityLog": {
+    "internalToolBadge": "Internal tool",
+    "labels": {
+      "functionType": {
+        "parseResume": "Parse Resume",
+        "parseJobDescription": "Parse Job Description",
+        "scoreApplication": "Score Application"
+      },
+      "tier": {
+        "enterprise": "Enterprise",
+        "public": "Public"
+      },
+      "status": {
+        "success": "Success",
+        "failed": "Failed"
+      }
+    },
+    "dashboard": {
+      "title": "AI Activity Log",
+      "subtitle": "Every call to the AI parsing/scoring functions, with full input/output, for quality review.",
+      "loadingTitle": "Loading AI activity log...",
+      "loadingDescription": "Please wait while data is being loaded.",
+      "errorTitle": "Failed to load AI activity logs",
+      "errorFallback": "Failed to load AI activity logs",
+      "tryAgain": "Try again",
+      "emptyTitle": "No calls match these filters",
+      "emptyDescription": "Try clearing a filter.",
+      "filteredNotice": "Showing calls related to a specific batch/resume/job description.",
+      "clearFilter": "Clear filter",
+      "compileReport": "Compile report",
+      "buildingReport": "Building report...",
+      "debugReportTitle": "Debug report",
+      "copy": "Copy",
+      "close": "Close",
+      "columns": {
+        "function": "Function",
+        "tier": "Tier",
+        "status": "Status",
+        "organization": "Organization",
+        "calledAt": "Called at",
+        "responseTime": "Response time"
+      },
+      "charts": {
+        "callsToday": "Calls today (by hour)",
+        "callsThisMonth": "Calls this month (by day)",
+        "callsThisYear": "Calls this year (by month)"
+      },
+      "toast": {
+        "summaryFailedTitle": "Failed to load summary stats",
+        "chartsFailedTitle": "Failed to load activity charts",
+        "genericFailedFallback": "Something went wrong.",
+        "reportFailedTitle": "Failed to build report",
+        "reportCopied": "Report copied to clipboard"
+      }
+    },
+    "detail": {
+      "loadingTitle": "Loading log...",
+      "loadingDescription": "Please wait while the log entry is being loaded.",
+      "errorTitle": "Failed to load AI activity log",
+      "notFoundFallback": "Log not found.",
+      "backLabel": "Back to AI Activity Log",
+      "viewRelatedCalls": "View related calls",
+      "calledAtDescription": "Called {date} · took {latency}ms",
+      "overview": "Overview",
+      "tier": "Tier",
+      "status": "Status",
+      "organization": "Organization",
+      "batch": "Batch",
+      "evaluation": "Evaluation",
+      "resume": "Resume",
+      "jobDescription": "Job Description",
+      "responseTime": "Response time",
+      "input": "Input",
+      "output": "Output",
+      "noOutput": "No output — this call failed."
+    },
+    "summaryTiles": {
+      "callsToday": "Calls today",
+      "callsThisMonth": "Calls this month",
+      "successRate": "Success rate",
+      "avgResponseTime": "Avg. response time"
+    },
+    "timeseriesChart": {
+      "showChart": "Show chart",
+      "showTable": "Show table",
+      "bucket": "Bucket",
+      "loading": "Loading...",
+      "tooltipParseResume": "Parse Resume: {count}",
+      "tooltipParseJd": "Parse JD: {count}",
+      "tooltipScore": "Score: {count}"
+    }
   }
 }

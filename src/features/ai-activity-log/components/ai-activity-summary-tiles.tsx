@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import type { AiActivityLogSummary } from '@/features/ai-activity-log/types/ai-activity-log.type';
 
 type AiActivitySummaryTilesProps = {
@@ -15,16 +17,18 @@ function StatTile({ label, value }: { label: string; value: string }) {
 }
 
 export function AiActivitySummaryTiles({ summary, isLoading }: AiActivitySummaryTilesProps) {
+  const t = useTranslations('aiActivityLog.summaryTiles');
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatTile label="Calls today" value={isLoading || !summary ? '—' : String(summary.totalToday)} />
-      <StatTile label="Calls this month" value={isLoading || !summary ? '—' : String(summary.totalThisMonth)} />
+      <StatTile label={t('callsToday')} value={isLoading || !summary ? '—' : String(summary.totalToday)} />
+      <StatTile label={t('callsThisMonth')} value={isLoading || !summary ? '—' : String(summary.totalThisMonth)} />
       <StatTile
-        label="Success rate"
+        label={t('successRate')}
         value={isLoading || !summary || summary.successRate === null ? '—' : `${summary.successRate}%`}
       />
       <StatTile
-        label="Avg. response time"
+        label={t('avgResponseTime')}
         value={isLoading || !summary || summary.avgLatencyMs === null ? '—' : `${summary.avgLatencyMs}ms`}
       />
     </div>

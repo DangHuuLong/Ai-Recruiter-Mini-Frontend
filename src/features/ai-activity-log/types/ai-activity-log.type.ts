@@ -6,6 +6,14 @@ export const FUNCTION_TYPE_LABELS: Record<AiFunctionType, string> = {
   SCORE_APPLICATION: 'Score Application',
 };
 
+// Maps each value to the message key under aiActivityLog.labels.functionType —
+// pass to t('labels.functionType.' + FUNCTION_TYPE_LABEL_KEYS[type]).
+export const FUNCTION_TYPE_LABEL_KEYS: Record<AiFunctionType, string> = {
+  PARSE_RESUME: 'parseResume',
+  PARSE_JOB_DESCRIPTION: 'parseJobDescription',
+  SCORE_APPLICATION: 'scoreApplication',
+};
+
 export type AiCallTier = 'ENTERPRISE' | 'PUBLIC';
 
 export const TIER_LABELS: Record<AiCallTier, string> = {
@@ -13,11 +21,25 @@ export const TIER_LABELS: Record<AiCallTier, string> = {
   PUBLIC: 'Public',
 };
 
+// Maps each value to the message key under aiActivityLog.labels.tier —
+// pass to t('labels.tier.' + TIER_LABEL_KEYS[tier]).
+export const TIER_LABEL_KEYS: Record<AiCallTier, string> = {
+  ENTERPRISE: 'enterprise',
+  PUBLIC: 'public',
+};
+
 export type AiCallStatus = 'SUCCESS' | 'FAILED';
 
 export const STATUS_LABELS: Record<AiCallStatus, string> = {
   SUCCESS: 'Success',
   FAILED: 'Failed',
+};
+
+// Maps each value to the message key under aiActivityLog.labels.status —
+// pass to t('labels.status.' + STATUS_LABEL_KEYS[status]).
+export const STATUS_LABEL_KEYS: Record<AiCallStatus, string> = {
+  SUCCESS: 'success',
+  FAILED: 'failed',
 };
 
 export const STATUS_CLASSES: Record<AiCallStatus, string> = {
