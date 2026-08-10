@@ -17,6 +17,17 @@ export const COMPETENCY_TYPE_LABELS: Record<CompetencyType, string> = {
   COMPLIANCE: 'Compliance',
 };
 
+// Maps each value to the message key under interviewQuestions.labels.competencyType —
+// pass to t('labels.competencyType.' + COMPETENCY_TYPE_LABEL_KEYS[type]).
+export const COMPETENCY_TYPE_LABEL_KEYS: Record<CompetencyType, string> = {
+  HARD_SKILL: 'hardSkill',
+  TOOL_SKILL: 'toolSkill',
+  KNOWLEDGE_AREA: 'knowledgeArea',
+  SOFT_SKILL: 'softSkill',
+  METHODOLOGY: 'methodology',
+  COMPLIANCE: 'compliance',
+};
+
 export type AssessmentTarget =
   | 'RECALL'
   | 'APPLICATION'
@@ -36,6 +47,18 @@ export const ASSESSMENT_TARGET_LABELS: Record<AssessmentTarget, string> = {
   OWNERSHIP: 'Ownership',
 };
 
+// Maps each value to the message key under interviewQuestions.labels.assessmentTarget —
+// pass to t('labels.assessmentTarget.' + ASSESSMENT_TARGET_LABEL_KEYS[target]).
+export const ASSESSMENT_TARGET_LABEL_KEYS: Record<AssessmentTarget, string> = {
+  RECALL: 'recall',
+  APPLICATION: 'application',
+  ANALYSIS: 'analysis',
+  DECISION_MAKING: 'decisionMaking',
+  COMMUNICATION: 'communication',
+  LEADERSHIP: 'leadership',
+  OWNERSHIP: 'ownership',
+};
+
 export type ExperienceBucket = 'ZERO_TO_ONE' | 'TWO_TO_FOUR' | 'FIVE_TO_EIGHT' | 'EIGHT_PLUS';
 
 export const EXPERIENCE_BUCKET_LABELS: Record<ExperienceBucket, string> = {
@@ -45,6 +68,15 @@ export const EXPERIENCE_BUCKET_LABELS: Record<ExperienceBucket, string> = {
   EIGHT_PLUS: '8+ years',
 };
 
+// Maps each value to the message key under interviewQuestions.labels.experienceBucket —
+// pass to t('labels.experienceBucket.' + EXPERIENCE_BUCKET_LABEL_KEYS[bucket]).
+export const EXPERIENCE_BUCKET_LABEL_KEYS: Record<ExperienceBucket, string> = {
+  ZERO_TO_ONE: 'zeroToOne',
+  TWO_TO_FOUR: 'twoToFour',
+  FIVE_TO_EIGHT: 'fiveToEight',
+  EIGHT_PLUS: 'eightPlus',
+};
+
 export type AutonomyLevel = 'WORKS_INDEPENDENTLY' | 'LEADS_PROJECTS' | 'DEFINES_STRATEGY' | 'MANAGES_PEOPLE';
 
 export const AUTONOMY_LEVEL_LABELS: Record<AutonomyLevel, string> = {
@@ -52,6 +84,15 @@ export const AUTONOMY_LEVEL_LABELS: Record<AutonomyLevel, string> = {
   LEADS_PROJECTS: 'Leads projects',
   DEFINES_STRATEGY: 'Defines strategy',
   MANAGES_PEOPLE: 'Manages people',
+};
+
+// Maps each value to the message key under interviewQuestions.labels.autonomyLevel —
+// pass to t('labels.autonomyLevel.' + AUTONOMY_LEVEL_LABEL_KEYS[level]).
+export const AUTONOMY_LEVEL_LABEL_KEYS: Record<AutonomyLevel, string> = {
+  WORKS_INDEPENDENTLY: 'worksIndependently',
+  LEADS_PROJECTS: 'leadsProjects',
+  DEFINES_STRATEGY: 'definesStrategy',
+  MANAGES_PEOPLE: 'managesPeople',
 };
 
 export type InterviewQuestionType =
@@ -71,11 +112,29 @@ export const QUESTION_TYPE_LABELS: Record<InterviewQuestionType, string> = {
   KNOWLEDGE_CHECK: 'Knowledge Check',
 };
 
+// Maps each value to the message key under interviewQuestions.labels.questionType —
+// pass to t('labels.questionType.' + QUESTION_TYPE_LABEL_KEYS[type]).
+export const QUESTION_TYPE_LABEL_KEYS: Record<InterviewQuestionType, string> = {
+  EXPERIENCE_VALIDATION: 'experienceValidation',
+  ARTIFACT_DISCUSSION: 'artifactDiscussion',
+  DECISION_MAKING: 'decisionMaking',
+  BEHAVIORAL_EVIDENCE: 'behavioralEvidence',
+  REFLECTION: 'reflection',
+  KNOWLEDGE_CHECK: 'knowledgeCheck',
+};
+
 export type InterviewQuestionSource = 'SEED' | 'AI_GENERATED';
 
 export const SOURCE_LABELS: Record<InterviewQuestionSource, string> = {
   SEED: 'Seed',
   AI_GENERATED: 'AI Generated',
+};
+
+// Maps each value to the message key under interviewQuestions.labels.source —
+// pass to t('labels.source.' + SOURCE_LABEL_KEYS[source]).
+export const SOURCE_LABEL_KEYS: Record<InterviewQuestionSource, string> = {
+  SEED: 'seed',
+  AI_GENERATED: 'aiGenerated',
 };
 
 export type QuestionQualityGateStatus = 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
@@ -84,6 +143,14 @@ export const QUALITY_GATE_LABELS: Record<QuestionQualityGateStatus, string> = {
   PENDING_REVIEW: 'Pending Review',
   APPROVED: 'Approved',
   REJECTED: 'Rejected',
+};
+
+// Maps each value to the message key under interviewQuestions.labels.qualityGate —
+// pass to t('labels.qualityGate.' + QUALITY_GATE_LABEL_KEYS[status]).
+export const QUALITY_GATE_LABEL_KEYS: Record<QuestionQualityGateStatus, string> = {
+  PENDING_REVIEW: 'pendingReview',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
 };
 
 export const QUALITY_GATE_CLASSES: Record<QuestionQualityGateStatus, string> = {

@@ -4,6 +4,7 @@ import { CheckCircle2Icon, UploadIcon, XCircleIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,7 @@ import {
 } from '@/features/interview-questions/types/interview-question.type';
 import {
   INTERVIEW_QUESTION_TAXONOMY,
-  OCCUPATION_FAMILY_LABELS,
+  OCCUPATION_FAMILY_LABEL_KEYS,
   type OccupationFamily,
 } from '@/features/interview-questions/types/interview-question-taxonomy.type';
 import { cn } from '@/lib/utils/cn';
@@ -40,41 +41,41 @@ type SubmitResult = {
 
 const REQUIRED_STRING_FIELDS = ['questionText', 'specialization', 'businessContext', 'competency'];
 
-function validateItem(item: RawItem): string[] {
+function validateItem(item: RawItem, t: ReturnType<typeof useTranslations<'interviewQuestions.bulkCreate.validation'>>): string[] {
   const errors: string[] = [];
 
   for (const field of REQUIRED_STRING_FIELDS) {
     if (typeof item[field] !== 'string' || (item[field] as string).trim().length === 0) {
-      errors.push(`Missing "${field}"`);
+      errors.push(t('missingField', { field }));
     }
   }
 
   const family = item.occupationFamily as OccupationFamily | undefined;
   if (!family || !(family in INTERVIEW_QUESTION_TAXONOMY)) {
-    errors.push('Invalid or missing "occupationFamily"');
+    errors.push(t('invalidOccupationFamily'));
   } else if (typeof item.specialization === 'string') {
     const known = INTERVIEW_QUESTION_TAXONOMY[family].specializations.includes(item.specialization);
-    if (!known) errors.push(`"specialization" not known for ${family}`);
+    if (!known) errors.push(t('unknownSpecialization', { family }));
   }
 
-  if (!Array.isArray(item.enablers)) errors.push('"enablers" must be an array of strings');
+  if (!Array.isArray(item.enablers)) errors.push(t('invalidEnablers'));
   if (typeof item.competencyType !== 'string' || !(item.competencyType in COMPETENCY_TYPE_LABELS)) {
-    errors.push('Invalid or missing "competencyType"');
+    errors.push(t('invalidCompetencyType'));
   }
   if (typeof item.assessmentTarget !== 'string' || !(item.assessmentTarget in ASSESSMENT_TARGET_LABELS)) {
-    errors.push('Invalid or missing "assessmentTarget"');
+    errors.push(t('invalidAssessmentTarget'));
   }
   if (typeof item.experienceBucket !== 'string' || !(item.experienceBucket in EXPERIENCE_BUCKET_LABELS)) {
-    errors.push('Invalid or missing "experienceBucket"');
+    errors.push(t('invalidExperienceBucket'));
   }
   if (typeof item.autonomyLevel !== 'string' || !(item.autonomyLevel in AUTONOMY_LEVEL_LABELS)) {
-    errors.push('Invalid or missing "autonomyLevel"');
+    errors.push(t('invalidAutonomyLevel'));
   }
   if (typeof item.questionType !== 'string' || !(item.questionType in QUESTION_TYPE_LABELS)) {
-    errors.push('Invalid or missing "questionType"');
+    errors.push(t('invalidQuestionType'));
   }
   if (!Array.isArray(item.rubric) || item.rubric.length === 0) {
-    errors.push('"rubric" must be a non-empty array of strings');
+    errors.push(t('invalidRubric'));
   }
 
   return errors;
@@ -82,6 +83,8 @@ function validateItem(item: RawItem): string[] {
 
 export function InterviewQuestionBulkCreate() {
   const router = useRouter();
+  const t = useTranslations('interviewQuestions');
+  const tValidation = useTranslations('interviewQuestions.bulkCreate.validation');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rawText, setRawText] = useState('');
   const [preview, setPreview] = useState<PreviewRow[] | null>(null);
@@ -93,25 +96,25 @@ export function InterviewQuestionBulkCreate() {
     try {
       const parsed = JSON.parse(rawText);
       if (!Array.isArray(parsed)) {
-        showToast.error('Expected a JSON array of question objects');
+        showToast.error(t('bulkCreate.toast.expectedArray'));
         return;
       }
       if (parsed.length === 0) {
-        showToast.error('The array is empty');
+        showToast.error(t('bulkCreate.toast.emptyArray'));
         return;
       }
       if (parsed.length > 200) {
-        showToast.error('Maximum 200 items per bulk request');
+        showToast.error(t('bulkCreate.toast.maxItems'));
         return;
       }
       const rows: PreviewRow[] = parsed.map((item, index) => ({
         index,
         raw: item as RawItem,
-        errors: validateItem(item as RawItem),
+        errors: validateItem(item as RawItem, tValidation),
       }));
       setPreview(rows);
     } catch {
-      showToast.error('Invalid JSON — check the syntax and try again');
+      showToast.error(t('bulkCreate.toast.invalidJson'));
     }
   };
 
@@ -144,10 +147,10 @@ export function InterviewQuestionBulkCreate() {
       const combined = [...invalidResults, ...mapped].sort((a, b) => a.index - b.index);
       setResults(combined);
       const successCount = combined.filter((r) => r.success).length;
-      showToast.success(`Created ${successCount} of ${combined.length} questions`);
+      showToast.success(t('bulkCreate.toast.createdSummary', { success: successCount, total: combined.length }));
     } catch (error) {
-      showToast.error('Bulk create failed', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('bulkCreate.toast.bulkCreateFailedTitle'), {
+        description: error instanceof Error ? error.message : t('bulkCreate.toast.genericFailedFallback'),
       });
     } finally {
       setIsSubmitting(false);
@@ -162,20 +165,18 @@ export function InterviewQuestionBulkCreate() {
         href={ROUTES.INTERVIEW_QUESTIONS}
         className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
       >
-        ← Back to Interview Question Bank
+        {t('backToBank')}
       </Link>
 
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">Bulk create questions</h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Paste a JSON array of question objects (up to 200), matching the same fields as the create form.
-        </p>
+        <h1 className="text-2xl font-bold text-on-surface">{t('bulkCreate.title')}</h1>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('bulkCreate.subtitle')}</p>
       </div>
 
       <div className="space-y-3 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
         <div className="flex items-center justify-between">
           <label className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Question JSON array
+            {t('bulkCreate.jsonLabel')}
           </label>
           <button
             type="button"
@@ -183,7 +184,7 @@ export function InterviewQuestionBulkCreate() {
             className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary-container hover:text-on-primary-container hover:underline"
           >
             <UploadIcon className="size-3.5" />
-            Upload .json file
+            {t('bulkCreate.uploadFile')}
           </button>
           <input
             ref={fileInputRef}
@@ -207,14 +208,14 @@ export function InterviewQuestionBulkCreate() {
         />
 
         <Button type="button" className="w-auto px-4" onClick={handleParse} disabled={!rawText.trim()}>
-          Preview
+          {t('bulkCreate.preview')}
         </Button>
       </div>
 
       {preview ? (
         <div className="space-y-3">
           <p className="text-sm font-semibold text-on-surface">
-            {validCount} of {preview.length} items are valid
+            {t('bulkCreate.validCount', { valid: validCount, total: preview.length })}
           </p>
 
           <div className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
@@ -222,16 +223,16 @@ export function InterviewQuestionBulkCreate() {
               <thead className="bg-surface-variant">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    #
+                    {t('bulkCreate.columns.index')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Question text
+                    {t('bulkCreate.columns.questionText')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Family
+                    {t('bulkCreate.columns.family')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Status
+                    {t('bulkCreate.columns.status')}
                   </th>
                 </tr>
               </thead>
@@ -248,14 +249,14 @@ export function InterviewQuestionBulkCreate() {
                         </p>
                       </td>
                       <td className="px-4 py-3 text-on-surface-variant">
-                        {family ? (OCCUPATION_FAMILY_LABELS[family] ?? String(family)) : '—'}
+                        {family ? t(`labels.occupationFamily.${OCCUPATION_FAMILY_LABEL_KEYS[family]}`) : '—'}
                       </td>
                       <td className="px-4 py-3">
                         {result ? (
                           result.success ? (
                             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-success">
                               <CheckCircle2Icon className="size-4" />
-                              Created
+                              {t('bulkCreate.statusCreated')}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-error">
@@ -272,10 +273,10 @@ export function InterviewQuestionBulkCreate() {
                           >
                             <XCircleIcon className="size-4" />
                             {row.errors[0]}
-                            {row.errors.length > 1 ? ` (+${row.errors.length - 1} more)` : ''}
+                            {row.errors.length > 1 ? t('bulkCreate.moreErrors', { count: row.errors.length - 1 }) : ''}
                           </span>
                         ) : (
-                          <span className="text-xs font-semibold text-on-surface-muted">Ready</span>
+                          <span className="text-xs font-semibold text-on-surface-muted">{t('bulkCreate.statusReady')}</span>
                         )}
                       </td>
                     </tr>
@@ -292,7 +293,7 @@ export function InterviewQuestionBulkCreate() {
               className="w-auto px-4"
               onClick={() => router.push(ROUTES.INTERVIEW_QUESTIONS)}
             >
-              {results ? 'Done' : 'Cancel'}
+              {results ? t('bulkCreate.done') : t('bulkCreate.cancel')}
             </Button>
             {!results ? (
               <Button
@@ -302,7 +303,7 @@ export function InterviewQuestionBulkCreate() {
                 isLoading={isSubmitting}
                 onClick={() => void handleSubmit()}
               >
-                Create {validCount} question{validCount === 1 ? '' : 's'}
+                {t('bulkCreate.createCount', { count: validCount })}
               </Button>
             ) : null}
           </div>

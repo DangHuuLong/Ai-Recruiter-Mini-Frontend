@@ -1429,5 +1429,220 @@
       "copyJson": "Copy JSON",
       "copySuccess": "Metadata copied to clipboard"
     }
+  },
+  "interviewQuestions": {
+    "internalToolBadge": "Internal tool",
+    "backToBank": "← Back to Interview Question Bank",
+    "labels": {
+      "occupationFamily": {
+        "it": "IT / Software Engineering",
+        "marketing": "Marketing",
+        "design": "Design",
+        "data": "Data",
+        "product": "Product",
+        "sales": "Sales",
+        "legal": "Legal"
+      },
+      "competencyType": {
+        "hardSkill": "Hard Skill",
+        "toolSkill": "Tool Skill",
+        "knowledgeArea": "Knowledge Area",
+        "softSkill": "Soft Skill",
+        "methodology": "Methodology",
+        "compliance": "Compliance"
+      },
+      "assessmentTarget": {
+        "recall": "Recall",
+        "application": "Application",
+        "analysis": "Analysis",
+        "decisionMaking": "Decision Making",
+        "communication": "Communication",
+        "leadership": "Leadership",
+        "ownership": "Ownership"
+      },
+      "experienceBucket": {
+        "zeroToOne": "0-1 years",
+        "twoToFour": "2-4 years",
+        "fiveToEight": "5-8 years",
+        "eightPlus": "8+ years"
+      },
+      "autonomyLevel": {
+        "worksIndependently": "Works independently",
+        "leadsProjects": "Leads projects",
+        "definesStrategy": "Defines strategy",
+        "managesPeople": "Manages people"
+      },
+      "questionType": {
+        "experienceValidation": "Experience Validation",
+        "artifactDiscussion": "Artifact Discussion",
+        "decisionMaking": "Decision Making",
+        "behavioralEvidence": "Behavioral Evidence",
+        "reflection": "Reflection",
+        "knowledgeCheck": "Knowledge Check"
+      },
+      "source": {
+        "seed": "Seed",
+        "aiGenerated": "AI Generated"
+      },
+      "qualityGate": {
+        "pendingReview": "Pending Review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "fields": {
+      "occupationFamilyLabel": "Occupation family",
+      "selectFamily": "Select a family",
+      "specializationLabel": "Specialization",
+      "selectSpecialization": "Select a specialization"
+    },
+    "list": {
+      "title": "Interview Question Bank",
+      "subtitle": "Curated + AI-generated interview questions used by the retrieval/search-or-generate engine.",
+      "testRetrieval": "Test retrieval",
+      "bulkCreate": "Bulk create",
+      "newQuestion": "New question",
+      "loadingTitle": "Loading interview questions...",
+      "loadingDescription": "Please wait while questions are being loaded.",
+      "errorTitle": "Failed to load interview questions",
+      "errorFallback": "Failed to load interview questions",
+      "tryAgain": "Try again",
+      "emptyTitle": "No questions match these filters",
+      "emptyDescription": "Try clearing a filter or add a new question.",
+      "columns": {
+        "question": "Question",
+        "familySpecialization": "Family / Specialization",
+        "competency": "Competency",
+        "quality": "Quality",
+        "source": "Source",
+        "usage": "Usage",
+        "actions": "Actions"
+      },
+      "actions": {
+        "approve": "Approve",
+        "reembed": "Re-embed",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "deleteConfirmTitle": "Delete question?",
+      "deleteConfirmDescription": "This action removes the question from the bank. This cannot be undone.",
+      "deleteConfirmAction": "Delete question",
+      "toast": {
+        "approveSuccess": "Question approved",
+        "approveFailedTitle": "Failed to approve question",
+        "genericFailedFallback": "Something went wrong.",
+        "reembedSuccess": "Embedding recomputed",
+        "reembedFailedTitle": "Failed to re-embed question",
+        "deleteSuccess": "Question deleted",
+        "deleteFailedTitle": "Failed to delete question"
+      }
+    },
+    "form": {
+      "titleNew": "New interview question",
+      "titleEdit": "Edit question",
+      "subtitle": "Curated content used by the retrieval/search-or-generate engine (DEV role only).",
+      "questionTextLabel": "Question text",
+      "questionTextPlaceholder": "Walk me through how you would...",
+      "charCount": "{count} / {max}",
+      "selectType": "Select a type",
+      "enablersLabel": "Enablers",
+      "enablersHint": "Tools, methodologies, or frameworks — e.g. Docker, SPIN Selling",
+      "businessContextLabel": "Business context",
+      "businessContextPlaceholder": "e.g. E-commerce, Enterprise Deal Closing",
+      "competencyLabel": "Competency",
+      "competencyPlaceholder": "e.g. Caching Strategies",
+      "competencyTypeLabel": "Competency type",
+      "assessmentTargetLabel": "Assessment target",
+      "selectTarget": "Select a target",
+      "questionTypeLabel": "Question type",
+      "experienceBucketLabel": "Experience bucket",
+      "selectRange": "Select a range",
+      "autonomyLevelLabel": "Autonomy level",
+      "selectLevel": "Select a level",
+      "rubricLabel": "Rubric",
+      "rubricHint": "Key points a good answer should cover (not a fixed model answer)",
+      "qualityGateStatusLabel": "Quality gate status",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes",
+      "createQuestion": "Create question",
+      "loadingTitle": "Loading question...",
+      "loadingDescription": "Please wait while the question is being loaded.",
+      "loadErrorFallback": "Failed to load the question",
+      "toast": {
+        "updateSuccess": "Question updated",
+        "createSuccess": "Question created",
+        "updateFailedTitle": "Failed to update question",
+        "createFailedTitle": "Failed to create question",
+        "saveFailedFallback": "Something went wrong while saving."
+      }
+    },
+    "tagListInput": {
+      "defaultPlaceholder": "Type and press Enter",
+      "removeAriaLabel": "Remove {value}"
+    },
+    "bulkCreate": {
+      "title": "Bulk create questions",
+      "subtitle": "Paste a JSON array of question objects (up to 200), matching the same fields as the create form.",
+      "jsonLabel": "Question JSON array",
+      "uploadFile": "Upload .json file",
+      "preview": "Preview",
+      "validCount": "{valid} of {total} items are valid",
+      "columns": {
+        "index": "#",
+        "questionText": "Question text",
+        "family": "Family",
+        "status": "Status"
+      },
+      "statusCreated": "Created",
+      "statusReady": "Ready",
+      "moreErrors": " (+{count} more)",
+      "done": "Done",
+      "cancel": "Cancel",
+      "createCount": "{count, plural, one {Create # question} other {Create # questions}}",
+      "validation": {
+        "missingField": "Missing \"{field}\"",
+        "invalidOccupationFamily": "Invalid or missing \"occupationFamily\"",
+        "unknownSpecialization": "\"specialization\" not known for {family}",
+        "invalidEnablers": "\"enablers\" must be an array of strings",
+        "invalidCompetencyType": "Invalid or missing \"competencyType\"",
+        "invalidAssessmentTarget": "Invalid or missing \"assessmentTarget\"",
+        "invalidExperienceBucket": "Invalid or missing \"experienceBucket\"",
+        "invalidAutonomyLevel": "Invalid or missing \"autonomyLevel\"",
+        "invalidQuestionType": "Invalid or missing \"questionType\"",
+        "invalidRubric": "\"rubric\" must be a non-empty array of strings"
+      },
+      "toast": {
+        "expectedArray": "Expected a JSON array of question objects",
+        "emptyArray": "The array is empty",
+        "maxItems": "Maximum 200 items per bulk request",
+        "invalidJson": "Invalid JSON — check the syntax and try again",
+        "createdSummary": "Created {success} of {total} questions",
+        "bulkCreateFailedTitle": "Bulk create failed",
+        "genericFailedFallback": "Something went wrong."
+      }
+    },
+    "searchTest": {
+      "title": "Test retrieval",
+      "subtitle": "Sanity-check how well the retrieval system ranks matches for a given query, and preview the AI-fallback generation used when the existing bank comes up thin.",
+      "queryTextLabel": "Query text",
+      "queryTextPlaceholder": "e.g. how would you design a caching strategy for a read-heavy API",
+      "searchButton": "Search",
+      "generateButton": "Search + Generate if needed",
+      "generatingButton": "Generating...",
+      "helpText": "<b>Search</b> only checks existing approved questions. <b>Search + Generate if needed</b> also asks the AI to draft new candidate questions when the existing bank has too few strong matches — new questions land as Pending Review, not immediately reusable.",
+      "noResults": "No approved questions in this bucket yet",
+      "topMatches": "{count, plural, one {Top # match} other {Top # matches}}",
+      "generatingNotice": "Generating new candidate questions with AI fallback...",
+      "newlyGeneratedTitle": "Newly generated — pending review",
+      "approve": "Approve",
+      "toast": {
+        "searchFailedTitle": "Search failed",
+        "generateFailedTitle": "Search + Generate failed",
+        "approveSuccess": "Question approved",
+        "approveSuccessDescription": "It now shows up in Search results for this bucket.",
+        "approveFailedTitle": "Failed to approve question",
+        "genericFailedFallback": "Something went wrong."
+      }
+    }
   }
 }

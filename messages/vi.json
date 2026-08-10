@@ -1429,5 +1429,220 @@
       "copyJson": "Sao chép JSON",
       "copySuccess": "Đã sao chép dữ liệu bổ sung vào bộ nhớ tạm"
     }
+  },
+  "interviewQuestions": {
+    "internalToolBadge": "Công cụ nội bộ",
+    "backToBank": "← Về Kho câu hỏi phỏng vấn",
+    "labels": {
+      "occupationFamily": {
+        "it": "IT / Kỹ thuật phần mềm",
+        "marketing": "Marketing",
+        "design": "Thiết kế",
+        "data": "Dữ liệu",
+        "product": "Sản phẩm",
+        "sales": "Kinh doanh",
+        "legal": "Pháp lý"
+      },
+      "competencyType": {
+        "hardSkill": "Kỹ năng chuyên môn",
+        "toolSkill": "Kỹ năng công cụ",
+        "knowledgeArea": "Lĩnh vực kiến thức",
+        "softSkill": "Kỹ năng mềm",
+        "methodology": "Phương pháp luận",
+        "compliance": "Tuân thủ"
+      },
+      "assessmentTarget": {
+        "recall": "Ghi nhớ",
+        "application": "Vận dụng",
+        "analysis": "Phân tích",
+        "decisionMaking": "Ra quyết định",
+        "communication": "Giao tiếp",
+        "leadership": "Lãnh đạo",
+        "ownership": "Tinh thần trách nhiệm"
+      },
+      "experienceBucket": {
+        "zeroToOne": "0-1 năm",
+        "twoToFour": "2-4 năm",
+        "fiveToEight": "5-8 năm",
+        "eightPlus": "8+ năm"
+      },
+      "autonomyLevel": {
+        "worksIndependently": "Làm việc độc lập",
+        "leadsProjects": "Dẫn dắt dự án",
+        "definesStrategy": "Xây dựng chiến lược",
+        "managesPeople": "Quản lý con người"
+      },
+      "questionType": {
+        "experienceValidation": "Xác thực kinh nghiệm",
+        "artifactDiscussion": "Thảo luận sản phẩm thực tế",
+        "decisionMaking": "Ra quyết định",
+        "behavioralEvidence": "Bằng chứng hành vi",
+        "reflection": "Nhìn lại trải nghiệm",
+        "knowledgeCheck": "Kiểm tra kiến thức"
+      },
+      "source": {
+        "seed": "Khởi tạo",
+        "aiGenerated": "AI tạo"
+      },
+      "qualityGate": {
+        "pendingReview": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Đã từ chối"
+      }
+    },
+    "fields": {
+      "occupationFamilyLabel": "Nhóm ngành nghề",
+      "selectFamily": "Chọn nhóm ngành",
+      "specializationLabel": "Chuyên môn",
+      "selectSpecialization": "Chọn chuyên môn"
+    },
+    "list": {
+      "title": "Kho câu hỏi phỏng vấn",
+      "subtitle": "Câu hỏi phỏng vấn được tuyển chọn và AI tạo, dùng cho engine truy xuất/search-or-generate.",
+      "testRetrieval": "Kiểm tra truy xuất",
+      "bulkCreate": "Tạo hàng loạt",
+      "newQuestion": "Câu hỏi mới",
+      "loadingTitle": "Đang tải câu hỏi phỏng vấn...",
+      "loadingDescription": "Vui lòng chờ trong khi các câu hỏi đang được tải.",
+      "errorTitle": "Không thể tải câu hỏi phỏng vấn",
+      "errorFallback": "Không thể tải câu hỏi phỏng vấn",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Không có câu hỏi nào khớp bộ lọc này",
+      "emptyDescription": "Hãy xóa bớt bộ lọc hoặc thêm câu hỏi mới.",
+      "columns": {
+        "question": "Câu hỏi",
+        "familySpecialization": "Nhóm ngành / Chuyên môn",
+        "competency": "Năng lực",
+        "quality": "Chất lượng",
+        "source": "Nguồn",
+        "usage": "Lượt dùng",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "approve": "Duyệt",
+        "reembed": "Tạo lại embedding",
+        "edit": "Sửa",
+        "delete": "Xóa"
+      },
+      "deleteConfirmTitle": "Xóa câu hỏi?",
+      "deleteConfirmDescription": "Hành động này sẽ xóa câu hỏi khỏi kho. Không thể hoàn tác.",
+      "deleteConfirmAction": "Xóa câu hỏi",
+      "toast": {
+        "approveSuccess": "Đã duyệt câu hỏi",
+        "approveFailedTitle": "Không thể duyệt câu hỏi",
+        "genericFailedFallback": "Đã xảy ra lỗi.",
+        "reembedSuccess": "Đã tính lại embedding",
+        "reembedFailedTitle": "Không thể tạo lại embedding",
+        "deleteSuccess": "Đã xóa câu hỏi",
+        "deleteFailedTitle": "Không thể xóa câu hỏi"
+      }
+    },
+    "form": {
+      "titleNew": "Câu hỏi phỏng vấn mới",
+      "titleEdit": "Sửa câu hỏi",
+      "subtitle": "Nội dung được tuyển chọn dùng cho engine truy xuất/search-or-generate (chỉ dành cho vai trò DEV).",
+      "questionTextLabel": "Nội dung câu hỏi",
+      "questionTextPlaceholder": "Hãy trình bày cách bạn sẽ...",
+      "charCount": "{count} / {max}",
+      "selectType": "Chọn một loại",
+      "enablersLabel": "Công cụ/phương pháp hỗ trợ",
+      "enablersHint": "Công cụ, phương pháp, hoặc framework — vd: Docker, SPIN Selling",
+      "businessContextLabel": "Bối cảnh nghiệp vụ",
+      "businessContextPlaceholder": "vd: E-commerce, Enterprise Deal Closing",
+      "competencyLabel": "Năng lực",
+      "competencyPlaceholder": "vd: Caching Strategies",
+      "competencyTypeLabel": "Loại năng lực",
+      "assessmentTargetLabel": "Mục tiêu đánh giá",
+      "selectTarget": "Chọn mục tiêu",
+      "questionTypeLabel": "Loại câu hỏi",
+      "experienceBucketLabel": "Khoảng kinh nghiệm",
+      "selectRange": "Chọn khoảng",
+      "autonomyLevelLabel": "Mức độ tự chủ",
+      "selectLevel": "Chọn mức độ",
+      "rubricLabel": "Tiêu chí đánh giá",
+      "rubricHint": "Các ý chính câu trả lời tốt cần có (không phải đáp án mẫu cố định)",
+      "qualityGateStatusLabel": "Trạng thái duyệt chất lượng",
+      "cancel": "Hủy",
+      "saveChanges": "Lưu thay đổi",
+      "createQuestion": "Tạo câu hỏi",
+      "loadingTitle": "Đang tải câu hỏi...",
+      "loadingDescription": "Vui lòng chờ trong khi câu hỏi đang được tải.",
+      "loadErrorFallback": "Không thể tải câu hỏi",
+      "toast": {
+        "updateSuccess": "Đã cập nhật câu hỏi",
+        "createSuccess": "Đã tạo câu hỏi",
+        "updateFailedTitle": "Không thể cập nhật câu hỏi",
+        "createFailedTitle": "Không thể tạo câu hỏi",
+        "saveFailedFallback": "Đã xảy ra lỗi khi lưu."
+      }
+    },
+    "tagListInput": {
+      "defaultPlaceholder": "Nhập rồi nhấn Enter",
+      "removeAriaLabel": "Xóa {value}"
+    },
+    "bulkCreate": {
+      "title": "Tạo câu hỏi hàng loạt",
+      "subtitle": "Dán một mảng JSON các đối tượng câu hỏi (tối đa 200), theo đúng các trường của form tạo câu hỏi.",
+      "jsonLabel": "Mảng JSON câu hỏi",
+      "uploadFile": "Tải file .json lên",
+      "preview": "Xem trước",
+      "validCount": "{valid} trong tổng số {total} mục hợp lệ",
+      "columns": {
+        "index": "#",
+        "questionText": "Nội dung câu hỏi",
+        "family": "Nhóm ngành",
+        "status": "Trạng thái"
+      },
+      "statusCreated": "Đã tạo",
+      "statusReady": "Sẵn sàng",
+      "moreErrors": " (+{count} lỗi khác)",
+      "done": "Xong",
+      "cancel": "Hủy",
+      "createCount": "{count, plural, one {Tạo # câu hỏi} other {Tạo # câu hỏi}}",
+      "validation": {
+        "missingField": "Thiếu \"{field}\"",
+        "invalidOccupationFamily": "\"occupationFamily\" không hợp lệ hoặc bị thiếu",
+        "unknownSpecialization": "\"specialization\" không thuộc {family}",
+        "invalidEnablers": "\"enablers\" phải là một mảng chuỗi",
+        "invalidCompetencyType": "\"competencyType\" không hợp lệ hoặc bị thiếu",
+        "invalidAssessmentTarget": "\"assessmentTarget\" không hợp lệ hoặc bị thiếu",
+        "invalidExperienceBucket": "\"experienceBucket\" không hợp lệ hoặc bị thiếu",
+        "invalidAutonomyLevel": "\"autonomyLevel\" không hợp lệ hoặc bị thiếu",
+        "invalidQuestionType": "\"questionType\" không hợp lệ hoặc bị thiếu",
+        "invalidRubric": "\"rubric\" phải là một mảng chuỗi không rỗng"
+      },
+      "toast": {
+        "expectedArray": "Cần một mảng JSON chứa các đối tượng câu hỏi",
+        "emptyArray": "Mảng đang rỗng",
+        "maxItems": "Tối đa 200 mục cho mỗi lần tạo hàng loạt",
+        "invalidJson": "JSON không hợp lệ — kiểm tra lại cú pháp và thử lại",
+        "createdSummary": "Đã tạo {success} trong tổng số {total} câu hỏi",
+        "bulkCreateFailedTitle": "Tạo hàng loạt thất bại",
+        "genericFailedFallback": "Đã xảy ra lỗi."
+      }
+    },
+    "searchTest": {
+      "title": "Kiểm tra truy xuất",
+      "subtitle": "Kiểm tra nhanh mức độ xếp hạng của hệ thống truy xuất cho một truy vấn, và xem trước cơ chế AI dự phòng khi kho câu hỏi hiện có quá ít kết quả phù hợp.",
+      "queryTextLabel": "Nội dung truy vấn",
+      "queryTextPlaceholder": "vd: bạn sẽ thiết kế chiến lược caching cho API đọc nhiều như thế nào",
+      "searchButton": "Tìm kiếm",
+      "generateButton": "Tìm kiếm + Tạo mới nếu cần",
+      "generatingButton": "Đang tạo...",
+      "helpText": "<b>Tìm kiếm</b> chỉ kiểm tra các câu hỏi đã duyệt hiện có. <b>Tìm kiếm + Tạo mới nếu cần</b> còn yêu cầu AI soạn thêm câu hỏi ứng viên mới khi kho hiện có quá ít kết quả phù hợp — câu hỏi mới sẽ ở trạng thái Chờ duyệt, chưa thể dùng lại ngay.",
+      "noResults": "Chưa có câu hỏi đã duyệt nào trong nhóm này",
+      "topMatches": "{count, plural, one {# kết quả phù hợp nhất} other {# kết quả phù hợp nhất}}",
+      "generatingNotice": "Đang tạo câu hỏi ứng viên mới bằng AI dự phòng...",
+      "newlyGeneratedTitle": "Vừa tạo mới — chờ duyệt",
+      "approve": "Duyệt",
+      "toast": {
+        "searchFailedTitle": "Tìm kiếm thất bại",
+        "generateFailedTitle": "Tìm kiếm + Tạo mới thất bại",
+        "approveSuccess": "Đã duyệt câu hỏi",
+        "approveSuccessDescription": "Câu hỏi giờ sẽ xuất hiện trong kết quả Tìm kiếm cho nhóm này.",
+        "approveFailedTitle": "Không thể duyệt câu hỏi",
+        "genericFailedFallback": "Đã xảy ra lỗi."
+      }
+    }
   }
 }

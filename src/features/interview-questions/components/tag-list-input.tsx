@@ -2,6 +2,7 @@
 
 import { XIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 type TagListInputProps = {
   label: string;
@@ -12,6 +13,7 @@ type TagListInputProps = {
 };
 
 export function TagListInput({ label, hint, values, onChange, placeholder }: TagListInputProps) {
+  const t = useTranslations('interviewQuestions.tagListInput');
   const [draft, setDraft] = useState('');
 
   const commitDraft = () => {
@@ -40,7 +42,7 @@ export function TagListInput({ label, hint, values, onChange, placeholder }: Tag
               type="button"
               onClick={() => onChange(values.filter((_, i) => i !== index))}
               className="cursor-pointer rounded-full p-0.5 text-on-primary-container transition-colors hover:bg-error-container hover:text-error"
-              aria-label={`Remove ${value}`}
+              aria-label={t('removeAriaLabel', { value })}
             >
               <XIcon className="size-3" />
             </button>
@@ -59,7 +61,7 @@ export function TagListInput({ label, hint, values, onChange, placeholder }: Tag
             }
           }}
           onBlur={commitDraft}
-          placeholder={placeholder ?? 'Type and press Enter'}
+          placeholder={placeholder ?? t('defaultPlaceholder')}
           className="h-7 min-w-[8rem] flex-1 border-none bg-transparent text-sm text-on-surface outline-none placeholder:text-on-surface-muted"
         />
       </div>

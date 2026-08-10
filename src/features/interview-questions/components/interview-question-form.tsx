@@ -3,6 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { LoadingState, showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -15,12 +16,12 @@ import {
   updateInterviewQuestion,
 } from '@/features/interview-questions/api/interview-question.api';
 import {
-  ASSESSMENT_TARGET_LABELS,
-  AUTONOMY_LEVEL_LABELS,
-  COMPETENCY_TYPE_LABELS,
-  EXPERIENCE_BUCKET_LABELS,
-  QUALITY_GATE_LABELS,
-  QUESTION_TYPE_LABELS,
+  ASSESSMENT_TARGET_LABEL_KEYS,
+  AUTONOMY_LEVEL_LABEL_KEYS,
+  COMPETENCY_TYPE_LABEL_KEYS,
+  EXPERIENCE_BUCKET_LABEL_KEYS,
+  QUALITY_GATE_LABEL_KEYS,
+  QUESTION_TYPE_LABEL_KEYS,
   type AssessmentTarget,
   type AutonomyLevel,
   type CompetencyType,
@@ -30,10 +31,18 @@ import {
 } from '@/features/interview-questions/types/interview-question.type';
 import {
   getSpecializationsFor,
-  OCCUPATION_FAMILY_LABELS,
+  OCCUPATION_FAMILY_LABEL_KEYS,
   type OccupationFamily,
 } from '@/features/interview-questions/types/interview-question-taxonomy.type';
 import { ApiError } from '@/lib/api/api-error';
+
+const OCCUPATION_FAMILIES = Object.keys(OCCUPATION_FAMILY_LABEL_KEYS) as OccupationFamily[];
+const COMPETENCY_TYPES = Object.keys(COMPETENCY_TYPE_LABEL_KEYS) as CompetencyType[];
+const ASSESSMENT_TARGETS = Object.keys(ASSESSMENT_TARGET_LABEL_KEYS) as AssessmentTarget[];
+const QUESTION_TYPES = Object.keys(QUESTION_TYPE_LABEL_KEYS) as InterviewQuestionType[];
+const EXPERIENCE_BUCKETS = Object.keys(EXPERIENCE_BUCKET_LABEL_KEYS) as ExperienceBucket[];
+const AUTONOMY_LEVELS = Object.keys(AUTONOMY_LEVEL_LABEL_KEYS) as AutonomyLevel[];
+const QUALITY_GATE_STATUSES = Object.keys(QUALITY_GATE_LABEL_KEYS) as QuestionQualityGateStatus[];
 
 type InterviewQuestionFormProps = {
   questionId?: string;
@@ -41,6 +50,7 @@ type InterviewQuestionFormProps = {
 
 export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps) {
   const router = useRouter();
+  const t = useTranslations('interviewQuestions');
 
   const [isLoadingExisting, setIsLoadingExisting] = useState(Boolean(questionId));
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -80,9 +90,10 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         setQualityGateStatus(question.qualityGateStatus);
       })
       .catch((error) => {
-        setLoadError(error instanceof Error ? error.message : 'Failed to load the question');
+        setLoadError(error instanceof Error ? error.message : t('form.loadErrorFallback'));
       })
       .finally(() => setIsLoadingExisting(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId]);
 
   const specializationOptions = getSpecializationsFor(occupationFamily);
@@ -145,11 +156,11 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         await createInterviewQuestion(payload);
       }
 
-      showToast.success(questionId ? 'Question updated' : 'Question created');
+      showToast.success(questionId ? t('form.toast.updateSuccess') : t('form.toast.createSuccess'));
       router.push(ROUTES.INTERVIEW_QUESTIONS);
     } catch (error) {
-      showToast.error(questionId ? 'Failed to update question' : 'Failed to create question', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong while saving.',
+      showToast.error(questionId ? t('form.toast.updateFailedTitle') : t('form.toast.createFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('form.toast.saveFailedFallback'),
       });
     } finally {
       setIsSubmitting(false);
@@ -157,7 +168,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
   };
 
   if (isLoadingExisting) {
-    return <LoadingState title="Loading question..." description="Please wait while the question is being loaded." />;
+    return <LoadingState title={t('form.loadingTitle')} description={t('form.loadingDescription')} />;
   }
 
   if (loadError) {
@@ -167,7 +178,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
           href={ROUTES.INTERVIEW_QUESTIONS}
           className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
         >
-          ← Back to Interview Question Bank
+          {t('backToBank')}
         </Link>
         <p className="rounded-xl border border-error bg-error-container p-4 text-sm text-error">{loadError}</p>
       </div>
@@ -180,22 +191,20 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         href={ROUTES.INTERVIEW_QUESTIONS}
         className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
       >
-        ← Back to Interview Question Bank
+        {t('backToBank')}
       </Link>
 
       <div>
         <h1 className="text-2xl font-bold text-on-surface">
-          {questionId ? 'Edit question' : 'New interview question'}
+          {questionId ? t('form.titleEdit') : t('form.titleNew')}
         </h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Curated content used by the retrieval/search-or-generate engine (DEV role only).
-        </p>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('form.subtitle')}</p>
       </div>
 
       <div className="space-y-4 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Question text
+            {t('form.questionTextLabel')}
           </label>
           <textarea
             value={questionText}
@@ -203,15 +212,17 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
             maxLength={2000}
             rows={3}
             className="w-full rounded-lg border border-outline bg-surface-lowest px-3 py-2.5 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
-            placeholder="Walk me through how you would..."
+            placeholder={t('form.questionTextPlaceholder')}
           />
-          <p className="mt-1.5 text-right text-xs text-on-surface-muted">{questionText.length} / 2000</p>
+          <p className="mt-1.5 text-right text-xs text-on-surface-muted">
+            {t('form.charCount', { count: questionText.length, max: 2000 })}
+          </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Occupation family
+              {t('fields.occupationFamilyLabel')}
             </label>
             <select
               value={occupationFamily}
@@ -221,10 +232,10 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
               }}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a family</option>
-              {(Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map((family) => (
+              <option value="">{t('fields.selectFamily')}</option>
+              {OCCUPATION_FAMILIES.map((family) => (
                 <option key={family} value={family}>
-                  {OCCUPATION_FAMILY_LABELS[family]}
+                  {t(`labels.occupationFamily.${OCCUPATION_FAMILY_LABEL_KEYS[family]}`)}
                 </option>
               ))}
             </select>
@@ -232,7 +243,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Specialization
+              {t('fields.specializationLabel')}
             </label>
             <select
               value={specialization}
@@ -240,7 +251,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
               disabled={!occupationFamily}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
             >
-              <option value="">Select a specialization</option>
+              <option value="">{t('fields.selectSpecialization')}</option>
               {specializationOptions.map((spec) => (
                 <option key={spec} value={spec}>
                   {spec}
@@ -251,40 +262,41 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         </div>
 
         <TagListInput
-          label="Enablers"
-          hint="Tools, methodologies, or frameworks — e.g. Docker, SPIN Selling"
+          label={t('form.enablersLabel')}
+          hint={t('form.enablersHint')}
+          placeholder={t('tagListInput.defaultPlaceholder')}
           values={enablers}
           onChange={setEnablers}
         />
 
         <Input
-          label="Business context"
+          label={t('form.businessContextLabel')}
           value={businessContext}
           onChange={(e) => setBusinessContext(e.target.value)}
-          placeholder="e.g. E-commerce, Enterprise Deal Closing"
+          placeholder={t('form.businessContextPlaceholder')}
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Input
-            label="Competency"
+            label={t('form.competencyLabel')}
             value={competency}
             onChange={(e) => setCompetency(e.target.value)}
-            placeholder="e.g. Caching Strategies"
+            placeholder={t('form.competencyPlaceholder')}
           />
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Competency type
+              {t('form.competencyTypeLabel')}
             </label>
             <select
               value={competencyType}
               onChange={(e) => setCompetencyType(e.target.value as CompetencyType | '')}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a type</option>
-              {(Object.keys(COMPETENCY_TYPE_LABELS) as CompetencyType[]).map((type) => (
+              <option value="">{t('form.selectType')}</option>
+              {COMPETENCY_TYPES.map((type) => (
                 <option key={type} value={type}>
-                  {COMPETENCY_TYPE_LABELS[type]}
+                  {t(`labels.competencyType.${COMPETENCY_TYPE_LABEL_KEYS[type]}`)}
                 </option>
               ))}
             </select>
@@ -294,17 +306,17 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Assessment target
+              {t('form.assessmentTargetLabel')}
             </label>
             <select
               value={assessmentTarget}
               onChange={(e) => setAssessmentTarget(e.target.value as AssessmentTarget | '')}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a target</option>
-              {(Object.keys(ASSESSMENT_TARGET_LABELS) as AssessmentTarget[]).map((target) => (
+              <option value="">{t('form.selectTarget')}</option>
+              {ASSESSMENT_TARGETS.map((target) => (
                 <option key={target} value={target}>
-                  {ASSESSMENT_TARGET_LABELS[target]}
+                  {t(`labels.assessmentTarget.${ASSESSMENT_TARGET_LABEL_KEYS[target]}`)}
                 </option>
               ))}
             </select>
@@ -312,17 +324,17 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Question type
+              {t('form.questionTypeLabel')}
             </label>
             <select
               value={questionType}
               onChange={(e) => setQuestionType(e.target.value as InterviewQuestionType | '')}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a type</option>
-              {(Object.keys(QUESTION_TYPE_LABELS) as InterviewQuestionType[]).map((type) => (
+              <option value="">{t('form.selectType')}</option>
+              {QUESTION_TYPES.map((type) => (
                 <option key={type} value={type}>
-                  {QUESTION_TYPE_LABELS[type]}
+                  {t(`labels.questionType.${QUESTION_TYPE_LABEL_KEYS[type]}`)}
                 </option>
               ))}
             </select>
@@ -332,17 +344,17 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Experience bucket
+              {t('form.experienceBucketLabel')}
             </label>
             <select
               value={experienceBucket}
               onChange={(e) => setExperienceBucket(e.target.value as ExperienceBucket | '')}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a range</option>
-              {(Object.keys(EXPERIENCE_BUCKET_LABELS) as ExperienceBucket[]).map((bucket) => (
+              <option value="">{t('form.selectRange')}</option>
+              {EXPERIENCE_BUCKETS.map((bucket) => (
                 <option key={bucket} value={bucket}>
-                  {EXPERIENCE_BUCKET_LABELS[bucket]}
+                  {t(`labels.experienceBucket.${EXPERIENCE_BUCKET_LABEL_KEYS[bucket]}`)}
                 </option>
               ))}
             </select>
@@ -350,17 +362,17 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Autonomy level
+              {t('form.autonomyLevelLabel')}
             </label>
             <select
               value={autonomyLevel}
               onChange={(e) => setAutonomyLevel(e.target.value as AutonomyLevel | '')}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a level</option>
-              {(Object.keys(AUTONOMY_LEVEL_LABELS) as AutonomyLevel[]).map((level) => (
+              <option value="">{t('form.selectLevel')}</option>
+              {AUTONOMY_LEVELS.map((level) => (
                 <option key={level} value={level}>
-                  {AUTONOMY_LEVEL_LABELS[level]}
+                  {t(`labels.autonomyLevel.${AUTONOMY_LEVEL_LABEL_KEYS[level]}`)}
                 </option>
               ))}
             </select>
@@ -368,24 +380,25 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
         </div>
 
         <TagListInput
-          label="Rubric"
-          hint="Key points a good answer should cover (not a fixed model answer)"
+          label={t('form.rubricLabel')}
+          hint={t('form.rubricHint')}
+          placeholder={t('tagListInput.defaultPlaceholder')}
           values={rubric}
           onChange={setRubric}
         />
 
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Quality gate status
+            {t('form.qualityGateStatusLabel')}
           </label>
           <select
             value={qualityGateStatus}
             onChange={(e) => setQualityGateStatus(e.target.value as QuestionQualityGateStatus)}
             className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           >
-            {(Object.keys(QUALITY_GATE_LABELS) as QuestionQualityGateStatus[]).map((status) => (
+            {QUALITY_GATE_STATUSES.map((status) => (
               <option key={status} value={status}>
-                {QUALITY_GATE_LABELS[status]}
+                {t(`labels.qualityGate.${QUALITY_GATE_LABEL_KEYS[status]}`)}
               </option>
             ))}
           </select>
@@ -399,7 +412,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
           className="w-auto px-4"
           onClick={() => router.push(ROUTES.INTERVIEW_QUESTIONS)}
         >
-          Cancel
+          {t('form.cancel')}
         </Button>
         <Button
           type="button"
@@ -408,7 +421,7 @@ export function InterviewQuestionForm({ questionId }: InterviewQuestionFormProps
           isLoading={isSubmitting}
           onClick={() => void handleSubmit()}
         >
-          {questionId ? 'Save changes' : 'Create question'}
+          {questionId ? t('form.saveChanges') : t('form.createQuestion')}
         </Button>
       </div>
     </div>
