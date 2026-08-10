@@ -2,6 +2,7 @@
 
 import { RefreshCwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { updateApplicationStatus } from '@/features/applications/api/application.api';
@@ -17,6 +18,7 @@ export function ApplicationStatusForm({
   application,
   onUpdated,
 }: ApplicationStatusFormProps) {
+  const t = useTranslations('applications.statusForm');
   const [status, setStatus] = useState<ApplicationStatus>(application.status);
   const [note, setNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,13 +40,13 @@ export function ApplicationStatusForm({
         ...updatedApplication,
       });
       setNote('');
-      showToast.success('Application status updated successfully');
+      showToast.success(t('successTitle'));
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
-          : 'Failed to update application status';
-      showToast.error('Failed to update application status', {
+          : t('failedFallback');
+      showToast.error(t('failedTitle'), {
         description: message,
       });
     } finally {
@@ -58,12 +60,12 @@ export function ApplicationStatusForm({
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary-container text-on-primary-container">
           <RefreshCwIcon className="size-4" />
         </div>
-        <h2 className="text-lg font-semibold text-on-surface">Update status</h2>
+        <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
       </div>
 
       <div className="space-y-4">
         <label className="block space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">New status</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">{t('newStatusLabel')}</span>
           <select
             value={status}
             onChange={(event) => setStatus(event.target.value as ApplicationStatus)}
@@ -78,11 +80,11 @@ export function ApplicationStatusForm({
         </label>
 
         <label className="block space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Status note</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">{t('noteLabel')}</span>
           <textarea
             value={note}
             onChange={(event) => setNote(event.target.value)}
-            placeholder="Reason for change..."
+            placeholder={t('notePlaceholder')}
             rows={3}
             className="w-full rounded-lg border border-outline bg-surface-lowest px-3 py-2.5 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           />
@@ -96,10 +98,10 @@ export function ApplicationStatusForm({
           disabled={isSubmitting}
           className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? 'Updating...' : 'Update Status'}
+          {isSubmitting ? t('submitting') : t('submit')}
         </button>
 
-        <p className="text-xs text-on-surface-muted">Changing the status logs a permanent timeline event.</p>
+        <p className="text-xs text-on-surface-muted">{t('footerNote')}</p>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { ArrowRightIcon, BriefcaseIcon, FileTextIcon, SparklesIcon, UserIcon } f
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { AvatarChip } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -65,6 +66,8 @@ type ApplicationDetailProps = {
 };
 
 export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
+  const t = useTranslations('applications.detail');
+  const tRoot = useTranslations('applications');
   const router = useRouter();
   const [application, setApplication] = useState<Application | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,9 +84,9 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
         setApplication(data);
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Failed to load application';
+          error instanceof Error ? error.message : t('loadingDescription');
         setErrorMessage(message);
-        showToast.error('Failed to load application', {
+        showToast.error(t('notFoundTitle'), {
           description: message,
         });
       } finally {
@@ -92,6 +95,7 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
     };
 
     void loadApplication();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applicationId]);
 
   const handleCreateEvaluation = async () => {
@@ -102,13 +106,13 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
     try {
       setIsCreatingEvaluation(true);
       const evaluation = await createEvaluation({ applicationId: application.id });
-      showToast.success('Evaluation created successfully');
+      showToast.success(t('createEvaluationSuccess'));
       setEventsReloadKey((current) => current + 1);
       router.push(`/evaluations/${evaluation.id}`);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Failed to create evaluation';
-      showToast.error('Failed to create evaluation', {
+        error instanceof Error ? error.message : t('createEvaluationFailedFallback');
+      showToast.error(t('createEvaluationFailedTitle'), {
         description: message,
       });
     } finally {
@@ -119,8 +123,8 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
   if (isLoading) {
     return (
       <LoadingState
-        title="Loading application detail..."
-        description="Please wait while the application detail is being loaded."
+        title={t('loadingTitle')}
+        description={t('loadingDescription')}
       />
     );
   }
@@ -128,8 +132,8 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
   if (errorMessage || !application) {
     return (
       <EmptyState
-        title="Application not found"
-        description={errorMessage || 'Unable to load this application.'}
+        title={t('notFoundTitle')}
+        description={errorMessage || t('notFoundFallback')}
       />
     );
   }
@@ -153,11 +157,7 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
                 <ApplicationStatusBadge status={application.status} />
               </div>
               <p className="mt-1 max-w-2xl text-sm leading-6 text-on-surface-variant">
-                Candidate application for{' '}
-                <span className="font-medium text-on-surface">
-                  {application.jobDescription?.title || application.jobDescriptionId}
-                </span>
-                .
+                {t('applicationFor', { title: application.jobDescription?.title || application.jobDescriptionId })}
               </p>
             </div>
           </div>
@@ -169,23 +169,23 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
             className="inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             <SparklesIcon className="size-4" />
-            {isCreatingEvaluation ? 'Creating evaluation...' : 'Create evaluation'}
+            {isCreatingEvaluation ? t('creatingEvaluation') : t('createEvaluation')}
           </button>
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <InfoCard label="Candidate ID" value={application.candidateId} />
-          <InfoCard label="Resume ID" value={application.resumeId} />
-          <InfoCard label="Job Description ID" value={application.jobDescriptionId} />
-          <InfoCard label="Applied at" value={application.appliedAt ? formatDateTime(application.appliedAt) : 'Not recorded'} />
-          <InfoCard label="Source" value={application.source || 'Not provided'} />
-          <InfoCard label="Last activity" value={application.lastActivityAt ? formatDateTime(application.lastActivityAt) : 'Not recorded'} />
+          <InfoCard label={t('candidateId')} value={application.candidateId} />
+          <InfoCard label={t('resumeId')} value={application.resumeId} />
+          <InfoCard label={t('jobDescriptionId')} value={application.jobDescriptionId} />
+          <InfoCard label={t('appliedAt')} value={application.appliedAt ? formatDateTime(application.appliedAt) : tRoot('notRecorded')} />
+          <InfoCard label={t('source')} value={application.source || tRoot('notProvided')} />
+          <InfoCard label={t('lastActivity')} value={application.lastActivityAt ? formatDateTime(application.lastActivityAt) : tRoot('notRecorded')} />
           <InfoCard
-            label="Evaluation count"
+            label={t('evaluationCount')}
             value={String(application._count?.evaluations ?? 0)}
           />
           <InfoCard
-            label="Event count"
+            label={t('eventCount')}
             value={String(application._count?.events ?? 0)}
           />
         </div>
@@ -193,35 +193,35 @@ export function ApplicationDetail({ applicationId }: ApplicationDetailProps) {
         <div className="mt-6 grid gap-4 lg:grid-cols-3">
           <LinkedRecordCard
             icon={UserIcon}
-            title="Candidate"
-            primaryLine={application.candidate?.fullName || 'Candidate detail not included'}
+            title={t('candidateCard')}
+            primaryLine={application.candidate?.fullName || t('candidateDetailMissing')}
             secondaryLine={application.candidate?.primaryEmail ?? undefined}
             href={`/candidates/${application.candidateId}`}
-            linkLabel="View candidate"
+            linkLabel={t('viewCandidate')}
           />
 
           <LinkedRecordCard
             icon={FileTextIcon}
-            title="Resume"
-            primaryLine={application.resume?.fileAsset?.fileName || 'Resume detail not included'}
-            secondaryLine={`Parse status: ${application.resume?.parseStatus || 'Unknown'}`}
+            title={t('resumeCard')}
+            primaryLine={application.resume?.fileAsset?.fileName || t('resumeDetailMissing')}
+            secondaryLine={t('parseStatusLine', { status: application.resume?.parseStatus || t('unknown') })}
             href={`/resumes/${application.resumeId}`}
-            linkLabel="View resume"
+            linkLabel={t('viewResume')}
           />
 
           <LinkedRecordCard
             icon={BriefcaseIcon}
-            title="Job description"
-            primaryLine={application.jobDescription?.title || 'Job detail not included'}
-            secondaryLine={application.jobDescription?.companyName || 'Company not provided'}
+            title={t('jobDescriptionCard')}
+            primaryLine={application.jobDescription?.title || t('jobDetailMissing')}
+            secondaryLine={application.jobDescription?.companyName || tRoot('companyNotProvided')}
             href={`/job-descriptions/${application.jobDescriptionId}`}
-            linkLabel="View JD"
+            linkLabel={t('viewJd')}
           />
         </div>
 
         {application.notes ? (
           <div className="mt-6 rounded-xl border border-outline bg-surface-variant p-4">
-            <h2 className="text-sm font-semibold text-on-surface">Notes</h2>
+            <h2 className="text-sm font-semibold text-on-surface">{t('notes')}</h2>
             <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-on-surface-variant">
               {application.notes}
             </p>

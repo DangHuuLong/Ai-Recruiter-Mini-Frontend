@@ -2,6 +2,7 @@
 
 import { HistoryIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { getApplicationEvents } from '@/features/applications/api/application.api';
@@ -19,7 +20,7 @@ function eventIcon(eventType: string) {
   return HistoryIcon;
 }
 
-const renderEventDescription = (event: ApplicationEvent) => {
+function EventDescription({ event, t }: { event: ApplicationEvent; t: ReturnType<typeof useTranslations<'applications.events'>> }) {
   if (event.eventType === 'STATUS_CHANGED') {
     const fromStatus = event.eventData?.fromStatus || 'UNKNOWN';
     const toStatus = event.eventData?.toStatus || 'UNKNOWN';
@@ -28,28 +29,32 @@ const renderEventDescription = (event: ApplicationEvent) => {
     return (
       <div className="space-y-1">
         <p className="text-sm text-on-surface-variant">
-          Status changed from <span className="font-semibold">{fromStatus}</span> to{' '}
-          <span className="font-semibold">{toStatus}</span>.
+          {t.rich('statusChanged', {
+            from: fromStatus,
+            to: toStatus,
+            b: (chunks) => <span className="font-semibold">{chunks}</span>,
+          })}
         </p>
         {typeof note === 'string' && note ? (
-          <p className="text-sm text-on-surface-muted">Note: {note}</p>
+          <p className="text-sm text-on-surface-muted">{t('note', { note })}</p>
         ) : null}
       </div>
     );
   }
 
   if (event.eventType === 'APPLICATION_CREATED') {
-    return <p className="text-sm text-on-surface-variant">Application was created.</p>;
+    return <p className="text-sm text-on-surface-variant">{t('applicationCreated')}</p>;
   }
 
   return (
     <p className="text-sm text-on-surface-variant">
-      Event data: {JSON.stringify(event.eventData ?? {})}
+      {t('eventData', { data: JSON.stringify(event.eventData ?? {}) })}
     </p>
   );
-};
+}
 
 export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEventsProps) {
+  const t = useTranslations('applications.events');
   const [events, setEvents] = useState<ApplicationEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,9 +68,9 @@ export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEvent
         setEvents(data);
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Failed to load application events';
+          error instanceof Error ? error.message : t('errorTitle');
         setErrorMessage(message);
-        showToast.error('Failed to load application events', {
+        showToast.error(t('errorTitle'), {
           description: message,
         });
       } finally {
@@ -74,26 +79,27 @@ export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEvent
     };
 
     void loadEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applicationId, reloadKey]);
 
   if (isLoading) {
     return (
       <LoadingState
-        title="Loading application events..."
-        description="Please wait while the application timeline is being loaded."
+        title={t('loadingTitle')}
+        description={t('loadingDescription')}
       />
     );
   }
 
   if (errorMessage) {
-    return <EmptyState title="Failed to load events" description={errorMessage} />;
+    return <EmptyState title={t('errorTitle')} description={errorMessage} />;
   }
 
   if (events.length === 0) {
     return (
       <EmptyState
-        title="No application events"
-        description="Status changes and lifecycle events will appear here."
+        title={t('emptyTitle')}
+        description={t('emptyDescription')}
       />
     );
   }
@@ -101,10 +107,8 @@ export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEvent
   return (
     <section className="space-y-4 rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
       <div>
-        <h2 className="text-lg font-semibold text-on-surface">Application events</h2>
-        <p className="mt-1 text-sm text-on-surface-muted">
-          Events are ordered by newest first.
-        </p>
+        <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('subtitle')}</p>
       </div>
 
       <div className="relative space-y-5">
@@ -125,7 +129,7 @@ export function ApplicationEvents({ applicationId, reloadKey }: ApplicationEvent
                     {formatDateTime(event.createdAt)}
                   </p>
                 </div>
-                <div className="mt-2">{renderEventDescription(event)}</div>
+                <div className="mt-2"><EventDescription event={event} t={t} /></div>
               </div>
             </div>
           );
