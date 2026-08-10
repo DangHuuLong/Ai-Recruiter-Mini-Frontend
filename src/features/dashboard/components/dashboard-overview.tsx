@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { AvatarChip } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -34,17 +35,18 @@ const EVALUATION_STATUS_CLASSES: Record<string, string> = {
   FAILED: 'bg-error-container text-error',
 };
 
-const QUICK_ACTIONS = [
-  { label: 'Add candidate', href: ROUTES.CANDIDATE_CREATE, icon: UserPlusIcon },
-  { label: 'Create job description', href: ROUTES.JOB_DESCRIPTION_CREATE, icon: FilePlusIcon },
-  { label: 'New application', href: ROUTES.APPLICATION_CREATE, icon: ClipboardListIcon },
-  { label: 'Start batch scoring', href: ROUTES.BATCH_SCORING_CREATE, icon: Grid3x3Icon },
-];
-
 export function DashboardOverview() {
+  const t = useTranslations('dashboard');
   const [data, setData] = useState<DashboardOverviewData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const QUICK_ACTIONS = [
+    { label: t('quickActions.addCandidate'), href: ROUTES.CANDIDATE_CREATE, icon: UserPlusIcon },
+    { label: t('quickActions.createJobDescription'), href: ROUTES.JOB_DESCRIPTION_CREATE, icon: FilePlusIcon },
+    { label: t('quickActions.newApplication'), href: ROUTES.APPLICATION_CREATE, icon: ClipboardListIcon },
+    { label: t('quickActions.startBatchScoring'), href: ROUTES.BATCH_SCORING_CREATE, icon: Grid3x3Icon },
+  ];
 
   const load = async () => {
     try {
@@ -53,9 +55,9 @@ export function DashboardOverview() {
       const overview = await loadDashboardOverview();
       setData(overview);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load dashboard data';
+      const message = error instanceof Error ? error.message : t('error.fallback');
       setErrorMessage(message);
-      showToast.error('Failed to load dashboard data', { description: message });
+      showToast.error(t('error.fallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -63,16 +65,17 @@ export function DashboardOverview() {
 
   useEffect(() => {
     void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading && !data) {
-    return <LoadingState title="Loading dashboard..." description="Please wait while your dashboard data is being loaded." />;
+    return <LoadingState title={t('loading.title')} description={t('loading.description')} />;
   }
 
   if (errorMessage && !data) {
     return (
       <EmptyState
-        title="Failed to load dashboard"
+        title={t('error.title')}
         description={errorMessage}
         action={
           <button
@@ -80,7 +83,7 @@ export function DashboardOverview() {
             onClick={() => void load()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('error.tryAgain')}
           </button>
         }
       />
@@ -102,10 +105,8 @@ export function DashboardOverview() {
   return (
     <div className="space-y-6 pb-10">
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">Dashboard</h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Hiring at a glance — pipeline health, AI scoring activity, and recent team actions.
-        </p>
+        <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -114,10 +115,10 @@ export function DashboardOverview() {
             <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
               <UsersIcon className="size-5" />
             </div>
-            <p className="text-sm font-semibold text-on-surface-variant">Total Candidates</p>
+            <p className="text-sm font-semibold text-on-surface-variant">{t('kpis.totalCandidates')}</p>
           </div>
           <p className="mt-3 text-3xl font-bold text-on-surface">{kpis.totalCandidates}</p>
-          <p className="mt-1 text-xs text-on-surface-muted">Database entries</p>
+          <p className="mt-1 text-xs text-on-surface-muted">{t('kpis.databaseEntries')}</p>
         </div>
 
         <div className="rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card">
@@ -125,10 +126,10 @@ export function DashboardOverview() {
             <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
               <BriefcaseIcon className="size-5" />
             </div>
-            <p className="text-sm font-semibold text-on-surface-variant">Active Job Descriptions</p>
+            <p className="text-sm font-semibold text-on-surface-variant">{t('kpis.activeJobDescriptions')}</p>
           </div>
           <p className="mt-3 text-3xl font-bold text-on-surface">{kpis.activeJobDescriptions}</p>
-          <p className="mt-1 text-xs text-on-surface-muted">Currently open for applications</p>
+          <p className="mt-1 text-xs text-on-surface-muted">{t('kpis.currentlyOpen')}</p>
         </div>
 
         <div className="rounded-2xl border border-outline bg-surface-lowest p-4 shadow-card">
@@ -136,17 +137,19 @@ export function DashboardOverview() {
             <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
               <ClipboardListIcon className="size-5" />
             </div>
-            <p className="text-sm font-semibold text-on-surface-variant">Applications This Month</p>
+            <p className="text-sm font-semibold text-on-surface-variant">{t('kpis.applicationsThisMonth')}</p>
           </div>
           <p className="mt-3 text-3xl font-bold text-on-surface">{kpis.applicationsThisMonth}</p>
           {applicationsTrend !== null ? (
             <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-success">
               <TrendingUpIcon className="size-3.5" />
-              {applicationsTrend >= 0 ? '+' : ''}
-              {applicationsTrend}% vs last month
+              {t('kpis.trendVsLastMonth', {
+                sign: applicationsTrend >= 0 ? '+' : '',
+                percent: applicationsTrend,
+              })}
             </p>
           ) : (
-            <p className="mt-1 text-xs text-on-surface-muted">No data for last month</p>
+            <p className="mt-1 text-xs text-on-surface-muted">{t('kpis.noDataLastMonth')}</p>
           )}
         </div>
 
@@ -155,13 +158,15 @@ export function DashboardOverview() {
             <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container">
               <ClipboardCheckIcon className="size-5" />
             </div>
-            <p className="text-sm font-semibold text-on-surface-variant">Avg. Evaluation Score</p>
+            <p className="text-sm font-semibold text-on-surface-variant">{t('kpis.avgScore')}</p>
           </div>
           <p className="mt-3 text-3xl font-bold text-on-surface">
             {kpis.averageEvaluationScore ?? '—'}
             <span className="text-base font-normal text-on-surface-muted"> / 100</span>
           </p>
-          <p className="mt-1 text-xs text-on-surface-muted">Across {kpis.completedEvaluationCount} completed evaluations</p>
+          <p className="mt-1 text-xs text-on-surface-muted">
+            {t('kpis.acrossEvaluations', { count: kpis.completedEvaluationCount })}
+          </p>
         </div>
       </div>
 
@@ -170,14 +175,14 @@ export function DashboardOverview() {
           <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-base font-bold text-on-surface">Application Pipeline</h2>
-                <p className="mt-1 text-sm text-on-surface-variant">Real-time status distribution across all applications.</p>
+                <h2 className="text-base font-bold text-on-surface">{t('pipeline.title')}</h2>
+                <p className="mt-1 text-sm text-on-surface-variant">{t('pipeline.subtitle')}</p>
               </div>
               <Link
                 href={ROUTES.APPLICATIONS}
                 className="shrink-0 cursor-pointer text-sm font-semibold text-primary transition hover:underline"
               >
-                View all
+                {t('pipeline.viewAll')}
               </Link>
             </div>
 
@@ -201,21 +206,22 @@ export function DashboardOverview() {
 
           <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-base font-bold text-on-surface">Recent Evaluations</h2>
+              <h2 className="text-base font-bold text-on-surface">{t('recentEvaluations.title')}</h2>
               <Link
                 href={ROUTES.EVALUATIONS}
                 className="shrink-0 cursor-pointer text-sm font-semibold text-primary transition hover:underline"
               >
-                View all
+                {t('recentEvaluations.viewAll')}
               </Link>
             </div>
 
             {recentEvaluations.length === 0 ? (
-              <p className="mt-4 text-sm text-on-surface-muted">No evaluations yet.</p>
+              <p className="mt-4 text-sm text-on-surface-muted">{t('recentEvaluations.empty')}</p>
             ) : (
               <div className="mt-4 space-y-3">
                 {recentEvaluations.map((evaluation) => {
-                  const candidateName = evaluation.application?.candidate?.fullName ?? 'Unknown candidate';
+                  const candidateName =
+                    evaluation.application?.candidate?.fullName ?? t('recentEvaluations.unknownCandidate');
                   return (
                     <Link
                       key={evaluation.id}
@@ -226,13 +232,13 @@ export function DashboardOverview() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-on-surface">{candidateName}</p>
                         <p className="truncate text-xs text-on-surface-muted">
-                          {evaluation.application?.jobDescription?.title ?? 'Job description'}
+                          {evaluation.application?.jobDescription?.title ?? t('recentEvaluations.jobDescriptionFallback')}
                         </p>
                       </div>
                       {evaluation.status === 'FAILED' ? (
                         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-error-container px-2.5 py-1 text-xs font-semibold text-error">
                           <RotateCcwIcon className="size-3" />
-                          Failed
+                          {t('recentEvaluations.failed')}
                         </span>
                       ) : (
                         <>
@@ -256,17 +262,17 @@ export function DashboardOverview() {
 
           <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-base font-bold text-on-surface">Scoring Batches in Progress</h2>
+              <h2 className="text-base font-bold text-on-surface">{t('batchesInProgress.title')}</h2>
               <Link
                 href={ROUTES.BATCH_SCORING}
                 className="shrink-0 cursor-pointer text-sm font-semibold text-primary transition hover:underline"
               >
-                View all
+                {t('batchesInProgress.viewAll')}
               </Link>
             </div>
 
             {batchesInProgress.length === 0 ? (
-              <p className="mt-4 text-sm text-on-surface-muted">No batches currently processing.</p>
+              <p className="mt-4 text-sm text-on-surface-muted">{t('batchesInProgress.empty')}</p>
             ) : (
               <div className="mt-4 space-y-4">
                 {batchesInProgress.map((batch) => (
@@ -278,7 +284,11 @@ export function DashboardOverview() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-semibold text-on-surface">{batch.name}</span>
                       <span className="text-on-surface-muted">
-                        {batch.completedPairCount}/{batch.totalPairCount} pairs · {STATUS_LABELS[batch.status]}
+                        {t('batchesInProgress.pairsLabel', {
+                          completed: batch.completedPairCount,
+                          total: batch.totalPairCount,
+                        })}{' '}
+                        · {STATUS_LABELS[batch.status]}
                       </span>
                     </div>
                     <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-variant">
@@ -296,7 +306,7 @@ export function DashboardOverview() {
 
         <div className="space-y-6">
           <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">Quick actions</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">{t('quickActions.title')}</h2>
             <div className="mt-3 space-y-2">
               {QUICK_ACTIONS.map((action) => (
                 <Link
@@ -314,10 +324,10 @@ export function DashboardOverview() {
           <div className="rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
             <div className="flex items-center gap-2">
               <AlertTriangleIcon className="size-4 text-warning" />
-              <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">Skill gap highlights</h2>
+              <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">{t('skillGap.title')}</h2>
             </div>
             {skillGap.length === 0 ? (
-              <p className="mt-3 text-sm text-on-surface-muted">No missing skills recorded yet.</p>
+              <p className="mt-3 text-sm text-on-surface-muted">{t('skillGap.empty')}</p>
             ) : (
               <div className="mt-3 space-y-3">
                 {skillGap.map((entry) => (
@@ -342,23 +352,25 @@ export function DashboardOverview() {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <HistoryIcon className="size-4 text-on-surface-variant" />
-                <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">Recent activity</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wide text-on-surface-variant">{t('recentActivity.title')}</h2>
               </div>
               <Link
                 href={ROUTES.AUDIT_LOG}
                 className="shrink-0 cursor-pointer text-xs font-semibold text-primary transition hover:underline"
               >
-                View log
+                {t('recentActivity.viewLog')}
               </Link>
             </div>
             {recentActivity.length === 0 ? (
-              <p className="mt-3 text-sm text-on-surface-muted">No recent activity.</p>
+              <p className="mt-3 text-sm text-on-surface-muted">{t('recentActivity.empty')}</p>
             ) : (
               <div className="mt-3 space-y-3">
                 {recentActivity.map((log) => (
                   <div key={log.id} className="text-sm">
                     <p className="text-on-surface">
-                      <span className="font-semibold">{log.actor?.fullName ?? log.actor?.email ?? 'Someone'}</span>{' '}
+                      <span className="font-semibold">
+                        {log.actor?.fullName ?? log.actor?.email ?? t('recentActivity.someone')}
+                      </span>{' '}
                       {log.action.toLowerCase().replaceAll('_', ' ')} {log.resourceType}
                       {log.resourceId ? ` #${log.resourceId}` : ''}
                     </p>

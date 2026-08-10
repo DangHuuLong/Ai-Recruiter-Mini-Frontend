@@ -172,5 +172,65 @@
       "expiredFallback": "This link has expired or already been used.",
       "requestNewLink": "Request a new link"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Hiring at a glance — pipeline health, AI scoring activity, and recent team actions.",
+    "loading": {
+      "title": "Loading dashboard...",
+      "description": "Please wait while your dashboard data is being loaded."
+    },
+    "error": {
+      "title": "Failed to load dashboard",
+      "fallback": "Failed to load dashboard data",
+      "tryAgain": "Try again"
+    },
+    "kpis": {
+      "totalCandidates": "Total Candidates",
+      "databaseEntries": "Database entries",
+      "activeJobDescriptions": "Active Job Descriptions",
+      "currentlyOpen": "Currently open for applications",
+      "applicationsThisMonth": "Applications This Month",
+      "trendVsLastMonth": "{sign}{percent}% vs last month",
+      "noDataLastMonth": "No data for last month",
+      "avgScore": "Avg. Evaluation Score",
+      "acrossEvaluations": "Across {count} completed evaluations"
+    },
+    "pipeline": {
+      "title": "Application Pipeline",
+      "subtitle": "Real-time status distribution across all applications.",
+      "viewAll": "View all"
+    },
+    "recentEvaluations": {
+      "title": "Recent Evaluations",
+      "viewAll": "View all",
+      "empty": "No evaluations yet.",
+      "unknownCandidate": "Unknown candidate",
+      "jobDescriptionFallback": "Job description",
+      "failed": "Failed"
+    },
+    "batchesInProgress": {
+      "title": "Scoring Batches in Progress",
+      "viewAll": "View all",
+      "empty": "No batches currently processing.",
+      "pairsLabel": "{completed}/{total} pairs"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "addCandidate": "Add candidate",
+      "createJobDescription": "Create job description",
+      "newApplication": "New application",
+      "startBatchScoring": "Start batch scoring"
+    },
+    "skillGap": {
+      "title": "Skill gap highlights",
+      "empty": "No missing skills recorded yet."
+    },
+    "recentActivity": {
+      "title": "Recent activity",
+      "viewLog": "View log",
+      "empty": "No recent activity.",
+      "someone": "Someone"
+    }
   }
 }

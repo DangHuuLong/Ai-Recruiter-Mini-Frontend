@@ -172,5 +172,65 @@
       "expiredFallback": "Liên kết này đã hết hạn hoặc đã được sử dụng.",
       "requestNewLink": "Yêu cầu liên kết mới"
     }
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển",
+    "subtitle": "Tổng quan tuyển dụng — tình trạng pipeline, hoạt động chấm điểm AI và các hành động gần đây của nhóm.",
+    "loading": {
+      "title": "Đang tải bảng điều khiển...",
+      "description": "Vui lòng chờ trong khi dữ liệu bảng điều khiển đang được tải."
+    },
+    "error": {
+      "title": "Không thể tải bảng điều khiển",
+      "fallback": "Không thể tải dữ liệu bảng điều khiển",
+      "tryAgain": "Thử lại"
+    },
+    "kpis": {
+      "totalCandidates": "Tổng số ứng viên",
+      "databaseEntries": "Bản ghi trong hệ thống",
+      "activeJobDescriptions": "Mô tả công việc đang mở",
+      "currentlyOpen": "Đang mở nhận ứng tuyển",
+      "applicationsThisMonth": "Đơn ứng tuyển tháng này",
+      "trendVsLastMonth": "{sign}{percent}% so với tháng trước",
+      "noDataLastMonth": "Không có dữ liệu tháng trước",
+      "avgScore": "Điểm đánh giá trung bình",
+      "acrossEvaluations": "Trên {count} đánh giá đã hoàn thành"
+    },
+    "pipeline": {
+      "title": "Pipeline ứng tuyển",
+      "subtitle": "Phân bổ trạng thái theo thời gian thực trên toàn bộ đơn ứng tuyển.",
+      "viewAll": "Xem tất cả"
+    },
+    "recentEvaluations": {
+      "title": "Đánh giá gần đây",
+      "viewAll": "Xem tất cả",
+      "empty": "Chưa có đánh giá nào.",
+      "unknownCandidate": "Ứng viên không xác định",
+      "jobDescriptionFallback": "Mô tả công việc",
+      "failed": "Thất bại"
+    },
+    "batchesInProgress": {
+      "title": "Lô đang chấm điểm",
+      "viewAll": "Xem tất cả",
+      "empty": "Không có lô nào đang xử lý.",
+      "pairsLabel": "{completed}/{total} cặp"
+    },
+    "quickActions": {
+      "title": "Thao tác nhanh",
+      "addCandidate": "Thêm ứng viên",
+      "createJobDescription": "Tạo mô tả công việc",
+      "newApplication": "Tạo đơn ứng tuyển",
+      "startBatchScoring": "Bắt đầu chấm điểm hàng loạt"
+    },
+    "skillGap": {
+      "title": "Điểm nổi bật thiếu hụt kỹ năng",
+      "empty": "Chưa ghi nhận kỹ năng thiếu nào."
+    },
+    "recentActivity": {
+      "title": "Hoạt động gần đây",
+      "viewLog": "Xem nhật ký",
+      "empty": "Không có hoạt động gần đây.",
+      "someone": "Ai đó"
+    }
   }
 }
