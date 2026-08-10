@@ -35,6 +35,15 @@
     "emptyState": {
       "title": "Không có dữ liệu",
       "description": "Chưa có mục nào để hiển thị."
+    },
+    "batchInput": {
+      "uploadFiles": "Tải tệp lên",
+      "pasteText": "Dán văn bản",
+      "structuredForm": "Biểu mẫu chi tiết",
+      "clickToUpload": "Bấm để tải lên PDF hoặc DOCX",
+      "addAnother": "Thêm mục khác",
+      "addAnotherEntry": "Thêm {entry} khác",
+      "removeEntry": "Xóa {entry} {index}"
     }
   },
   "navigation": {
@@ -232,5 +241,70 @@
       "empty": "Không có hoạt động gần đây.",
       "someone": "Ai đó"
     }
+  },
+  "publicLanding": {
+    "heroTitle": "Khớp CV với mô tả công việc ngay lập tức bằng AI",
+    "heroSubtitle": "Tải lên vài bản CV và mô tả công việc để xem điểm khớp do AI chấm trong vài giây — không cần tài khoản.",
+    "ctaTry": "Dùng thử miễn phí — không cần đăng ký",
+    "steps": {
+      "step": "Bước {number}",
+      "uploadTitle": "Tải lên CV của bạn",
+      "uploadDescription": "Thêm vài bản CV dưới dạng tệp hoặc văn bản thuần.",
+      "addJdTitle": "Thêm mô tả công việc",
+      "addJdDescription": "Dán vào các vị trí bạn muốn khớp ứng viên.",
+      "scoreTitle": "Xem điểm khớp AI ngay lập tức",
+      "scoreDescription": "Nhận đầy đủ ma trận chấm điểm CV × JD chỉ trong vài giây."
+    },
+    "filesNeverStored": "Tệp của bạn không bao giờ được lưu trữ",
+    "limitNotice": "Bản dùng thử miễn phí giới hạn 2 CV và 10 mô tả công việc mỗi lần."
+  },
+  "publicTry": {
+    "back": "Quay lại",
+    "title": "Dùng thử AI Recruiter miễn phí",
+    "subtitle": "Thêm vài CV và mô tả công việc để xem điểm khớp AI ngay lập tức.",
+    "addCvs": "Thêm CV của bạn",
+    "addJds": "Thêm mô tả công việc",
+    "pasteResumePlaceholder": "Dán nội dung CV vào đây...",
+    "pasteJdPlaceholder": "Dán nội dung mô tả công việc vào đây...",
+    "candidateEntry": "Ứng viên",
+    "jobDescriptionEntry": "Mô tả công việc",
+    "uploadingResumes": "Đang tải CV lên...",
+    "uploadingJds": "Đang tải mô tả công việc lên...",
+    "starting": "Đang bắt đầu...",
+    "submit": "Xem kết quả của tôi",
+    "errorTitle": "Không thể bắt đầu lô của bạn",
+    "errorFallback": "Đã xảy ra lỗi."
+  },
+  "publicBatchResults": {
+    "loadingTitle": "Đang tải kết quả của bạn...",
+    "loadingDescription": "Vui lòng chờ.",
+    "notFoundFallback": "Không tìm thấy lô này.",
+    "batchNotFound": "Không tìm thấy lô",
+    "tryAgain": "Thử lại",
+    "eyebrow": "Kết quả của bạn",
+    "title": "Kết quả khớp CV × Mô tả công việc",
+    "scoringInProgress": "Đang chấm điểm...",
+    "clickToSeeBreakdown": "Bấm vào bất kỳ ô nào để xem chi tiết điểm.",
+    "pairsScored": "{completed} / {total} cặp đã chấm",
+    "scoreTiers": {
+      "excellent": "Xuất sắc",
+      "strong": "Tốt",
+      "moderate": "Trung bình",
+      "weak": "Yếu",
+      "poor": "Kém"
+    },
+    "candidateColumn": "Ứng viên",
+    "candidateFallback": "Ứng viên",
+    "jobDescriptionFallback": "Mô tả công việc",
+    "failed": "Thất bại",
+    "pending": "Đang chờ",
+    "signupBanner": "Đăng ký để lưu kết quả này và mở khóa chấm điểm hàng loạt đầy đủ",
+    "createOrg": "Tạo tổ chức mới",
+    "matchScore": "Điểm khớp · {tier}",
+    "scoreBreakdown": "Chi tiết điểm",
+    "skills": "Kỹ năng",
+    "suggestedQuestions": "Câu hỏi phỏng vấn đề xuất",
+    "relatedTo": "· Liên quan đến {skill}",
+    "importance": "mức độ quan trọng: {level}"
   }
 }

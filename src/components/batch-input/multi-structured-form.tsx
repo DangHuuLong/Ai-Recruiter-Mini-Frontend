@@ -1,5 +1,6 @@
 import { PlusIcon, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 type MultiStructuredFormProps<T> = {
   entryLabel: string;
@@ -18,6 +19,8 @@ export function MultiStructuredForm<T>({
   onChange,
   renderForm,
 }: MultiStructuredFormProps<T>) {
+  const t = useTranslations('common.batchInput');
+
   return (
     <div className="mt-4 space-y-5">
       {items.map((item, index) => (
@@ -31,7 +34,7 @@ export function MultiStructuredForm<T>({
                 type="button"
                 onClick={() => onChange(items.filter((_, i) => i !== index))}
                 className="cursor-pointer rounded-full p-1 text-on-surface-muted transition-colors hover:bg-error-container hover:text-error"
-                aria-label={`Remove ${entryLabel.toLowerCase()} ${index + 1}`}
+                aria-label={t('removeEntry', { entry: entryLabel.toLowerCase(), index: index + 1 })}
               >
                 <XIcon className="size-4" />
               </button>
@@ -50,7 +53,7 @@ export function MultiStructuredForm<T>({
           className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-semibold text-primary transition-colors hover:bg-primary-container hover:text-on-primary-container hover:underline"
         >
           <PlusIcon className="size-4" />
-          Add another {entryLabel.toLowerCase()}
+          {t('addAnotherEntry', { entry: entryLabel.toLowerCase() })}
         </button>
       ) : null}
     </div>

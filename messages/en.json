@@ -35,6 +35,15 @@
     "emptyState": {
       "title": "No data",
       "description": "There's nothing to show here yet."
+    },
+    "batchInput": {
+      "uploadFiles": "Upload files",
+      "pasteText": "Paste text",
+      "structuredForm": "Structured form",
+      "clickToUpload": "Click to upload PDF or DOCX",
+      "addAnother": "Add another",
+      "addAnotherEntry": "Add another {entry}",
+      "removeEntry": "Remove {entry} {index}"
     }
   },
   "navigation": {
@@ -232,5 +241,70 @@
       "empty": "No recent activity.",
       "someone": "Someone"
     }
+  },
+  "publicLanding": {
+    "heroTitle": "Instantly match CVs to job descriptions with AI",
+    "heroSubtitle": "Upload a few resumes and job descriptions and see AI-powered match scores in seconds — no account required.",
+    "ctaTry": "Try it free — no signup required",
+    "steps": {
+      "step": "Step {number}",
+      "uploadTitle": "Upload your CVs",
+      "uploadDescription": "Drop in a couple of resumes as files or plain text.",
+      "addJdTitle": "Add job descriptions",
+      "addJdDescription": "Paste in the roles you want to match candidates against.",
+      "scoreTitle": "See AI match scores instantly",
+      "scoreDescription": "Get a full CV × JD scoring matrix in seconds."
+    },
+    "filesNeverStored": "Your files are never stored",
+    "limitNotice": "Free trials are limited to 2 CVs and 10 job descriptions per try."
+  },
+  "publicTry": {
+    "back": "Back",
+    "title": "Try AI Recruiter for free",
+    "subtitle": "Add a few CVs and job descriptions to see instant AI match scores.",
+    "addCvs": "Add your CVs",
+    "addJds": "Add job descriptions",
+    "pasteResumePlaceholder": "Paste resume text here...",
+    "pasteJdPlaceholder": "Paste job description text here...",
+    "candidateEntry": "Candidate",
+    "jobDescriptionEntry": "Job description",
+    "uploadingResumes": "Uploading resumes...",
+    "uploadingJds": "Uploading job descriptions...",
+    "starting": "Starting...",
+    "submit": "See my results",
+    "errorTitle": "Failed to start your batch",
+    "errorFallback": "Something went wrong."
+  },
+  "publicBatchResults": {
+    "loadingTitle": "Loading your results...",
+    "loadingDescription": "Please wait.",
+    "notFoundFallback": "This batch could not be found.",
+    "batchNotFound": "Batch not found",
+    "tryAgain": "Try again",
+    "eyebrow": "Your results",
+    "title": "CV × Job Description matches",
+    "scoringInProgress": "Scoring in progress...",
+    "clickToSeeBreakdown": "Click any cell to see the full score breakdown.",
+    "pairsScored": "{completed} / {total} pairs scored",
+    "scoreTiers": {
+      "excellent": "Excellent",
+      "strong": "Strong",
+      "moderate": "Moderate",
+      "weak": "Weak",
+      "poor": "Poor"
+    },
+    "candidateColumn": "Candidate",
+    "candidateFallback": "Candidate",
+    "jobDescriptionFallback": "Job description",
+    "failed": "Failed",
+    "pending": "Pending",
+    "signupBanner": "Sign up to save these results and unlock full batch scoring",
+    "createOrg": "Create an organization",
+    "matchScore": "Match score · {tier}",
+    "scoreBreakdown": "Score breakdown",
+    "skills": "Skills",
+    "suggestedQuestions": "Suggested interview questions",
+    "relatedTo": "· Related to {skill}",
+    "importance": "{level} importance"
   }
 }

@@ -4,6 +4,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { BatchInputTabs, type InputMode } from '@/components/batch-input/batch-input-tabs';
 import { CvStructuredForm } from '@/components/batch-input/cv-structured-form';
@@ -31,6 +32,7 @@ const MAX_CVS = 2;
 const MAX_JDS = 10;
 
 export default function PublicBatchCreationPage() {
+  const t = useTranslations('publicTry');
   const router = useRouter();
 
   const [cvMode, setCvMode] = useState<InputMode>('upload');
@@ -73,10 +75,10 @@ export default function PublicBatchCreationPage() {
       const payload: CreatePublicBatchPayload = {};
 
       if (cvMode === 'upload') {
-        setSubmitStage('Uploading resumes...');
+        setSubmitStage(t('uploadingResumes'));
         payload.resumeFiles = await uploadFilesForBatch(cvFiles, 'RESUME', getPublicUploadUrls);
       } else if (cvMode === 'paste') {
-        payload.resumeTexts = cvTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
+        payload.resumeTexts = cvTexts.filter((text) => text.trim()).map((rawText) => ({ rawText }));
       } else {
         payload.resumeStructured = cvStructuredList
           .filter((entry) => entry.personal.fullName.trim())
@@ -84,22 +86,22 @@ export default function PublicBatchCreationPage() {
       }
 
       if (jdMode === 'upload') {
-        setSubmitStage('Uploading job descriptions...');
+        setSubmitStage(t('uploadingJds'));
         payload.jobDescriptionFiles = await uploadFilesForBatch(jdFiles, 'JOB_DESCRIPTION', getPublicUploadUrls);
       } else if (jdMode === 'paste') {
-        payload.jobDescriptions = jdTexts.filter((t) => t.trim()).map((rawText) => ({ rawText }));
+        payload.jobDescriptions = jdTexts.filter((text) => text.trim()).map((rawText) => ({ rawText }));
       } else {
         payload.jobDescriptionStructured = jdStructuredList
           .filter((entry) => entry.title.trim())
           .map(toJobDescriptionStructuredInput);
       }
 
-      setSubmitStage('Starting...');
+      setSubmitStage(t('starting'));
       const result = await createPublicBatch(payload);
       router.push(`/try/${result.batchId}`);
     } catch (error) {
-      showToast.error('Failed to start your batch', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('errorTitle'), {
+        description: error instanceof Error ? error.message : t('errorFallback'),
       });
       setIsSubmitting(false);
       setSubmitStage('');
@@ -116,18 +118,16 @@ export default function PublicBatchCreationPage() {
           className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeftIcon className="size-4" />
-          Back
+          {t('back')}
         </Link>
 
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-on-surface">Try AI Recruiter for free</h1>
-          <p className="mt-2 text-sm text-on-surface-variant">
-            Add a few CVs and job descriptions to see instant AI match scores.
-          </p>
+          <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+          <p className="mt-2 text-sm text-on-surface-variant">{t('subtitle')}</p>
         </div>
 
         <BatchInputTabs
-          title="Add your CVs"
+          title={t('addCvs')}
           maxCount={MAX_CVS}
           count={cvCount}
           mode={cvMode}
@@ -136,10 +136,10 @@ export default function PublicBatchCreationPage() {
           onFilesChange={setCvFiles}
           texts={cvTexts}
           onTextsChange={setCvTexts}
-          pastePlaceholder="Paste resume text here..."
+          pastePlaceholder={t('pasteResumePlaceholder')}
           structuredForm={
             <MultiStructuredForm
-              entryLabel="Candidate"
+              entryLabel={t('candidateEntry')}
               items={cvStructuredList}
               emptyItem={EMPTY_RESUME_STRUCTURED}
               maxCount={MAX_CVS}
@@ -153,7 +153,7 @@ export default function PublicBatchCreationPage() {
 
         <div className="mt-6">
           <BatchInputTabs
-            title="Add job descriptions"
+            title={t('addJds')}
             maxCount={MAX_JDS}
             count={jdCount}
             mode={jdMode}
@@ -162,10 +162,10 @@ export default function PublicBatchCreationPage() {
             onFilesChange={setJdFiles}
             texts={jdTexts}
             onTextsChange={setJdTexts}
-            pastePlaceholder="Paste job description text here..."
+            pastePlaceholder={t('pasteJdPlaceholder')}
             structuredForm={
               <MultiStructuredForm
-                entryLabel="Job description"
+                entryLabel={t('jobDescriptionEntry')}
                 items={jdStructuredList}
                 emptyItem={EMPTY_JD_STRUCTURED}
                 maxCount={MAX_JDS}
@@ -184,7 +184,7 @@ export default function PublicBatchCreationPage() {
           isLoading={isSubmitting}
           onClick={() => void handleSubmit()}
         >
-          {isSubmitting ? submitStage || 'Starting...' : 'See my results'}
+          {isSubmitting ? submitStage || t('starting') : t('submit')}
         </Button>
       </div>
     </div>

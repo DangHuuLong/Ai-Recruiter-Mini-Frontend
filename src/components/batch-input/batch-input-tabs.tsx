@@ -3,6 +3,7 @@
 import { FileTextIcon, PlusIcon, UploadIcon, XIcon } from 'lucide-react';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils/cn';
 
@@ -60,6 +61,7 @@ export function BatchInputTabs({
   pastePlaceholder,
   structuredForm,
 }: BatchInputTabsProps) {
+  const t = useTranslations('common.batchInput');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFilesSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,13 +81,13 @@ export function BatchInputTabs({
 
       <div className="mt-4 flex flex-wrap gap-2">
         <TabButton active={mode === 'upload'} onClick={() => onModeChange('upload')}>
-          Upload files
+          {t('uploadFiles')}
         </TabButton>
         <TabButton active={mode === 'paste'} onClick={() => onModeChange('paste')}>
-          Paste text
+          {t('pasteText')}
         </TabButton>
         <TabButton active={mode === 'structured'} onClick={() => onModeChange('structured')}>
-          Structured form
+          {t('structuredForm')}
         </TabButton>
       </div>
 
@@ -106,7 +108,7 @@ export function BatchInputTabs({
             className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-outline py-8 text-on-surface-variant transition-colors hover:border-primary hover:bg-primary-container/40 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
             <UploadIcon className="size-6" />
-            <span className="text-sm font-semibold">Click to upload PDF or DOCX</span>
+            <span className="text-sm font-semibold">{t('clickToUpload')}</span>
           </button>
 
           {files.length > 0 ? (
@@ -165,7 +167,7 @@ export function BatchInputTabs({
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-semibold text-primary transition-colors hover:bg-primary-container hover:text-on-primary-container hover:underline"
             >
               <PlusIcon className="size-4" />
-              Add another
+              {t('addAnother')}
             </button>
           ) : null}
         </div>
