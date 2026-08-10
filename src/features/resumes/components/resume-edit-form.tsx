@@ -3,6 +3,7 @@
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,7 @@ type ResumeEditFormProps = {
 };
 
 export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
+  const t = useTranslations('resumes.editForm');
   const router = useRouter();
   const { resume, isLoading, errorMessage, refetchResume } = useResumeDetail(resumeId);
   const [candidateId, setCandidateId] = useState('');
@@ -28,7 +30,7 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
 
   const handleSubmit = async () => {
     if (!candidateId.trim()) {
-      showToast.warning('Candidate ID is required');
+      showToast.warning(t('candidateIdRequired'));
       return;
     }
 
@@ -38,11 +40,11 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
         candidateId: candidateId.trim(),
         parserVersion: parserVersion.trim() || undefined,
       });
-      showToast.success('Resume metadata updated successfully');
+      showToast.success(t('successTitle'));
       router.push(`/resumes/${resumeId}`);
     } catch (error) {
-      showToast.error('Failed to update resume metadata', {
-        description: error instanceof Error ? error.message : 'Something went wrong while updating the resume.',
+      showToast.error(t('failedTitle'), {
+        description: error instanceof Error ? error.message : t('failedFallback'),
       });
     } finally {
       setIsSaving(false);
@@ -50,15 +52,15 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
   };
 
   if (isLoading) {
-    return <LoadingState title="Loading resume..." description="Please wait while resume metadata is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !resume) {
     return (
       <EmptyState
-        title={errorMessage ? 'Failed to load resume' : 'Resume not found'}
-        description={errorMessage ?? 'The resume record could not be found.'}
-        action={<button type="button" onClick={() => void refetchResume()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
+        title={errorMessage ? t('errorTitle') : t('notFoundTitle')}
+        description={errorMessage ?? t('notFoundDescription')}
+        action={<button type="button" onClick={() => void refetchResume()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">{t('tryAgain')}</button>}
       />
     );
   }
@@ -66,20 +68,20 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
   return (
     <section className="overflow-hidden rounded-2xl border border-outline bg-surface-lowest shadow-card">
       <div className="border-b border-outline px-6 py-5">
-        <h2 className="text-lg font-semibold text-on-surface">Edit resume metadata</h2>
-        <p className="mt-1 text-sm text-on-surface-muted">Update lightweight resume metadata without changing parsed CV content.</p>
+        <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
+        <p className="mt-1 text-sm text-on-surface-muted">{t('description')}</p>
       </div>
 
       <form onSubmit={(event) => { event.preventDefault(); void handleSubmit(); }} className="space-y-6 px-6 py-6">
         <div className="grid gap-5 md:grid-cols-2">
           <Input
-            label="Candidate ID"
+            label={t('candidateIdLabel')}
             value={candidateId}
             onChange={(event) => setCandidateId(event.target.value)}
             disabled={isSaving}
           />
           <Input
-            label="Parser version"
+            label={t('parserVersionLabel')}
             value={parserVersion}
             onChange={(event) => setParserVersion(event.target.value)}
             disabled={isSaving}
@@ -88,9 +90,9 @@ export function ResumeEditForm({ resumeId }: ResumeEditFormProps) {
         </div>
 
         <div className="flex justify-end gap-3 border-t border-outline pt-5">
-          <Link href={`/resumes/${resumeId}`} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant">Cancel</Link>
+          <Link href={`/resumes/${resumeId}`} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant">{t('cancel')}</Link>
           <button type="submit" disabled={isSaving} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled">
-            {isSaving ? 'Saving...' : 'Save changes'}
+            {isSaving ? t('saving') : t('save')}
           </button>
         </div>
       </form>

@@ -3,6 +3,7 @@
 import { UploadCloudIcon } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback/toast';
 import { useUploadResume } from '@/features/resumes/hooks/use-upload-resume';
@@ -16,6 +17,7 @@ import {
 } from '@/lib/utils/resume-file.util';
 
 export function ResumeUploadForm() {
+  const t = useTranslations('resumes.upload');
   const [candidateId, setCandidateId] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -33,12 +35,12 @@ export function ResumeUploadForm() {
 
   const uploadProgressLabel =
     uploadStep === 'processing'
-      ? 'Processing uploaded file...'
+      ? t('progress.processing')
       : uploadStep === 'success'
-        ? 'Upload completed'
+        ? t('progress.success')
         : uploadStep === 'error'
-          ? 'Upload failed'
-          : 'Uploading file...';
+          ? t('progress.error')
+          : t('progress.uploading');
 
   const handleFileChange = (file?: File) => {
     resetUploadProgress();
@@ -51,8 +53,8 @@ export function ResumeUploadForm() {
     if (!isAcceptedResumeFile(file)) {
       setSelectedFile(null);
 
-      showToast.error('Invalid file format', {
-        description: 'Please upload a PDF or DOCX resume file.',
+      showToast.error(t('invalidFormatTitle'), {
+        description: t('invalidFormatDescription'),
       });
 
       return;
@@ -61,8 +63,8 @@ export function ResumeUploadForm() {
     if (!isValidResumeFileSize(file)) {
       setSelectedFile(null);
 
-      showToast.error('File is too large', {
-        description: `Please upload a file smaller than ${maxFileSizeLabel}.`,
+      showToast.error(t('fileTooLargeTitle'), {
+        description: t('fileTooLargeDescription', { size: maxFileSizeLabel }),
       });
 
       return;
@@ -70,7 +72,7 @@ export function ResumeUploadForm() {
 
     setSelectedFile(file);
 
-    showToast.info('CV file selected', {
+    showToast.info(t('fileSelectedTitle'), {
       description: file.name,
     });
   };
@@ -84,10 +86,8 @@ export function ResumeUploadForm() {
     });
 
     if (!validation.success) {
-      showToast.error('Invalid upload data', {
-        description:
-          validation.error.issues[0]?.message ??
-          'Please check the candidate ID and CV file.',
+      showToast.error(t('invalidDataTitle'), {
+        description: validation.error.issues[0]?.message ?? t('invalidDataFallback'),
       });
 
       return;
@@ -99,18 +99,15 @@ export function ResumeUploadForm() {
         file: validation.data.file,
       });
 
-      showToast.success('CV uploaded successfully', {
-        description: `Resume status: ${createdResume.parseStatus}`,
+      showToast.success(t('successTitle'), {
+        description: t('successDescription', { status: createdResume.parseStatus }),
       });
 
       setCandidateId('');
       setSelectedFile(null);
     } catch (error) {
-      showToast.error('Failed to upload CV', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong while uploading the resume. Please try again.',
+      showToast.error(t('failedTitle'), {
+        description: error instanceof Error ? error.message : t('failedFallback'),
       });
     }
   };
@@ -122,8 +119,8 @@ export function ResumeUploadForm() {
           <UploadCloudIcon className="size-5" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-on-surface">Upload CV</h2>
-          <p className="mt-0.5 text-sm text-on-surface-muted">Link a CV file to an existing candidate.</p>
+          <h2 className="text-lg font-semibold text-on-surface">{t('title')}</h2>
+          <p className="mt-0.5 text-sm text-on-surface-muted">{t('subtitle')}</p>
         </div>
       </div>
 
@@ -133,7 +130,7 @@ export function ResumeUploadForm() {
             htmlFor="candidateId"
             className="block text-xs font-semibold uppercase tracking-wide text-on-surface-variant"
           >
-            Candidate ID
+            {t('candidateIdLabel')}
           </label>
 
           <input
@@ -147,9 +144,7 @@ export function ResumeUploadForm() {
             className="h-11 w-full rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition placeholder:text-on-surface-muted focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
           />
 
-          <p className="text-xs leading-5 text-on-surface-muted">
-            This temporary field will be replaced by candidate detail upload later.
-          </p>
+          <p className="text-xs leading-5 text-on-surface-muted">{t('candidateIdHint')}</p>
         </div>
 
         <div className="space-y-2">
@@ -157,7 +152,7 @@ export function ResumeUploadForm() {
             htmlFor="resumeFile"
             className="block text-xs font-semibold uppercase tracking-wide text-on-surface-variant"
           >
-            CV file
+            {t('fileLabel')}
           </label>
 
           <label
@@ -185,11 +180,11 @@ export function ResumeUploadForm() {
             </div>
 
             <p className="mt-4 max-w-full truncate text-sm font-medium text-on-surface">
-              {selectedFile?.name || 'Choose a CV file'}
+              {selectedFile?.name || t('chooseFile')}
             </p>
 
             <p className="mt-1 text-xs text-on-surface-muted">
-              PDF or DOCX files up to {maxFileSizeLabel} are supported.
+              {t('fileSizeHint', { size: maxFileSizeLabel })}
             </p>
           </label>
         </div>
@@ -216,16 +211,14 @@ export function ResumeUploadForm() {
         ) : null}
 
         <div className="space-y-3 border-t border-outline pt-5">
-          <p className="text-xs text-on-surface-muted">
-            The uploaded file will be stored and prepared for resume parsing.
-          </p>
+          <p className="text-xs text-on-surface-muted">{t('footerNote')}</p>
 
           <button
             type="submit"
             disabled={isUploading}
             className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover focus:outline-none focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-disabled"
           >
-            {isUploading ? 'Uploading...' : 'Upload CV'}
+            {isUploading ? t('submitting') : t('submit')}
           </button>
         </div>
       </form>

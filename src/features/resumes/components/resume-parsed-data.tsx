@@ -8,6 +8,7 @@ import {
   TagsIcon,
   UserIcon,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import type {
   ParsedDataFieldProps,
@@ -55,13 +56,15 @@ function ParsedDataSection({
 }
 
 function ParsedDataField({ label, value }: ParsedDataFieldProps) {
+  const t = useTranslations('resumes');
+
   return (
     <div className="rounded-xl border border-outline bg-surface-variant px-4 py-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
         {label}
       </p>
       <p className="mt-1 break-words text-sm font-medium text-on-surface">
-        {getDisplayValue(value ? String(value) : null)}
+        {getDisplayValue(value ? String(value) : null, t('notProvided'))}
       </p>
     </div>
   );
@@ -90,8 +93,10 @@ function ParsedDataList({ items, emptyMessage }: ParsedDataListProps) {
 }
 
 function SkillList({ skills }: { skills: ParsedSkill[] }) {
+  const t = useTranslations('resumes.parsedData');
+
   if (!skills.length) {
-    return <p className="text-sm text-on-surface-variant">No skills were extracted.</p>;
+    return <p className="text-sm text-on-surface-variant">{t('noSkills')}</p>;
   }
 
   return (
@@ -176,13 +181,16 @@ function EducationCard({
   education: Record<string, unknown>;
   fallbackTitle: string;
 }) {
+  const t = useTranslations('resumes.parsedData');
+  const tRoot = useTranslations('resumes');
   const institution = getParsedDataString(education, 'institution') ?? fallbackTitle;
   const degree = getParsedDataString(education, 'degree');
   const fieldOfStudy = getParsedDataString(education, 'field_of_study');
   const startYear = education.start_year;
   const endYear = education.end_year;
   const description = getParsedDataString(education, 'description');
-  const yearRange = `${getDisplayValue(startYear ? String(startYear) : null)} - ${getDisplayValue(endYear ? String(endYear) : null)}`;
+  const notProvided = tRoot('notProvided');
+  const yearRange = `${getDisplayValue(startYear ? String(startYear) : null, notProvided)} - ${getDisplayValue(endYear ? String(endYear) : null, notProvided)}`;
 
   return (
     <article className="rounded-xl border border-outline bg-surface-variant p-4">
@@ -190,7 +198,7 @@ function EducationCard({
         <div>
           <h4 className="text-sm font-semibold text-on-surface">{institution}</h4>
           <p className="mt-1 text-sm font-medium text-on-surface-variant">
-            {[degree, fieldOfStudy].filter(Boolean).join(' · ') || 'Not provided'}
+            {[degree, fieldOfStudy].filter(Boolean).join(' · ') || notProvided}
           </p>
         </div>
 
@@ -200,10 +208,10 @@ function EducationCard({
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <ParsedDataField label="Degree" value={degree} />
-        <ParsedDataField label="Field of study" value={fieldOfStudy} />
-        <ParsedDataField label="Start year" value={startYear} />
-        <ParsedDataField label="End year" value={endYear} />
+        <ParsedDataField label={t('degree')} value={degree} />
+        <ParsedDataField label={t('fieldOfStudy')} value={fieldOfStudy} />
+        <ParsedDataField label={t('startYear')} value={startYear} />
+        <ParsedDataField label={t('endYear')} value={endYear} />
       </div>
 
       {description ? (
@@ -216,11 +224,13 @@ function EducationCard({
 }
 
 export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
+  const t = useTranslations('resumes.parsedData');
+  const tRoot = useTranslations('resumes');
+
   if (!isParsedDataRecord(parsedData)) {
     return (
       <div className="rounded-2xl border border-warning/30 bg-warning-container p-4 text-sm text-on-surface">
-        Parsed CV data is available, but it does not match the expected display
-        structure.
+        {t('invalidStructure')}
       </div>
     );
   }
@@ -238,49 +248,49 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
     <div className="space-y-5">
       <div className="grid gap-5 lg:grid-cols-2">
         <ParsedDataSection
-          title="Personal information"
-          description="Candidate identity and contact fields extracted from the CV."
+          title={t('personalInfo')}
+          description={t('personalInfoDescription')}
           icon={<UserIcon className="size-5" />}
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <ParsedDataField
-              label="Name"
+              label={t('name')}
               value={
                 getParsedDataString(personal, 'name') ??
                 getParsedDataString(personal, 'full_name')
               }
             />
-            <ParsedDataField label="Email" value={getParsedDataString(personal, 'email')} />
-            <ParsedDataField label="Phone" value={getParsedDataString(personal, 'phone')} />
+            <ParsedDataField label={t('email')} value={getParsedDataString(personal, 'email')} />
+            <ParsedDataField label={t('phone')} value={getParsedDataString(personal, 'phone')} />
             <ParsedDataField
-              label="Location"
+              label={t('location')}
               value={getParsedDataString(personal, 'location')}
             />
           </div>
         </ParsedDataSection>
 
         <ParsedDataSection
-          title="Professional summary"
-          description="Short profile summary detected by the parser."
+          title={t('professionalSummary')}
+          description={t('professionalSummaryDescription')}
           icon={<FileTextIcon className="size-5" />}
         >
           <p className="rounded-xl border border-outline bg-surface-variant px-4 py-3 text-sm leading-6 text-on-surface-variant">
-            {getDisplayValue(summary)}
+            {getDisplayValue(summary, tRoot('notProvided'))}
           </p>
         </ParsedDataSection>
       </div>
 
       <ParsedDataSection
-        title={`Skills (${skills.length})`}
-        description="Skills are shown as compact tags, grouped by category where available."
+        title={t('skills', { count: skills.length })}
+        description={t('skillsDescription')}
         icon={<TagsIcon className="size-5" />}
       >
         <SkillList skills={skills} />
       </ParsedDataSection>
 
       <ParsedDataSection
-        title="Experience"
-        description="Work history extracted from the CV."
+        title={t('experience')}
+        description={t('experienceDescription')}
         icon={<BriefcaseIcon className="size-5" />}
       >
         <div className="space-y-3">
@@ -289,18 +299,18 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               <RecordCard
                 key={`${getParsedDataString(item, 'company') ?? 'experience'}-${index}`}
                 record={item}
-                fallbackTitle={`Experience ${index + 1}`}
+                fallbackTitle={t('experienceFallback', { index: index + 1 })}
               />
             ))
           ) : (
-            <p className="text-sm text-on-surface-variant">No experience was extracted.</p>
+            <p className="text-sm text-on-surface-variant">{t('noExperience')}</p>
           )}
         </div>
       </ParsedDataSection>
 
       <ParsedDataSection
-        title="Education"
-        description="Education records detected from the CV."
+        title={t('education')}
+        description={t('educationDescription')}
         icon={<GraduationCapIcon className="size-5" />}
       >
         <div className="space-y-3">
@@ -309,18 +319,18 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               <EducationCard
                 key={`${getParsedDataString(item, 'institution') ?? 'education'}-${index}`}
                 education={item}
-                fallbackTitle={`Education ${index + 1}`}
+                fallbackTitle={t('educationFallback', { index: index + 1 })}
               />
             ))
           ) : (
-            <p className="text-sm text-on-surface-variant">No education was extracted.</p>
+            <p className="text-sm text-on-surface-variant">{t('noEducation')}</p>
           )}
         </div>
       </ParsedDataSection>
 
       <ParsedDataSection
-        title="Projects"
-        description="Project highlights extracted from the CV."
+        title={t('projects')}
+        description={t('projectsDescription')}
         icon={<RocketIcon className="size-5" />}
       >
         <div className="space-y-3">
@@ -329,35 +339,35 @@ export function ResumeParsedData({ parsedData }: ResumeParsedDataProps) {
               <RecordCard
                 key={`${getParsedDataString(item, 'name') ?? 'project'}-${index}`}
                 record={item}
-                fallbackTitle={`Project ${index + 1}`}
+                fallbackTitle={t('projectFallback', { index: index + 1 })}
               />
             ))
           ) : (
-            <p className="text-sm text-on-surface-variant">No projects were extracted.</p>
+            <p className="text-sm text-on-surface-variant">{t('noProjects')}</p>
           )}
         </div>
       </ParsedDataSection>
 
       <div className="grid gap-5 lg:grid-cols-2">
         <ParsedDataSection
-          title="Certifications"
-          description="Certificates found in the CV."
+          title={t('certifications')}
+          description={t('certificationsDescription')}
           icon={<AwardIcon className="size-5" />}
         >
           <ParsedDataList
             items={certifications}
-            emptyMessage="No certifications were extracted."
+            emptyMessage={t('noCertifications')}
           />
         </ParsedDataSection>
 
         <ParsedDataSection
-          title="Languages"
-          description="Languages found in the CV."
+          title={t('languages')}
+          description={t('languagesDescription')}
           icon={<GlobeIcon className="size-5" />}
         >
           <ParsedDataList
             items={languages}
-            emptyMessage="No languages were extracted."
+            emptyMessage={t('noLanguages')}
           />
         </ParsedDataSection>
       </div>
