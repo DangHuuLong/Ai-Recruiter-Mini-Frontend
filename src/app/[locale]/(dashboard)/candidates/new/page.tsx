@@ -1,14 +1,18 @@
+import { getTranslations } from 'next-intl/server';
+
 import { PageHeader } from '@/components/common';
 import { CandidateForm } from '@/features/candidates/components/candidate-form';
 
-export default function NewCandidatePage() {
+export default async function NewCandidatePage() {
+  const t = await getTranslations('candidates');
+
   return (
     <div className="max-w-6xl space-y-6">
       <PageHeader
-        title="Create Candidate"
-        description="Add a candidate profile that can be linked with resumes, applications, and evaluations."
+        title={t('createCandidate')}
+        description={t('createCandidatePageDescription')}
         backHref="/candidates"
-        backLabel="Back to candidates"
+        backLabel={t('backToCandidates')}
       />
 
       <CandidateForm />
