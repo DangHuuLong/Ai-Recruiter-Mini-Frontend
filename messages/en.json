@@ -1400,5 +1400,34 @@
       "updateFailedTitle": "Failed to update profile",
       "updateFailedFallback": "Something went wrong."
     }
+  },
+  "auditLog": {
+    "title": "Audit Log",
+    "subtitle": "Track sensitive actions taken across your organization.",
+    "loadingTitle": "Loading audit log...",
+    "loadingDescription": "Please wait while the audit trail is being loaded.",
+    "errorTitle": "Failed to load audit log",
+    "errorFallback": "Failed to load audit log",
+    "tryAgain": "Try again",
+    "emptyTitle": "No audit history yet",
+    "emptyDescription": "Sensitive actions will show up here as your team uses the app.",
+    "columns": {
+      "timestamp": "Timestamp",
+      "actor": "Actor",
+      "status": "Status",
+      "resource": "Resource",
+      "action": "Action"
+    },
+    "viewDetails": "View details",
+    "detail": {
+      "title": "Audit log detail",
+      "action": "Action",
+      "resource": "Resource",
+      "actor": "Actor",
+      "timestamp": "Timestamp",
+      "metadata": "Metadata",
+      "copyJson": "Copy JSON",
+      "copySuccess": "Metadata copied to clipboard"
+    }
   }
 }

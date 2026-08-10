@@ -1400,5 +1400,34 @@
       "updateFailedTitle": "Không thể cập nhật hồ sơ",
       "updateFailedFallback": "Đã xảy ra lỗi."
     }
+  },
+  "auditLog": {
+    "title": "Nhật ký kiểm toán",
+    "subtitle": "Theo dõi các hành động nhạy cảm được thực hiện trong tổ chức của bạn.",
+    "loadingTitle": "Đang tải nhật ký kiểm toán...",
+    "loadingDescription": "Vui lòng chờ trong khi nhật ký đang được tải.",
+    "errorTitle": "Không thể tải nhật ký kiểm toán",
+    "errorFallback": "Không thể tải nhật ký kiểm toán",
+    "tryAgain": "Thử lại",
+    "emptyTitle": "Chưa có lịch sử kiểm toán",
+    "emptyDescription": "Các hành động nhạy cảm sẽ xuất hiện ở đây khi nhóm của bạn sử dụng ứng dụng.",
+    "columns": {
+      "timestamp": "Thời gian",
+      "actor": "Người thực hiện",
+      "status": "Trạng thái",
+      "resource": "Tài nguyên",
+      "action": "Thao tác"
+    },
+    "viewDetails": "Xem chi tiết",
+    "detail": {
+      "title": "Chi tiết nhật ký kiểm toán",
+      "action": "Hành động",
+      "resource": "Tài nguyên",
+      "actor": "Người thực hiện",
+      "timestamp": "Thời gian",
+      "metadata": "Dữ liệu bổ sung",
+      "copyJson": "Sao chép JSON",
+      "copySuccess": "Đã sao chép dữ liệu bổ sung vào bộ nhớ tạm"
+    }
   }
 }
