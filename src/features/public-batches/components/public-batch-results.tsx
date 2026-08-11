@@ -10,6 +10,7 @@ import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-ba
 import { LoadingState } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import { CRITERION_LABEL_KEYS, getScoreTier, type CriterionName } from '@/features/batch-scoring/types/batch-scoring.type';
+import { ResultFeedbackForm } from '@/features/feedback/components/result-feedback-form';
 import { getPublicBatch } from '@/features/public-batches/api/public-batch.api';
 import type { PublicBatchSnapshot, PublicResult } from '@/features/public-batches/types/public-batch.type';
 import { cn } from '@/lib/utils/cn';
@@ -30,6 +31,7 @@ type PublicBatchResultsProps = {
 export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
   const t = useTranslations('publicBatchResults');
   const tCommon = useTranslations('common');
+  const tFeedback = useTranslations('feedback');
   const [snapshot, setSnapshot] = useState<PublicBatchSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -347,6 +349,20 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                   </ol>
                 </div>
               ) : null}
+
+              <div className="mt-6 border-t border-outline pt-4">
+                <h3 className="text-sm font-bold text-on-surface">{tFeedback('title')}</h3>
+                <div className="mt-3">
+                  <ResultFeedbackForm
+                    key={`${selectedCell.resumeItemId}:${selectedCell.jdItemId}`}
+                    reference={{
+                      batchId,
+                      resumeItemId: selectedCell.resumeItemId,
+                      jdItemId: selectedCell.jdItemId,
+                    }}
+                  />
+                </div>
+              </div>
             </motion.div>
           </>
         ) : null}

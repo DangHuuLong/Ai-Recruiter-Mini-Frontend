@@ -11,6 +11,7 @@ import {
   getEvaluationById,
   retryEvaluation,
 } from '@/features/evaluations/api/evaluation.api';
+import { ResultFeedbackForm } from '@/features/feedback/components/result-feedback-form';
 import type {
   Evaluation,
   EvaluationCriterionScore,
@@ -191,6 +192,7 @@ const InterviewQuestions = ({
 export function EvaluationResultDetail({ evaluationId }: { evaluationId: string }) {
   const t = useTranslations('evaluations.detail');
   const tRoot = useTranslations('evaluations');
+  const tFeedback = useTranslations('feedback');
   const router = useRouter();
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -409,6 +411,10 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
 
       <DetailSection title={t('interviewQuestions')}>
         <InterviewQuestions questions={evaluation.interviewQuestionRows ?? []} t={t} />
+      </DetailSection>
+
+      <DetailSection title={tFeedback('title')}>
+        <ResultFeedbackForm reference={{ evaluationId: evaluation.id }} />
       </DetailSection>
     </div>
   );

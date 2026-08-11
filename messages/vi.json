@@ -1736,5 +1736,36 @@
       "tooltipParseJd": "Trích xuất JD: {count}",
       "tooltipScore": "Chấm điểm: {count}"
     }
+  },
+  "feedback": {
+    "title": "Phản hồi",
+    "accuracyLabel": "Kết quả đánh giá này có chính xác không?",
+    "accuracyAccurate": "🟢 Chính xác / hợp lý",
+    "accuracyOk": "🟡 Tạm được",
+    "accuracyInaccurate": "🔴 Không chính xác",
+    "reasonsLabel": "Vấn đề cụ thể là gì?",
+    "reasonScoreTooLow": "Điểm quá thấp",
+    "reasonScoreTooHigh": "Điểm quá cao",
+    "reasonMissingSkills": "Bỏ sót kỹ năng ứng viên có",
+    "reasonWrongSkills": "Nhận nhầm kỹ năng ứng viên không có",
+    "reasonWrongExtraction": "Trích xuất CV sai thông tin",
+    "reasonWrongInterviewQuestions": "Câu hỏi phỏng vấn không phù hợp",
+    "reasonOther": "Khác",
+    "reasonOtherPlaceholder": "Mô tả vấn đề gặp phải...",
+    "speedLabel": "Tốc độ xử lý như thế nào?",
+    "speedFast": "Nhanh",
+    "speedNormal": "Bình thường",
+    "speedSlow": "Chậm",
+    "commentLabel": "Góp ý thêm (tùy chọn)",
+    "commentPlaceholder": "Điều gì khác bạn muốn chia sẻ...",
+    "submit": "Gửi phản hồi",
+    "submitting": "Đang gửi...",
+    "submittedTitle": "Cảm ơn bạn đã phản hồi!",
+    "submittedDescription": "Phản hồi của bạn giúp chúng tôi cải thiện chất lượng khớp AI.",
+    "toast": {
+      "success": "Đã gửi phản hồi",
+      "failedTitle": "Không thể gửi phản hồi",
+      "failedFallback": "Đã xảy ra lỗi. Vui lòng thử lại."
+    }
   }
 }

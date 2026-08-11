@@ -1736,5 +1736,36 @@
       "tooltipParseJd": "Parse JD: {count}",
       "tooltipScore": "Score: {count}"
     }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "accuracyLabel": "Was this evaluation accurate?",
+    "accuracyAccurate": "🟢 Accurate / reasonable",
+    "accuracyOk": "🟡 Somewhat off",
+    "accuracyInaccurate": "🔴 Not accurate",
+    "reasonsLabel": "What was wrong?",
+    "reasonScoreTooLow": "Score was too low",
+    "reasonScoreTooHigh": "Score was too high",
+    "reasonMissingSkills": "Missed a skill the candidate has",
+    "reasonWrongSkills": "Flagged a skill the candidate doesn't have",
+    "reasonWrongExtraction": "Extracted wrong info from the CV",
+    "reasonWrongInterviewQuestions": "Interview questions weren't relevant",
+    "reasonOther": "Other",
+    "reasonOtherPlaceholder": "Describe what was wrong...",
+    "speedLabel": "How was the processing speed?",
+    "speedFast": "Fast",
+    "speedNormal": "Normal",
+    "speedSlow": "Slow",
+    "commentLabel": "Additional comments (optional)",
+    "commentPlaceholder": "Anything else you'd like to share...",
+    "submit": "Submit feedback",
+    "submitting": "Submitting...",
+    "submittedTitle": "Thanks for your feedback!",
+    "submittedDescription": "Your input helps us improve the AI matching quality.",
+    "toast": {
+      "success": "Feedback submitted",
+      "failedTitle": "Failed to submit feedback",
+      "failedFallback": "Something went wrong. Please try again."
+    }
   }
 }

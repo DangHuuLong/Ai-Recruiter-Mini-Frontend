@@ -71,6 +71,7 @@ export const apiEndpoints = {
     interviewQuestions: (id: string) => `/evaluations/${id}/interview-questions`,
     evidence: (id: string) => `/evaluations/${id}/evidence`,
     retry: (id: string) => `/evaluations/${id}/retry`,
+    feedback: (id: string) => `/evaluations/${id}/feedback`,
   },
 
   users: {
