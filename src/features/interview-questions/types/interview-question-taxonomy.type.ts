@@ -16,6 +16,18 @@ export const OCCUPATION_FAMILY_LABELS: Record<OccupationFamily, string> = {
   LEGAL: 'Legal',
 };
 
+// Maps each family to the message key under interviewQuestions.labels.occupationFamily —
+// pass to t('labels.occupationFamily.' + OCCUPATION_FAMILY_LABEL_KEYS[family]).
+export const OCCUPATION_FAMILY_LABEL_KEYS: Record<OccupationFamily, string> = {
+  IT: 'it',
+  MARKETING: 'marketing',
+  DESIGN: 'design',
+  DATA: 'data',
+  PRODUCT: 'product',
+  SALES: 'sales',
+  LEGAL: 'legal',
+};
+
 type TaxonomyEntry = {
   specializations: string[];
   enablers: string[];

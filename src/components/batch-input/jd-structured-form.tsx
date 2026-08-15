@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl';
+
 import { Input } from '@/components/ui/input';
 import { DynamicListSection } from '@/components/batch-input/dynamic-list-section';
 import { LineListField } from '@/components/batch-input/line-list-field';
@@ -12,41 +14,43 @@ type JdStructuredFormProps = {
 };
 
 export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
+  const t = useTranslations('common.batchInput.jdForm');
+
   return (
     <div className="mt-4 space-y-6">
       <div className="grid gap-3 sm:grid-cols-2">
         <Input
-          label="Label (optional)"
-          placeholder="e.g., Role A"
+          label={t('labelOptional')}
+          placeholder={t('labelPlaceholder')}
           value={value.label}
           onChange={(e) => onChange({ ...value, label: e.target.value })}
         />
         <Input
-          label="Job title"
-          placeholder="Senior Backend Engineer"
+          label={t('jobTitle')}
+          placeholder={t('jobTitlePlaceholder')}
           value={value.title}
           onChange={(e) => onChange({ ...value, title: e.target.value })}
         />
         <Input
-          label="Seniority"
-          placeholder="Senior"
+          label={t('seniority')}
+          placeholder={t('seniorityPlaceholder')}
           value={value.seniority}
           onChange={(e) => onChange({ ...value, seniority: e.target.value })}
         />
         <Input
-          label="Employment type"
-          placeholder="Full-time"
+          label={t('employmentType')}
+          placeholder={t('employmentTypePlaceholder')}
           value={value.employmentType}
           onChange={(e) => onChange({ ...value, employmentType: e.target.value })}
         />
         <Input
-          label="Min. experience (years)"
+          label={t('minExperience')}
           value={value.minExperienceYears}
           onChange={(e) => onChange({ ...value, minExperienceYears: e.target.value })}
         />
         <Input
-          label="Education requirement"
-          placeholder="Bachelor's degree in CS"
+          label={t('educationRequirement')}
+          placeholder={t('educationRequirementPlaceholder')}
           value={value.educationRequirement}
           onChange={(e) => onChange({ ...value, educationRequirement: e.target.value })}
         />
@@ -54,31 +58,31 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <LineListField
-          label="Responsibilities"
+          label={t('responsibilities')}
           value={value.responsibilities}
           onChange={(v) => onChange({ ...value, responsibilities: v })}
         />
         <LineListField
-          label="Requirements"
+          label={t('requirements')}
           value={value.requirements}
           onChange={(v) => onChange({ ...value, requirements: v })}
         />
         <LineListField
-          label="Nice to have"
+          label={t('niceToHave')}
           value={value.niceToHave}
           onChange={(v) => onChange({ ...value, niceToHave: v })}
         />
         <LineListField
-          label="Domain keywords"
+          label={t('domainKeywords')}
           value={value.domainKeywords}
           onChange={(v) => onChange({ ...value, domainKeywords: v })}
         />
       </div>
 
       <DynamicListSection
-        title="Required skills"
+        title={t('requiredSkills')}
         items={value.requiredSkills}
-        addLabel="Add required skill"
+        addLabel={t('addRequiredSkill')}
         onAdd={() => onChange({ ...value, requiredSkills: [...value.requiredSkills, { ...EMPTY_JD_SKILL }] })}
         onRemove={(index) =>
           onChange({ ...value, requiredSkills: value.requiredSkills.filter((_, i) => i !== index) })
@@ -91,9 +95,9 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Name" value={item.name} onChange={(e) => update({ name: e.target.value })} />
+              <Input label={t('name')} value={item.name} onChange={(e) => update({ name: e.target.value })} />
               <Input
-                label="Weight hint (0-1)"
+                label={t('weightHint')}
                 value={item.weightHint}
                 onChange={(e) => update({ weightHint: e.target.value })}
               />
@@ -104,7 +108,7 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
                   onChange={(e) => update({ isCore: e.target.checked })}
                   className="size-4 rounded border-outline text-primary"
                 />
-                Core skill
+                {t('coreSkill')}
               </label>
             </>
           );
@@ -112,9 +116,9 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
       />
 
       <DynamicListSection
-        title="Preferred skills"
+        title={t('preferredSkills')}
         items={value.preferredSkills}
-        addLabel="Add preferred skill"
+        addLabel={t('addPreferredSkill')}
         onAdd={() => onChange({ ...value, preferredSkills: [...value.preferredSkills, { ...EMPTY_JD_SKILL }] })}
         onRemove={(index) =>
           onChange({ ...value, preferredSkills: value.preferredSkills.filter((_, i) => i !== index) })
@@ -127,9 +131,9 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
             });
           return (
             <>
-              <Input label="Name" value={item.name} onChange={(e) => update({ name: e.target.value })} />
+              <Input label={t('name')} value={item.name} onChange={(e) => update({ name: e.target.value })} />
               <Input
-                label="Weight hint (0-1)"
+                label={t('weightHint')}
                 value={item.weightHint}
                 onChange={(e) => update({ weightHint: e.target.value })}
               />
@@ -140,7 +144,7 @@ export function JdStructuredForm({ value, onChange }: JdStructuredFormProps) {
                   onChange={(e) => update({ isCore: e.target.checked })}
                   className="size-4 rounded border-outline text-primary"
                 />
-                Core skill
+                {t('coreSkill')}
               </label>
             </>
           );

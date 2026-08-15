@@ -9,6 +9,16 @@ export const ROLE_LABELS: Record<OrgUserRole, string> = {
   HIRING_MANAGER: 'Hiring Manager',
 };
 
+// Maps each role to the message key under common.roleLabels — pass to
+// t('roleLabels.' + ROLE_LABEL_KEYS[role]) instead of the English ROLE_LABELS map.
+// Covers DEV too (not part of OrgUserRole) since my-profile.tsx can display a DEV account.
+export const ROLE_LABEL_KEYS: Record<OrgUserRole | 'DEV', string> = {
+  ADMIN: 'admin',
+  RECRUITER: 'recruiter',
+  HIRING_MANAGER: 'hiringManager',
+  DEV: 'dev',
+};
+
 export type User = {
   id: string;
   organizationId: string;

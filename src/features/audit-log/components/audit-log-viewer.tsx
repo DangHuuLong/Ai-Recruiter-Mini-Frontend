@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { CopyIcon, EyeIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -24,6 +25,7 @@ const PAGE_SIZE = 20;
 const RESOURCE_TYPE_FILTER_OPTIONS = AUDIT_RESOURCE_TYPES.map((type) => ({ label: type, value: type }));
 
 function buildColumns(
+  t: ReturnType<typeof useTranslations<'auditLog'>>,
   resourceType: string,
   actorUserId: string,
   actorOptions: { label: string; value: string }[],
@@ -32,20 +34,20 @@ function buildColumns(
   return [
     {
       key: 'timestamp',
-      header: 'Timestamp',
+      header: t('columns.timestamp'),
       render: (log) => (
         <p className="whitespace-nowrap text-on-surface-variant">{formatDateTime(log.createdAt)}</p>
       ),
     },
     {
       key: 'actor',
-      header: 'Actor',
+      header: t('columns.actor'),
       filter: { key: 'actorUserId', options: actorOptions, activeValue: actorUserId },
       render: (log) => <p className="text-on-surface">{log.actor?.fullName ?? log.actor?.email ?? '—'}</p>,
     },
     {
       key: 'action',
-      header: 'Status',
+      header: t('columns.status'),
       render: (log) => (
         <span
           className={cn(
@@ -59,7 +61,7 @@ function buildColumns(
     },
     {
       key: 'resource',
-      header: 'Resource',
+      header: t('columns.resource'),
       filter: { key: 'resourceType', options: RESOURCE_TYPE_FILTER_OPTIONS, activeValue: resourceType },
       render: (log) => (
         <p className="text-on-surface-variant">
@@ -70,11 +72,11 @@ function buildColumns(
     },
     {
       key: 'action-column',
-      header: 'Action',
+      header: t('columns.action'),
       className: 'text-right',
       render: (log) => (
         <div className="flex justify-end">
-          <ActionIconButton icon={<EyeIcon className="size-4" />} label="View details" onClick={() => onViewDetails(log)} />
+          <ActionIconButton icon={<EyeIcon className="size-4" />} label={t('viewDetails')} onClick={() => onViewDetails(log)} />
         </div>
       ),
     },
@@ -82,6 +84,7 @@ function buildColumns(
 }
 
 export function AuditLogViewer() {
+  const t = useTranslations('auditLog');
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [resourceType, setResourceType] = useState('');
@@ -105,9 +108,9 @@ export function AuditLogViewer() {
       setLogs(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load audit log';
+      const message = error instanceof Error ? error.message : t('errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load audit log', { description: message });
+      showToast.error(t('errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -138,13 +141,13 @@ export function AuditLogViewer() {
   };
 
   if (isLoading && logs.length === 0) {
-    return <LoadingState title="Loading audit log..." description="Please wait while the audit trail is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage && logs.length === 0) {
     return (
       <EmptyState
-        title="Failed to load audit log"
+        title={t('errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -152,7 +155,7 @@ export function AuditLogViewer() {
             onClick={() => void loadLogs()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('tryAgain')}
           </button>
         }
       />
@@ -162,25 +165,21 @@ export function AuditLogViewer() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">Audit Log</h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Track sensitive actions taken across your organization.
-        </p>
+        <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <ListControls pagination={{ ...meta, onPageChange: setPage }} />
 
       {logs.length === 0 ? (
         <div className="rounded-2xl border border-outline bg-surface-lowest p-12 text-center shadow-card">
-          <p className="text-sm font-semibold text-on-surface">No audit history yet</p>
-          <p className="mt-1 text-sm text-on-surface-variant">
-            Sensitive actions will show up here as your team uses the app.
-          </p>
+          <p className="text-sm font-semibold text-on-surface">{t('emptyTitle')}</p>
+          <p className="mt-1 text-sm text-on-surface-variant">{t('emptyDescription')}</p>
         </div>
       ) : (
         <DataTable
           data={logs}
-          columns={buildColumns(resourceType, actorUserId, actorOptions, setSelectedLog)}
+          columns={buildColumns(t, resourceType, actorUserId, actorOptions, setSelectedLog)}
           getRowKey={(log) => log.id}
           onFilterChange={handleFilterChange}
         />
@@ -204,7 +203,7 @@ export function AuditLogViewer() {
               className="fixed inset-y-0 right-0 z-50 w-full max-w-md overflow-y-auto bg-surface-lowest p-6 shadow-panel"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-on-surface">Audit log detail</h2>
+                <h2 className="text-lg font-bold text-on-surface">{t('detail.title')}</h2>
                 <button
                   type="button"
                   onClick={() => setSelectedLog(null)}
@@ -216,7 +215,7 @@ export function AuditLogViewer() {
 
               <dl className="mt-6 space-y-4 text-sm">
                 <div className="flex items-center justify-between gap-4">
-                  <dt className="text-on-surface-muted">Action</dt>
+                  <dt className="text-on-surface-muted">{t('detail.action')}</dt>
                   <dd>
                     <span
                       className={cn(
@@ -229,20 +228,20 @@ export function AuditLogViewer() {
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4 border-t border-outline pt-4">
-                  <dt className="text-on-surface-muted">Resource</dt>
+                  <dt className="text-on-surface-muted">{t('detail.resource')}</dt>
                   <dd className="font-semibold text-on-surface">
                     {selectedLog.resourceType}
                     {selectedLog.resourceId ? ` #${selectedLog.resourceId}` : ''}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4 border-t border-outline pt-4">
-                  <dt className="text-on-surface-muted">Actor</dt>
+                  <dt className="text-on-surface-muted">{t('detail.actor')}</dt>
                   <dd className="font-semibold text-on-surface">
                     {selectedLog.actor?.fullName ?? selectedLog.actor?.email ?? '—'}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4 border-t border-outline pt-4">
-                  <dt className="text-on-surface-muted">Timestamp</dt>
+                  <dt className="text-on-surface-muted">{t('detail.timestamp')}</dt>
                   <dd className="font-semibold text-on-surface">{formatDateTime(selectedLog.createdAt)}</dd>
                 </div>
               </dl>
@@ -250,7 +249,7 @@ export function AuditLogViewer() {
               <div className="mt-6 border-t border-outline pt-4">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Metadata
+                    {t('detail.metadata')}
                   </p>
                   <button
                     type="button"
@@ -258,12 +257,12 @@ export function AuditLogViewer() {
                       void navigator.clipboard.writeText(
                         JSON.stringify(selectedLog.metadata ?? null, null, 2),
                       );
-                      showToast.success('Metadata copied to clipboard');
+                      showToast.success(t('detail.copySuccess'));
                     }}
                     className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-primary transition hover:underline"
                   >
                     <CopyIcon className="size-3.5" />
-                    Copy JSON
+                    {t('detail.copyJson')}
                   </button>
                 </div>
                 <pre className="mt-2 overflow-x-auto rounded-lg bg-surface-variant p-3 text-xs text-on-surface-variant">

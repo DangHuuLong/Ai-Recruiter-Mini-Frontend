@@ -1,14 +1,18 @@
+import { getTranslations } from 'next-intl/server';
+
 import { PageHeader } from '@/components/common';
 import { EvaluationForm } from '@/features/evaluations/components/evaluation-form';
 
-export default function NewEvaluationPage() {
+export default async function NewEvaluationPage() {
+  const t = await getTranslations('evaluations');
+
   return (
     <div className="max-w-3xl space-y-6">
       <PageHeader
-        title="New evaluation"
-        description="Select an application to run the AI scoring pipeline against."
+        title={t('newPage.title')}
+        description={t('newPage.description')}
         backHref="/evaluations"
-        backLabel="Back to evaluations"
+        backLabel={t('backToEvaluations')}
       />
 
       <EvaluationForm />

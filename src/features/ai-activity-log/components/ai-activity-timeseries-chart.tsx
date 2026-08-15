@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
-  FUNCTION_TYPE_LABELS,
+  FUNCTION_TYPE_LABEL_KEYS,
   type AiFunctionType,
   type TimeseriesBucket,
 } from '@/features/ai-activity-log/types/ai-activity-log.type';
@@ -26,6 +27,8 @@ type AiActivityTimeseriesChartProps = {
 };
 
 export function AiActivityTimeseriesChart({ title, buckets, isLoading }: AiActivityTimeseriesChartProps) {
+  const t = useTranslations('aiActivityLog.timeseriesChart');
+  const tLabels = useTranslations('aiActivityLog.labels.functionType');
   const [hoveredBucket, setHoveredBucket] = useState<string | null>(null);
   const [showTable, setShowTable] = useState(false);
 
@@ -61,7 +64,7 @@ export function AiActivityTimeseriesChart({ title, buckets, isLoading }: AiActiv
           onClick={() => setShowTable((v) => !v)}
           className="cursor-pointer text-xs font-semibold text-primary hover:text-primary-hover"
         >
-          {showTable ? 'Show chart' : 'Show table'}
+          {showTable ? t('showChart') : t('showTable')}
         </button>
       </div>
 
@@ -73,22 +76,22 @@ export function AiActivityTimeseriesChart({ title, buckets, isLoading }: AiActiv
               className="inline-block size-2.5 rounded-full"
               style={{ backgroundColor: `var(--series-${s.key === 'PARSE_RESUME' ? 'parse-resume' : s.key === 'PARSE_JOB_DESCRIPTION' ? 'parse-jd' : 'score'})` }}
             />
-            {FUNCTION_TYPE_LABELS[s.key]}
+            {tLabels(FUNCTION_TYPE_LABEL_KEYS[s.key])}
           </span>
         ))}
       </div>
 
       {isLoading ? (
-        <div className="mt-4 flex h-40 items-center justify-center text-sm text-on-surface-muted">Loading...</div>
+        <div className="mt-4 flex h-40 items-center justify-center text-sm text-on-surface-muted">{t('loading')}</div>
       ) : showTable ? (
         <div className="mt-4 max-h-64 overflow-y-auto">
           <table className="w-full text-xs">
             <thead>
               <tr className="text-left text-on-surface-muted">
-                <th className="py-1 pr-2">Bucket</th>
+                <th className="py-1 pr-2">{t('bucket')}</th>
                 {SERIES.map((s) => (
                   <th key={s.key} className="py-1 pr-2">
-                    {FUNCTION_TYPE_LABELS[s.key]}
+                    {tLabels(FUNCTION_TYPE_LABEL_KEYS[s.key])}
                   </th>
                 ))}
               </tr>
@@ -167,9 +170,9 @@ export function AiActivityTimeseriesChart({ title, buckets, isLoading }: AiActiv
           {hovered ? (
             <div className="pointer-events-none absolute -top-2 left-1/2 z-10 -translate-x-1/2 -translate-y-full rounded-lg border border-outline bg-surface-lowest px-3 py-2 text-xs shadow-panel">
               <p className="font-bold text-on-surface">{hovered.bucket}</p>
-              <p className="text-on-surface-variant">Parse Resume: {hovered.PARSE_RESUME}</p>
-              <p className="text-on-surface-variant">Parse JD: {hovered.PARSE_JOB_DESCRIPTION}</p>
-              <p className="text-on-surface-variant">Score: {hovered.SCORE_APPLICATION}</p>
+              <p className="text-on-surface-variant">{t('tooltipParseResume', { count: hovered.PARSE_RESUME })}</p>
+              <p className="text-on-surface-variant">{t('tooltipParseJd', { count: hovered.PARSE_JOB_DESCRIPTION })}</p>
+              <p className="text-on-surface-variant">{t('tooltipScore', { count: hovered.SCORE_APPLICATION })}</p>
             </div>
           ) : null}
         </div>

@@ -1,9 +1,12 @@
 import { Link } from '@/i18n/navigation';
+import { getTranslations } from 'next-intl/server';
 
 import { PageHeader } from '@/components/common';
 import { ApplicationForm } from '@/features/applications/components/application-form';
 
-export default function NewApplicationPage() {
+export default async function NewApplicationPage() {
+  const t = await getTranslations('applications');
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
@@ -11,13 +14,13 @@ export default function NewApplicationPage() {
           href="/applications"
           className="cursor-pointer text-sm font-semibold text-primary transition hover:underline"
         >
-          ← Back to applications
+          {t('backToList')}
         </Link>
 
         <div className="mt-4">
           <PageHeader
-            title="Link candidate, resume, and JD"
-            description="Select a candidate first, then choose one of their resumes and an active job description."
+            title={t('newPage.title')}
+            description={t('newPage.description')}
           />
         </div>
       </div>

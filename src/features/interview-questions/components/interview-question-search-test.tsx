@@ -3,6 +3,7 @@
 import { CheckIcon, SearchIcon, SparklesIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { showToast } from '@/components/feedback';
 import { Button } from '@/components/ui/button';
@@ -14,18 +15,21 @@ import {
 } from '@/features/interview-questions/api/interview-question.api';
 import {
   QUALITY_GATE_CLASSES,
-  QUALITY_GATE_LABELS,
+  QUALITY_GATE_LABEL_KEYS,
   type InterviewQuestion,
   type SearchResultRow,
 } from '@/features/interview-questions/types/interview-question.type';
 import {
   getSpecializationsFor,
-  OCCUPATION_FAMILY_LABELS,
+  OCCUPATION_FAMILY_LABEL_KEYS,
   type OccupationFamily,
 } from '@/features/interview-questions/types/interview-question-taxonomy.type';
 import { ApiError } from '@/lib/api/api-error';
 
+const OCCUPATION_FAMILIES = Object.keys(OCCUPATION_FAMILY_LABEL_KEYS) as OccupationFamily[];
+
 export function InterviewQuestionSearchTest() {
+  const t = useTranslations('interviewQuestions');
   const [queryText, setQueryText] = useState('');
   const [occupationFamily, setOccupationFamily] = useState<OccupationFamily | ''>('');
   const [specialization, setSpecialization] = useState('');
@@ -47,8 +51,8 @@ export function InterviewQuestionSearchTest() {
       const rows = await searchInterviewQuestions({ queryText, occupationFamily, specialization });
       setResults(rows);
     } catch (error) {
-      showToast.error('Search failed', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      showToast.error(t('searchTest.toast.searchFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('searchTest.toast.genericFailedFallback'),
       });
     } finally {
       setIsSearching(false);
@@ -64,8 +68,8 @@ export function InterviewQuestionSearchTest() {
       setResults(result.existing);
       setGenerated(result.generated);
     } catch (error) {
-      showToast.error('Search + Generate failed', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      showToast.error(t('searchTest.toast.generateFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('searchTest.toast.genericFailedFallback'),
       });
     } finally {
       setIsGenerating(false);
@@ -76,12 +80,12 @@ export function InterviewQuestionSearchTest() {
     try {
       await updateInterviewQuestion(question.id, { qualityGateStatus: 'APPROVED' });
       setApprovedIds((current) => new Set(current).add(question.id));
-      showToast.success('Question approved', {
-        description: 'It now shows up in Search results for this bucket.',
+      showToast.success(t('searchTest.toast.approveSuccess'), {
+        description: t('searchTest.toast.approveSuccessDescription'),
       });
     } catch (error) {
-      showToast.error('Failed to approve question', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('searchTest.toast.approveFailedTitle'), {
+        description: error instanceof Error ? error.message : t('searchTest.toast.genericFailedFallback'),
       });
     }
   };
@@ -92,32 +96,29 @@ export function InterviewQuestionSearchTest() {
         href={ROUTES.INTERVIEW_QUESTIONS}
         className="inline-flex cursor-pointer text-sm font-semibold text-primary transition hover:underline"
       >
-        ← Back to Interview Question Bank
+        {t('backToBank')}
       </Link>
 
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-on-surface">Test retrieval</h1>
+          <h1 className="text-2xl font-bold text-on-surface">{t('searchTest.title')}</h1>
           <span className="rounded-full bg-surface-variant px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
-            Internal tool
+            {t('internalToolBadge')}
           </span>
         </div>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Sanity-check how well the retrieval system ranks matches for a given query, and preview the
-          AI-fallback generation used when the existing bank comes up thin.
-        </p>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('searchTest.subtitle')}</p>
       </div>
 
       <div className="space-y-4 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
         <div>
           <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-            Query text
+            {t('searchTest.queryTextLabel')}
           </label>
           <textarea
             value={queryText}
             onChange={(e) => setQueryText(e.target.value)}
             rows={2}
-            placeholder="e.g. how would you design a caching strategy for a read-heavy API"
+            placeholder={t('searchTest.queryTextPlaceholder')}
             className="w-full rounded-lg border border-outline bg-surface-lowest px-3 py-2.5 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
           />
         </div>
@@ -125,7 +126,7 @@ export function InterviewQuestionSearchTest() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Occupation family
+              {t('fields.occupationFamilyLabel')}
             </label>
             <select
               value={occupationFamily}
@@ -135,10 +136,10 @@ export function InterviewQuestionSearchTest() {
               }}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Select a family</option>
-              {(Object.keys(OCCUPATION_FAMILY_LABELS) as OccupationFamily[]).map((family) => (
+              <option value="">{t('fields.selectFamily')}</option>
+              {OCCUPATION_FAMILIES.map((family) => (
                 <option key={family} value={family}>
-                  {OCCUPATION_FAMILY_LABELS[family]}
+                  {t(`labels.occupationFamily.${OCCUPATION_FAMILY_LABEL_KEYS[family]}`)}
                 </option>
               ))}
             </select>
@@ -146,7 +147,7 @@ export function InterviewQuestionSearchTest() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Specialization
+              {t('fields.specializationLabel')}
             </label>
             <select
               value={specialization}
@@ -154,7 +155,7 @@ export function InterviewQuestionSearchTest() {
               disabled={!occupationFamily}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30 disabled:cursor-not-allowed disabled:bg-surface-variant disabled:text-disabled"
             >
-              <option value="">Select a specialization</option>
+              <option value="">{t('fields.selectSpecialization')}</option>
               {specializationOptions.map((spec) => (
                 <option key={spec} value={spec}>
                   {spec}
@@ -174,7 +175,7 @@ export function InterviewQuestionSearchTest() {
             onClick={() => void handleSearch()}
           >
             <SearchIcon className="size-4" />
-            Search
+            {t('searchTest.searchButton')}
           </Button>
           <Button
             type="button"
@@ -184,21 +185,18 @@ export function InterviewQuestionSearchTest() {
             onClick={() => void handleSearchOrGenerate()}
           >
             <SparklesIcon className="size-4" />
-            {isGenerating ? 'Generating...' : 'Search + Generate if needed'}
+            {isGenerating ? t('searchTest.generatingButton') : t('searchTest.generateButton')}
           </Button>
         </div>
         <p className="text-xs text-on-surface-muted">
-          <span className="font-semibold">Search</span> only checks existing approved questions.{' '}
-          <span className="font-semibold">Search + Generate if needed</span> also asks the AI to draft new
-          candidate questions when the existing bank has too few strong matches — new questions land as
-          Pending Review, not immediately reusable.
+          {t.rich('searchTest.helpText', { b: (chunks) => <span className="font-semibold">{chunks}</span> })}
         </p>
       </div>
 
       {results ? (
         <div className="space-y-3">
           <p className="text-sm font-semibold text-on-surface">
-            {results.length === 0 ? 'No approved questions in this bucket yet' : `Top ${results.length} matches`}
+            {results.length === 0 ? t('searchTest.noResults') : t('searchTest.topMatches', { count: results.length })}
           </p>
 
           {results.map((result, index) => (
@@ -232,7 +230,7 @@ export function InterviewQuestionSearchTest() {
 
       {isGenerating ? (
         <div className="rounded-2xl border border-dashed border-primary/40 bg-primary-container/20 p-4 text-sm text-on-surface-variant">
-          Generating new candidate questions with AI fallback...
+          {t('searchTest.generatingNotice')}
         </div>
       ) : null}
 
@@ -240,7 +238,7 @@ export function InterviewQuestionSearchTest() {
         <div className="space-y-3">
           <div className="flex items-center gap-2 border-t border-outline pt-4">
             <SparklesIcon className="size-4 text-primary" />
-            <p className="text-sm font-semibold text-on-surface">Newly generated — pending review</p>
+            <p className="text-sm font-semibold text-on-surface">{t('searchTest.newlyGeneratedTitle')}</p>
           </div>
 
           {generated.map((question) => {
@@ -255,7 +253,7 @@ export function InterviewQuestionSearchTest() {
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${QUALITY_GATE_CLASSES[isApproved ? 'APPROVED' : 'PENDING_REVIEW']}`}
                   >
-                    {QUALITY_GATE_LABELS[isApproved ? 'APPROVED' : 'PENDING_REVIEW']}
+                    {t(`labels.qualityGate.${QUALITY_GATE_LABEL_KEYS[isApproved ? 'APPROVED' : 'PENDING_REVIEW']}`)}
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-on-surface-muted">{question.competency}</p>
@@ -266,7 +264,7 @@ export function InterviewQuestionSearchTest() {
                     className="mt-3 inline-flex cursor-pointer items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold text-success transition-colors hover:bg-success-container hover:underline"
                   >
                     <CheckIcon className="size-3.5" />
-                    Approve
+                    {t('searchTest.approve')}
                   </button>
                 ) : null}
               </div>

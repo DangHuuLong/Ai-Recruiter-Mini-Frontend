@@ -25,7 +25,7 @@ import {
   loadDashboardOverview,
   type DashboardOverviewData,
 } from '@/features/dashboard/utils/dashboard-stats.util';
-import { STATUS_LABELS } from '@/features/batch-scoring/types/batch-scoring.type';
+import { STATUS_LABEL_KEYS } from '@/features/batch-scoring/types/batch-scoring.type';
 import { formatRelativeTime } from '@/lib/utils/format-date';
 
 const EVALUATION_STATUS_CLASSES: Record<string, string> = {
@@ -37,6 +37,7 @@ const EVALUATION_STATUS_CLASSES: Record<string, string> = {
 
 export function DashboardOverview() {
   const t = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
   const [data, setData] = useState<DashboardOverviewData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -288,7 +289,7 @@ export function DashboardOverview() {
                           completed: batch.completedPairCount,
                           total: batch.totalPairCount,
                         })}{' '}
-                        · {STATUS_LABELS[batch.status]}
+                        · {tCommon(`statusLabels.${STATUS_LABEL_KEYS[batch.status]}`)}
                       </span>
                     </div>
                     <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-variant">

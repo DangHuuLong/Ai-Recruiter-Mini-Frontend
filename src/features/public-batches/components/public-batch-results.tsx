@@ -9,7 +9,8 @@ import { useTranslations } from 'next-intl';
 import { AnimatedGlowBackground } from '@/components/decorative/animated-glow-background';
 import { LoadingState } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
-import { CRITERION_LABELS, getScoreTier, type CriterionName } from '@/features/batch-scoring/types/batch-scoring.type';
+import { CRITERION_LABEL_KEYS, getScoreTier, type CriterionName } from '@/features/batch-scoring/types/batch-scoring.type';
+import { ResultFeedbackForm } from '@/features/feedback/components/result-feedback-form';
 import { getPublicBatch } from '@/features/public-batches/api/public-batch.api';
 import type { PublicBatchSnapshot, PublicResult } from '@/features/public-batches/types/public-batch.type';
 import { cn } from '@/lib/utils/cn';
@@ -29,6 +30,8 @@ type PublicBatchResultsProps = {
 
 export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
   const t = useTranslations('publicBatchResults');
+  const tCommon = useTranslations('common');
+  const tFeedback = useTranslations('feedback');
   const [snapshot, setSnapshot] = useState<PublicBatchSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -213,7 +216,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                               <button
                                 type="button"
                                 onClick={() => openCell(result)}
-                                title={tier.label}
+                                title={t(`scoreTiers.${tier.tierKey}`)}
                                 className={cn(
                                   'flex h-14 w-full cursor-pointer items-center justify-center rounded-lg text-base font-bold transition-opacity hover:opacity-75',
                                   tier.containerClass,
@@ -267,7 +270,7 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-on-surface-muted">
-                    {t('matchScore', { tier: getScoreTier(selectedCell.overallScore ?? 0).label })}
+                    {t('matchScore', { tier: t(`scoreTiers.${getScoreTier(selectedCell.overallScore ?? 0).tierKey}`) })}
                   </p>
                   <p className="mt-1 text-3xl font-bold text-on-surface">
                     {selectedCell.overallScore != null ? Math.round(selectedCell.overallScore) : '—'}
@@ -289,7 +292,9 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                   <div key={criterion.criterion}>
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-on-surface">
-                        {CRITERION_LABELS[criterion.criterion as CriterionName] ?? criterion.criterion}
+                        {CRITERION_LABEL_KEYS[criterion.criterion as CriterionName]
+                          ? tCommon(`criterionLabels.${CRITERION_LABEL_KEYS[criterion.criterion as CriterionName]}`)
+                          : criterion.criterion}
                       </span>
                       <span className="text-on-surface-muted">
                         {Math.round(criterion.scoreNormalized * 100)}
@@ -344,6 +349,20 @@ export function PublicBatchResults({ batchId }: PublicBatchResultsProps) {
                   </ol>
                 </div>
               ) : null}
+
+              <div className="mt-6 border-t border-outline pt-4">
+                <h3 className="text-sm font-bold text-on-surface">{tFeedback('title')}</h3>
+                <div className="mt-3">
+                  <ResultFeedbackForm
+                    key={`${selectedCell.resumeItemId}:${selectedCell.jdItemId}`}
+                    reference={{
+                      batchId,
+                      resumeItemId: selectedCell.resumeItemId,
+                      jdItemId: selectedCell.jdItemId,
+                    }}
+                  />
+                </div>
+              </div>
             </motion.div>
           </>
         ) : null}

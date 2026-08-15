@@ -3,6 +3,7 @@
 import { CopyIcon, SparklesIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { JobSkillManager } from '@/features/job-descriptions/components/job-skill-manager';
@@ -26,6 +27,8 @@ function statusClassName(status: string) {
 }
 
 export function JobDescriptionDetail({ id }: JobDescriptionDetailProps) {
+  const t = useTranslations('jobDescriptions.detail');
+  const tRoot = useTranslations('jobDescriptions');
   const {
     jobDescription,
     isLoading,
@@ -38,18 +41,19 @@ export function JobDescriptionDetail({ id }: JobDescriptionDetailProps) {
 
   useEffect(() => {
     if (!errorMessage) return;
-    showToast.error('Failed to load job description', { description: errorMessage });
+    showToast.error(t('errorTitle'), { description: errorMessage });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage]);
 
   const handleParse = async () => {
     try {
       const parsedJobDescription = await parseCurrentJobDescription();
-      showToast.success('Job description parsed successfully', {
-        description: `${parsedJobDescription.title} parsed and job skills synced.`,
+      showToast.success(t('parseSuccessTitle'), {
+        description: t('parseSuccessDescription', { title: parsedJobDescription.title }),
       });
     } catch (error) {
-      showToast.error('Failed to parse job description', {
-        description: error instanceof Error ? error.message : 'Please try again.',
+      showToast.error(t('parseFailedTitle'), {
+        description: error instanceof Error ? error.message : t('parseFailedFallback'),
       });
     }
   };
@@ -64,15 +68,15 @@ export function JobDescriptionDetail({ id }: JobDescriptionDetailProps) {
   };
 
   if (isLoading) {
-    return <LoadingState title="Loading job description..." description="Please wait while the job description detail is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !jobDescription) {
     return (
       <EmptyState
-        title="Job description not found"
-        description={errorMessage ?? 'The requested job description could not be loaded.'}
-        action={<button type="button" onClick={() => void refetchJobDescription()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">Try again</button>}
+        title={t('notFoundTitle')}
+        description={errorMessage ?? t('notFoundFallback')}
+        action={<button type="button" onClick={() => void refetchJobDescription()} className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover">{t('tryAgain')}</button>}
       />
     );
   }
@@ -83,9 +87,9 @@ export function JobDescriptionDetail({ id }: JobDescriptionDetailProps) {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link href="/job-descriptions" className="cursor-pointer text-sm font-semibold text-primary hover:underline">← Back to job descriptions</Link>
+          <Link href="/job-descriptions" className="cursor-pointer text-sm font-semibold text-primary hover:underline">{t('backToList')}</Link>
           <h1 className="mt-3 text-2xl font-bold text-on-surface">{jobDescription.title}</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant">{jobDescription.companyName || 'No company'} · {jobDescription.location || 'No location'}</p>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant">{jobDescription.companyName || tRoot('noCompany')} · {jobDescription.location || tRoot('notProvided')}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClassName(jobDescription.parseStatus)}`}>{jobDescription.parseStatus}</span>
             {jobDescription.employmentType ? <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">{jobDescription.employmentType}</span> : null}
@@ -96,26 +100,26 @@ export function JobDescriptionDetail({ id }: JobDescriptionDetailProps) {
 
         <button type="button" onClick={() => void handleParse()} disabled={isParsing} className="inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-disabled">
           <SparklesIcon className="size-4" />
-          {isParsing ? 'Parsing...' : 'Parse JD'}
+          {isParsing ? t('parsing') : t('parseJd')}
         </button>
       </div>
 
       <section className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-on-surface">Raw JD Text</h2>
-            <p className="mt-1 text-sm text-on-surface-muted">Original job description content stored by the backend.</p>
+            <h2 className="text-lg font-semibold text-on-surface">{t('rawJdText')}</h2>
+            <p className="mt-1 text-sm text-on-surface-muted">{t('rawJdTextDescription')}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-on-surface-muted">Parser version: {jobDescription.parserVersion || 'Not parsed yet'}</span>
+            <span className="text-sm text-on-surface-muted">{t('parserVersion', { version: jobDescription.parserVersion || t('notParsedYet') })}</span>
             <button
               type="button"
               onClick={() => {
                 void navigator.clipboard.writeText(jobDescription.rawText);
-                showToast.success('Raw JD text copied to clipboard');
+                showToast.success(t('copySuccess'));
               }}
               className="cursor-pointer rounded-lg p-1.5 text-on-surface-muted transition-colors hover:bg-surface-variant hover:text-on-surface"
-              aria-label="Copy raw JD text"
+              aria-label={t('copyLabel')}
             >
               <CopyIcon className="size-4" />
             </button>

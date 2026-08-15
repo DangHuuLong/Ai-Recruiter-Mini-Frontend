@@ -4,6 +4,7 @@ import { CopyIcon, FileTextIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { BulkActionBar, DataTable, ListControls, type DataTableColumn } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -17,10 +18,10 @@ import {
 import { AiActivitySummaryTiles } from '@/features/ai-activity-log/components/ai-activity-summary-tiles';
 import { AiActivityTimeseriesChart } from '@/features/ai-activity-log/components/ai-activity-timeseries-chart';
 import {
-  FUNCTION_TYPE_LABELS,
+  FUNCTION_TYPE_LABEL_KEYS,
   STATUS_CLASSES,
-  STATUS_LABELS,
-  TIER_LABELS,
+  STATUS_LABEL_KEYS,
+  TIER_LABEL_KEYS,
   type AiActivityLog,
   type AiActivityLogListItem,
   type AiActivityLogSummary,
@@ -35,83 +36,87 @@ import { cn } from '@/lib/utils/cn';
 
 const PAGE_SIZE = 20;
 
-const FUNCTION_TYPE_FILTER_OPTIONS = (Object.keys(FUNCTION_TYPE_LABELS) as AiFunctionType[]).map((type) => ({
-  label: FUNCTION_TYPE_LABELS[type],
-  value: type,
-}));
-
-const TIER_FILTER_OPTIONS = (Object.keys(TIER_LABELS) as AiCallTier[]).map((tier) => ({
-  label: TIER_LABELS[tier],
-  value: tier,
-}));
-
-const STATUS_FILTER_OPTIONS = (Object.keys(STATUS_LABELS) as AiCallStatus[]).map((status) => ({
-  label: STATUS_LABELS[status],
-  value: status,
-}));
+const FUNCTION_TYPES = Object.keys(FUNCTION_TYPE_LABEL_KEYS) as AiFunctionType[];
+const TIERS = Object.keys(TIER_LABEL_KEYS) as AiCallTier[];
+const STATUSES = Object.keys(STATUS_LABEL_KEYS) as AiCallStatus[];
 
 function formatLatency(ms: number): string {
   return ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`;
 }
 
 function buildColumns(
+  t: ReturnType<typeof useTranslations<'aiActivityLog'>>,
   functionType: AiFunctionType | '',
   tier: AiCallTier | '',
   status: AiCallStatus | '',
 ): DataTableColumn<AiActivityLogListItem>[] {
+  const functionTypeFilterOptions = FUNCTION_TYPES.map((type) => ({
+    label: t(`labels.functionType.${FUNCTION_TYPE_LABEL_KEYS[type]}`),
+    value: type,
+  }));
+  const tierFilterOptions = TIERS.map((tierValue) => ({
+    label: t(`labels.tier.${TIER_LABEL_KEYS[tierValue]}`),
+    value: tierValue,
+  }));
+  const statusFilterOptions = STATUSES.map((statusValue) => ({
+    label: t(`labels.status.${STATUS_LABEL_KEYS[statusValue]}`),
+    value: statusValue,
+  }));
+
   return [
     {
       key: 'functionType',
-      header: 'Function',
-      filter: { key: 'functionType', options: FUNCTION_TYPE_FILTER_OPTIONS, activeValue: functionType },
+      header: t('dashboard.columns.function'),
+      filter: { key: 'functionType', options: functionTypeFilterOptions, activeValue: functionType },
       render: (log) => (
         <Link
           href={`${ROUTES.AI_ACTIVITY_LOG}/${log.id}`}
           className="font-semibold text-primary hover:text-primary-hover"
         >
-          {FUNCTION_TYPE_LABELS[log.functionType]}
+          {t(`labels.functionType.${FUNCTION_TYPE_LABEL_KEYS[log.functionType]}`)}
         </Link>
       ),
     },
     {
       key: 'tier',
-      header: 'Tier',
-      filter: { key: 'tier', options: TIER_FILTER_OPTIONS, activeValue: tier },
-      render: (log) => <span className="text-on-surface-variant">{TIER_LABELS[log.tier]}</span>,
+      header: t('dashboard.columns.tier'),
+      filter: { key: 'tier', options: tierFilterOptions, activeValue: tier },
+      render: (log) => <span className="text-on-surface-variant">{t(`labels.tier.${TIER_LABEL_KEYS[log.tier]}`)}</span>,
     },
     {
       key: 'status',
-      header: 'Status',
-      filter: { key: 'status', options: STATUS_FILTER_OPTIONS, activeValue: status },
+      header: t('dashboard.columns.status'),
+      filter: { key: 'status', options: statusFilterOptions, activeValue: status },
       render: (log) => (
         <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', STATUS_CLASSES[log.status])}>
-          {STATUS_LABELS[log.status]}
+          {t(`labels.status.${STATUS_LABEL_KEYS[log.status]}`)}
         </span>
       ),
     },
     {
       key: 'organization',
-      header: 'Organization',
+      header: t('dashboard.columns.organization'),
       render: (log) => (
         <span className="text-xs text-on-surface-muted">{log.organizationId ?? '—'}</span>
       ),
     },
     {
       key: 'createdAt',
-      header: 'Called at',
+      header: t('dashboard.columns.calledAt'),
       render: (log) => (
         <span className="text-on-surface-variant">{new Date(log.createdAt).toLocaleString()}</span>
       ),
     },
     {
       key: 'latency',
-      header: 'Response time',
+      header: t('dashboard.columns.responseTime'),
       render: (log) => <span className="text-on-surface-variant">{formatLatency(log.latencyMs)}</span>,
     },
   ];
 }
 
 export function AiActivityLogDashboard() {
+  const t = useTranslations('aiActivityLog');
   const searchParams = useSearchParams();
 
   const [logs, setLogs] = useState<AiActivityLogListItem[]>([]);
@@ -157,9 +162,9 @@ export function AiActivityLogDashboard() {
       setLogs(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load AI activity logs';
+      const message = error instanceof Error ? error.message : t('dashboard.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load AI activity logs', { description: message });
+      showToast.error(t('dashboard.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -176,13 +181,14 @@ export function AiActivityLogDashboard() {
         setIsSummaryLoading(true);
         setSummary(await getAiActivityLogSummary());
       } catch (error) {
-        showToast.error('Failed to load summary stats', {
-          description: error instanceof Error ? error.message : 'Something went wrong.',
+        showToast.error(t('dashboard.toast.summaryFailedTitle'), {
+          description: error instanceof Error ? error.message : t('dashboard.toast.genericFailedFallback'),
         });
       } finally {
         setIsSummaryLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -198,13 +204,14 @@ export function AiActivityLogDashboard() {
         setDayBuckets(day);
         setMonthBuckets(month);
       } catch (error) {
-        showToast.error('Failed to load activity charts', {
-          description: error instanceof Error ? error.message : 'Something went wrong.',
+        showToast.error(t('dashboard.toast.chartsFailedTitle'), {
+          description: error instanceof Error ? error.message : t('dashboard.toast.genericFailedFallback'),
         });
       } finally {
         setIsChartsLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilterChange = (key: string, value: string) => {
@@ -222,8 +229,8 @@ export function AiActivityLogDashboard() {
       );
       setReportText(buildDebugReport(fullLogs));
     } catch (error) {
-      showToast.error('Failed to build report', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('dashboard.toast.reportFailedTitle'), {
+        description: error instanceof Error ? error.message : t('dashboard.toast.genericFailedFallback'),
       });
     } finally {
       setIsBuildingReport(false);
@@ -233,40 +240,38 @@ export function AiActivityLogDashboard() {
   const handleCopyReport = async () => {
     if (!reportText) return;
     await navigator.clipboard.writeText(reportText);
-    showToast.success('Report copied to clipboard');
+    showToast.success(t('dashboard.toast.reportCopied'));
   };
 
   if (isLoading && logs.length === 0 && !errorMessage) {
-    return <LoadingState title="Loading AI activity log..." description="Please wait while data is being loaded." />;
+    return <LoadingState title={t('dashboard.loadingTitle')} description={t('dashboard.loadingDescription')} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-on-surface">AI Activity Log</h1>
+          <h1 className="text-2xl font-bold text-on-surface">{t('dashboard.title')}</h1>
           <span className="rounded-full bg-surface-variant px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
-            Internal tool
+            {t('internalToolBadge')}
           </span>
         </div>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Every call to the AI parsing/scoring functions, with full input/output, for quality review.
-        </p>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('dashboard.subtitle')}</p>
       </div>
 
       <AiActivitySummaryTiles summary={summary} isLoading={isSummaryLoading} />
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <AiActivityTimeseriesChart title="Calls today (by hour)" buckets={hourBuckets} isLoading={isChartsLoading} />
-        <AiActivityTimeseriesChart title="Calls this month (by day)" buckets={dayBuckets} isLoading={isChartsLoading} />
-        <AiActivityTimeseriesChart title="Calls this year (by month)" buckets={monthBuckets} isLoading={isChartsLoading} />
+        <AiActivityTimeseriesChart title={t('dashboard.charts.callsToday')} buckets={hourBuckets} isLoading={isChartsLoading} />
+        <AiActivityTimeseriesChart title={t('dashboard.charts.callsThisMonth')} buckets={dayBuckets} isLoading={isChartsLoading} />
+        <AiActivityTimeseriesChart title={t('dashboard.charts.callsThisYear')} buckets={monthBuckets} isLoading={isChartsLoading} />
       </div>
 
       {isFiltered ? (
         <div className="flex items-center justify-between rounded-xl border border-primary/30 bg-primary-container px-4 py-2.5 text-sm text-on-primary-container">
-          <span>Showing calls related to a specific batch/resume/job description.</span>
+          <span>{t('dashboard.filteredNotice')}</span>
           <Link href={ROUTES.AI_ACTIVITY_LOG} className="font-semibold underline">
-            Clear filter
+            {t('dashboard.clearFilter')}
           </Link>
         </div>
       ) : null}
@@ -281,14 +286,14 @@ export function AiActivityLogDashboard() {
           className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-on-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           <FileTextIcon className="size-3.5" />
-          {isBuildingReport ? 'Building report...' : 'Compile report'}
+          {isBuildingReport ? t('dashboard.buildingReport') : t('dashboard.compileReport')}
         </button>
       </BulkActionBar>
 
       {reportText ? (
         <div className="space-y-2 rounded-2xl border border-outline bg-surface-lowest p-5 shadow-card">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-on-surface">Debug report</h3>
+            <h3 className="text-sm font-bold text-on-surface">{t('dashboard.debugReportTitle')}</h3>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -296,14 +301,14 @@ export function AiActivityLogDashboard() {
                 className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-outline bg-surface-lowest px-3 text-xs font-semibold text-on-surface transition hover:bg-surface-variant"
               >
                 <CopyIcon className="size-3.5" />
-                Copy
+                {t('dashboard.copy')}
               </button>
               <button
                 type="button"
                 onClick={() => setReportText(null)}
                 className="inline-flex h-9 cursor-pointer items-center rounded-lg px-3 text-xs font-semibold text-on-surface-variant transition hover:bg-surface-variant"
               >
-                Close
+                {t('dashboard.close')}
               </button>
             </div>
           </div>
@@ -318,7 +323,7 @@ export function AiActivityLogDashboard() {
 
       {errorMessage && logs.length === 0 ? (
         <EmptyState
-          title="Failed to load AI activity logs"
+          title={t('dashboard.errorTitle')}
           description={errorMessage}
           action={
             <button
@@ -326,16 +331,16 @@ export function AiActivityLogDashboard() {
               onClick={() => void loadLogs()}
               className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
             >
-              Try again
+              {t('dashboard.tryAgain')}
             </button>
           }
         />
       ) : logs.length === 0 ? (
-        <EmptyState title="No calls match these filters" description="Try clearing a filter." />
+        <EmptyState title={t('dashboard.emptyTitle')} description={t('dashboard.emptyDescription')} />
       ) : (
         <DataTable
           data={logs}
-          columns={buildColumns(functionType, tier, status)}
+          columns={buildColumns(t, functionType, tier, status)}
           getRowKey={(log) => log.id}
           onFilterChange={handleFilterChange}
           selection={{ selectedIds, onChange: setSelectedIds }}

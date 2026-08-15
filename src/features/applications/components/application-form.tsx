@@ -4,6 +4,7 @@ import { InfoIcon } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { createApplication } from '@/features/applications/api/application.api';
@@ -20,6 +21,7 @@ const fieldClassName =
 const labelClassName = 'text-xs font-semibold uppercase tracking-wide text-on-surface-variant';
 
 export function ApplicationForm() {
+  const t = useTranslations('applications.form');
   const router = useRouter();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -52,9 +54,9 @@ export function ApplicationForm() {
         setJobDescriptions(jobDescriptionResponse.data);
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Failed to load form options';
+          error instanceof Error ? error.message : t('loadOptionsFailedFallback');
         setErrorMessage(message);
-        showToast.error('Failed to load form options', {
+        showToast.error(t('loadOptionsFailedFallback'), {
           description: message,
         });
       } finally {
@@ -63,6 +65,7 @@ export function ApplicationForm() {
     };
 
     void loadOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -80,9 +83,9 @@ export function ApplicationForm() {
         setResumes(candidateResumes);
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Failed to load candidate resumes';
+          error instanceof Error ? error.message : t('loadOptionsFailedFallback');
         setResumes([]);
-        showToast.error('Failed to load candidate resumes', {
+        showToast.error(t('loadOptionsFailedFallback'), {
           description: message,
         });
       } finally {
@@ -91,14 +94,14 @@ export function ApplicationForm() {
     };
 
     void loadResumes();
-  }, [candidateId]);
+  }, [candidateId, t]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!candidateId || !resumeId || !jobDescriptionId) {
-      showToast.warning('Missing required selection', {
-        description: 'Please select a candidate, resume, and job description.',
+      showToast.warning(t('missingSelectionTitle'), {
+        description: t('missingSelectionDescription'),
       });
       return;
     }
@@ -114,12 +117,12 @@ export function ApplicationForm() {
     try {
       setIsSubmitting(true);
       const application = await createApplication(payload);
-      showToast.success('Application created successfully');
+      showToast.success(t('createSuccessTitle'));
       router.push(`/applications/${application.id}`);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Failed to create application';
-      showToast.error('Failed to create application', {
+        error instanceof Error ? error.message : t('createFailedFallback');
+      showToast.error(t('createFailedTitle'), {
         description: message,
       });
     } finally {
@@ -130,8 +133,8 @@ export function ApplicationForm() {
   if (isLoadingOptions) {
     return (
       <LoadingState
-        title="Loading application form..."
-        description="Please wait while candidates and job descriptions are being loaded."
+        title={t('loadingFormTitle')}
+        description={t('loadingFormDescription')}
       />
     );
   }
@@ -139,7 +142,7 @@ export function ApplicationForm() {
   if (errorMessage) {
     return (
       <EmptyState
-        title="Unable to load form options"
+        title={t('unableToLoadTitle')}
         description={errorMessage}
       />
     );
@@ -150,20 +153,19 @@ export function ApplicationForm() {
       <div className="flex gap-3 rounded-xl border border-primary/20 bg-primary-container p-4">
         <InfoIcon className="size-5 shrink-0 text-on-primary-container" />
         <p className="text-sm text-on-primary-container">
-          <span className="font-semibold">Workflow requirement:</span> resume selection is locked until a candidate is
-          selected — resume options are filtered to that candidate&apos;s own resumes.
+          <span className="font-semibold">{t('workflowNoteTitle')}</span> {t('workflowNoteBody')}
         </p>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
         <label className="space-y-2">
-          <span className={labelClassName}>Candidate</span>
+          <span className={labelClassName}>{t('candidateLabel')}</span>
           <select
             value={candidateId}
             onChange={(event) => setCandidateId(event.target.value)}
             className={fieldClassName}
           >
-            <option value="">Select candidate</option>
+            <option value="">{t('selectCandidate')}</option>
             {candidates.map((candidate) => (
               <option key={candidate.id} value={candidate.id}>
                 {candidate.fullName}
@@ -173,7 +175,7 @@ export function ApplicationForm() {
         </label>
 
         <label className="space-y-2">
-          <span className={labelClassName}>Resume</span>
+          <span className={labelClassName}>{t('resumeLabel')}</span>
           <select
             value={resumeId}
             onChange={(event) => setResumeId(event.target.value)}
@@ -181,7 +183,7 @@ export function ApplicationForm() {
             className={fieldClassName}
           >
             <option value="">
-              {isLoadingResumes ? 'Loading resumes...' : 'Select resume'}
+              {isLoadingResumes ? t('loadingResumes') : t('selectResume')}
             </option>
             {resumes.map((resume) => (
               <option key={resume.id} value={resume.id}>
@@ -190,20 +192,18 @@ export function ApplicationForm() {
             ))}
           </select>
           {candidateId && !isLoadingResumes && resumes.length === 0 ? (
-            <p className="text-xs font-medium text-warning">
-              This candidate has no resume yet.
-            </p>
+            <p className="text-xs font-medium text-warning">{t('noResumeYet')}</p>
           ) : null}
         </label>
 
         <label className="space-y-2">
-          <span className={labelClassName}>Job description</span>
+          <span className={labelClassName}>{t('jobDescriptionLabel')}</span>
           <select
             value={jobDescriptionId}
             onChange={(event) => setJobDescriptionId(event.target.value)}
             className={fieldClassName}
           >
-            <option value="">Select active JD</option>
+            <option value="">{t('selectActiveJd')}</option>
             {activeJobDescriptions.map((jobDescription) => (
               <option key={jobDescription.id} value={jobDescription.id}>
                 {jobDescription.title}
@@ -215,21 +215,21 @@ export function ApplicationForm() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <label className="space-y-2">
-          <span className={labelClassName}>Source</span>
+          <span className={labelClassName}>{t('sourceLabel')}</span>
           <input
             value={source}
             onChange={(event) => setSource(event.target.value)}
-            placeholder="LinkedIn, Referral, Job Board..."
+            placeholder={t('sourcePlaceholder')}
             className={fieldClassName}
           />
         </label>
 
         <label className="space-y-2">
-          <span className={labelClassName}>Notes</span>
+          <span className={labelClassName}>{t('notesLabel')}</span>
           <input
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            placeholder="Internal note"
+            placeholder={t('notesPlaceholder')}
             className={fieldClassName}
           />
         </label>
@@ -241,7 +241,7 @@ export function ApplicationForm() {
           onClick={() => router.push('/applications')}
           className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-5 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
         >
-          Cancel
+          {t('cancel')}
         </button>
 
         <button
@@ -249,7 +249,7 @@ export function ApplicationForm() {
           disabled={isSubmitting}
           className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? 'Creating...' : 'Create Application'}
+          {isSubmitting ? t('creating') : t('create')}
         </button>
       </div>
     </form>

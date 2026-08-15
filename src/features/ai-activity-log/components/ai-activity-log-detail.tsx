@@ -2,16 +2,17 @@
 
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { DetailItem, DetailPageLayout, DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
 import { ROUTES } from '@/config/routes.config';
 import { getAiActivityLogById } from '@/features/ai-activity-log/api/ai-activity-log.api';
 import {
-  FUNCTION_TYPE_LABELS,
+  FUNCTION_TYPE_LABEL_KEYS,
   STATUS_CLASSES,
-  STATUS_LABELS,
-  TIER_LABELS,
+  STATUS_LABEL_KEYS,
+  TIER_LABEL_KEYS,
   type AiActivityLog,
 } from '@/features/ai-activity-log/types/ai-activity-log.type';
 import { cn } from '@/lib/utils/cn';
@@ -30,6 +31,8 @@ function relatedCallsHref(log: AiActivityLog): string | null {
 }
 
 export function AiActivityLogDetail({ id }: AiActivityLogDetailProps) {
+  const t = useTranslations('aiActivityLog.detail');
+  const tLabels = useTranslations('aiActivityLog.labels');
   const [log, setLog] = useState<AiActivityLog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -41,24 +44,25 @@ export function AiActivityLogDetail({ id }: AiActivityLogDetailProps) {
         setErrorMessage(null);
         setLog(await getAiActivityLogById(id));
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to load AI activity log';
+        const message = error instanceof Error ? error.message : t('errorTitle');
         setErrorMessage(message);
-        showToast.error('Failed to load AI activity log', { description: message });
+        showToast.error(t('errorTitle'), { description: message });
       } finally {
         setIsLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (isLoading) {
-    return <LoadingState title="Loading log..." description="Please wait while the log entry is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !log) {
     return (
       <EmptyState
-        title="Failed to load AI activity log"
-        description={errorMessage ?? 'Log not found.'}
+        title={t('errorTitle')}
+        description={errorMessage ?? t('notFoundFallback')}
       />
     );
   }
@@ -67,36 +71,36 @@ export function AiActivityLogDetail({ id }: AiActivityLogDetailProps) {
 
   return (
     <DetailPageLayout
-      title={FUNCTION_TYPE_LABELS[log.functionType]}
-      description={`Called ${new Date(log.createdAt).toLocaleString()} · took ${log.latencyMs}ms`}
+      title={tLabels(`functionType.${FUNCTION_TYPE_LABEL_KEYS[log.functionType]}`)}
+      description={t('calledAtDescription', { date: new Date(log.createdAt).toLocaleString(), latency: log.latencyMs })}
       backHref={ROUTES.AI_ACTIVITY_LOG}
-      backLabel="Back to AI Activity Log"
+      backLabel={t('backLabel')}
       actions={
         relatedHref ? (
           <Link
             href={relatedHref}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-outline bg-surface-lowest px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
           >
-            View related calls
+            {t('viewRelatedCalls')}
           </Link>
         ) : undefined
       }
     >
-      <DetailSection title="Overview">
+      <DetailSection title={t('overview')}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <DetailItem label="Tier" value={TIER_LABELS[log.tier]} />
+          <DetailItem label={t('tier')} value={tLabels(`tier.${TIER_LABEL_KEYS[log.tier]}`)} />
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">Status</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">{t('status')}</p>
             <span className={cn('mt-1 inline-block rounded-full px-2.5 py-1 text-xs font-semibold', STATUS_CLASSES[log.status])}>
-              {STATUS_LABELS[log.status]}
+              {tLabels(`status.${STATUS_LABEL_KEYS[log.status]}`)}
             </span>
           </div>
-          <DetailItem label="Organization" value={log.organizationId} />
-          <DetailItem label="Batch" value={log.batchId} />
-          <DetailItem label="Evaluation" value={log.evaluationId} />
-          <DetailItem label="Resume" value={log.resumeId} />
-          <DetailItem label="Job Description" value={log.jobDescriptionId} />
-          <DetailItem label="Response time" value={`${log.latencyMs}ms`} />
+          <DetailItem label={t('organization')} value={log.organizationId} />
+          <DetailItem label={t('batch')} value={log.batchId} />
+          <DetailItem label={t('evaluation')} value={log.evaluationId} />
+          <DetailItem label={t('resume')} value={log.resumeId} />
+          <DetailItem label={t('jobDescription')} value={log.jobDescriptionId} />
+          <DetailItem label={t('responseTime')} value={`${log.latencyMs}ms`} />
         </div>
 
         {log.errorMessage ? (
@@ -106,15 +110,15 @@ export function AiActivityLogDetail({ id }: AiActivityLogDetailProps) {
         ) : null}
       </DetailSection>
 
-      <DetailSection title="Input" className="mt-6">
+      <DetailSection title={t('input')} className="mt-6">
         <pre className="max-h-[32rem] overflow-auto rounded-xl border border-outline bg-surface p-4 text-xs text-on-surface">
           {JSON.stringify(log.input, null, 2)}
         </pre>
       </DetailSection>
 
-      <DetailSection title="Output" className="mt-6">
+      <DetailSection title={t('output')} className="mt-6">
         {log.output === null || log.output === undefined ? (
-          <p className="text-sm text-on-surface-muted">No output — this call failed.</p>
+          <p className="text-sm text-on-surface-muted">{t('noOutput')}</p>
         ) : (
           <pre className="max-h-[32rem] overflow-auto rounded-xl border border-outline bg-surface p-4 text-xs text-on-surface">
             {JSON.stringify(log.output, null, 2)}

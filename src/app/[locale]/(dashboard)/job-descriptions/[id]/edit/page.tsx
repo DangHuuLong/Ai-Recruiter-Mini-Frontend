@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server';
+
 import { PageHeader } from '@/components/common';
 import { JobDescriptionEditForm } from '@/features/job-descriptions/components/job-description-edit-form';
 
@@ -11,12 +13,13 @@ export default async function JobDescriptionEditPage({
   params,
 }: JobDescriptionEditPageProps) {
   const { id } = await params;
+  const t = await getTranslations('jobDescriptions.form');
 
   return (
     <div className="max-w-6xl space-y-6">
       <PageHeader
-        title="Edit job description"
-        description="Update JD metadata and raw text used for parsing, matching, and evaluation."
+        title={t('editTitle')}
+        description={t('editPageDescription')}
       />
 
       <JobDescriptionEditForm jobDescriptionId={id} />

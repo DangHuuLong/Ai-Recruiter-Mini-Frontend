@@ -3,6 +3,7 @@
 import { CheckIcon } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { BatchInputTabs, type InputMode } from '@/components/batch-input/batch-input-tabs';
 import { CvStructuredForm } from '@/components/batch-input/cv-structured-form';
@@ -33,19 +34,20 @@ import { cn } from '@/lib/utils/cn';
 const MAX_CVS = 2000;
 const MAX_JDS = 50;
 
-const STEPS = [
-  { step: 1, label: 'Add resumes' },
-  { step: 2, label: 'Add job descriptions' },
-  { step: 3, label: 'Review & submit' },
-];
-
 async function uploadFiles(files: File[], kind: UploadUrlKind) {
   return uploadFilesForBatch(files, kind, getUploadUrls);
 }
 
 export function CreateBatchWizard() {
+  const t = useTranslations('batchScoring.wizard');
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+
+  const STEPS = [
+    { step: 1, label: t('steps.addResumes') },
+    { step: 2, label: t('steps.addJobDescriptions') },
+    { step: 3, label: t('steps.reviewSubmit') },
+  ];
 
   const [cvMode, setCvMode] = useState<InputMode>('upload');
   const [cvFiles, setCvFiles] = useState<File[]>([]);
@@ -79,14 +81,14 @@ export function CreateBatchWizard() {
     cvMode === 'upload'
       ? cvFiles.length
       : cvMode === 'paste'
-        ? cvTexts.filter((t) => t.trim()).length
+        ? cvTexts.filter((text) => text.trim()).length
         : cvStructuredList.filter((entry) => entry.personal.fullName.trim()).length;
 
   const jdCount =
     jdMode === 'upload'
       ? jdFiles.length
       : jdMode === 'paste'
-        ? jdTexts.filter((t) => t.trim()).length
+        ? jdTexts.filter((text) => text.trim()).length
         : jdStructuredList.filter((entry) => entry.title.trim()).length;
 
   const totalPairs = cvCount * jdCount;
@@ -102,11 +104,11 @@ export function CreateBatchWizard() {
       };
 
       if (cvMode === 'upload') {
-        setSubmitStage('Uploading resumes...');
+        setSubmitStage(t('uploadingResumes'));
         payload.resumeFiles = await uploadFiles(cvFiles, 'RESUME');
       } else if (cvMode === 'paste') {
         payload.resumeTexts = cvTexts
-          .filter((t) => t.trim())
+          .filter((text) => text.trim())
           .map((rawText) => ({ rawText }));
       } else {
         payload.resumeStructured = cvStructuredList
@@ -115,11 +117,11 @@ export function CreateBatchWizard() {
       }
 
       if (jdMode === 'upload') {
-        setSubmitStage('Uploading job descriptions...');
+        setSubmitStage(t('uploadingJds'));
         payload.jobDescriptionFiles = await uploadFiles(jdFiles, 'JOB_DESCRIPTION');
       } else if (jdMode === 'paste') {
         payload.jobDescriptions = jdTexts
-          .filter((t) => t.trim())
+          .filter((text) => text.trim())
           .map((rawText) => ({ rawText }));
       } else {
         payload.jobDescriptionStructured = jdStructuredList
@@ -127,14 +129,16 @@ export function CreateBatchWizard() {
           .map(toJobDescriptionStructuredInput);
       }
 
-      setSubmitStage('Starting batch...');
+      setSubmitStage(t('startingBatch'));
       const result = await createScoringBatch(payload);
 
-      showToast.success('Batch started', { description: `${result.totalCvCount} CVs × ${result.totalJdCount} JDs` });
+      showToast.success(t('batchStarted'), {
+        description: t('batchStartedDescription', { cvCount: result.totalCvCount, jdCount: result.totalJdCount }),
+      });
       router.push(`${ROUTES.BATCH_SCORING}/${result.batchId}`);
     } catch (error) {
-      showToast.error('Failed to start batch', {
-        description: error instanceof ApiError ? error.message : error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('startFailedTitle'), {
+        description: error instanceof ApiError ? error.message : error instanceof Error ? error.message : t('startFailedFallback'),
       });
       setIsSubmitting(false);
       setSubmitStage('');
@@ -144,10 +148,8 @@ export function CreateBatchWizard() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-on-surface">New scoring batch</h1>
-        <p className="mt-1 text-sm text-on-surface-variant">
-          Score many candidates against many job descriptions in one run.
-        </p>
+        <h1 className="text-2xl font-bold text-on-surface">{t('title')}</h1>
+        <p className="mt-1 text-sm text-on-surface-variant">{t('subtitle')}</p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -182,7 +184,7 @@ export function CreateBatchWizard() {
 
       {currentStep === 1 ? (
         <BatchInputTabs
-          title="Add resumes"
+          title={t('steps.addResumes')}
           maxCount={MAX_CVS}
           count={cvCount}
           mode={cvMode}
@@ -191,10 +193,10 @@ export function CreateBatchWizard() {
           onFilesChange={setCvFiles}
           texts={cvTexts}
           onTextsChange={setCvTexts}
-          pastePlaceholder="Paste resume text here..."
+          pastePlaceholder={t('pasteResumePlaceholder')}
           structuredForm={
             <MultiStructuredForm
-              entryLabel="Candidate"
+              entryLabel={t('candidateEntry')}
               items={cvStructuredList}
               emptyItem={EMPTY_RESUME_STRUCTURED}
               maxCount={MAX_CVS}
@@ -209,7 +211,7 @@ export function CreateBatchWizard() {
 
       {currentStep === 2 ? (
         <BatchInputTabs
-          title="Add job descriptions"
+          title={t('steps.addJobDescriptions')}
           maxCount={MAX_JDS}
           count={jdCount}
           mode={jdMode}
@@ -218,10 +220,10 @@ export function CreateBatchWizard() {
           onFilesChange={setJdFiles}
           texts={jdTexts}
           onTextsChange={setJdTexts}
-          pastePlaceholder="Paste job description text here..."
+          pastePlaceholder={t('pasteJdPlaceholder')}
           structuredForm={
             <MultiStructuredForm
-              entryLabel="Job description"
+              entryLabel={t('jobDescriptionEntry')}
               items={jdStructuredList}
               emptyItem={EMPTY_JD_STRUCTURED}
               maxCount={MAX_JDS}
@@ -239,13 +241,13 @@ export function CreateBatchWizard() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-lg border border-outline bg-surface-variant p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
-                Resumes
+                {t('resumesCount')}
               </p>
               <p className="mt-1 text-2xl font-bold text-on-surface">{cvCount}</p>
             </div>
             <div className="rounded-lg border border-outline bg-surface-variant p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-muted">
-                Job descriptions
+                {t('jobDescriptionsCount')}
               </p>
               <p className="mt-1 text-2xl font-bold text-on-surface">{jdCount}</p>
             </div>
@@ -253,14 +255,14 @@ export function CreateBatchWizard() {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-              Evaluation config
+              {t('evaluationConfig')}
             </label>
             <select
               value={evaluationConfigId}
               onChange={(e) => setEvaluationConfigId(e.target.value)}
               className="h-11 w-full cursor-pointer rounded-lg border border-outline bg-surface-lowest px-3 text-sm text-on-surface outline-none transition focus:border-primary focus:ring-4 focus:ring-focus-ring/30"
             >
-              <option value="">Organization default</option>
+              <option value="">{t('organizationDefault')}</option>
               {evaluationConfigs.map((config) => (
                 <option key={config.id} value={config.id}>
                   {config.name}
@@ -275,14 +277,14 @@ export function CreateBatchWizard() {
               onClick={() => setShowAdvanced((v) => !v)}
               className="cursor-pointer text-sm font-semibold text-primary hover:underline"
             >
-              {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
+              {showAdvanced ? t('hideAdvanced') : t('showAdvanced')}
             </button>
 
             {showAdvanced ? (
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Notify webhook URL
+                    {t('notifyWebhookUrl')}
                   </label>
                   <input
                     value={notifyWebhookUrl}
@@ -293,7 +295,7 @@ export function CreateBatchWizard() {
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                    Notify email
+                    {t('notifyEmail')}
                   </label>
                   <input
                     value={notifyEmail}
@@ -306,10 +308,7 @@ export function CreateBatchWizard() {
             ) : null}
           </div>
 
-          <p className="text-xs text-on-surface-variant">
-            Large batches can take a while to finish parsing and scoring. You&apos;ll be notified
-            when it&apos;s ready.
-          </p>
+          <p className="text-xs text-on-surface-variant">{t('largeNotice')}</p>
         </div>
       ) : null}
 
@@ -320,7 +319,7 @@ export function CreateBatchWizard() {
           disabled={currentStep === 1}
           onClick={() => setCurrentStep((s) => Math.max(1, s - 1))}
         >
-          Back
+          {t('back')}
         </Button>
 
         {currentStep < 3 ? (
@@ -329,7 +328,7 @@ export function CreateBatchWizard() {
             disabled={currentStep === 1 ? cvCount === 0 : jdCount === 0}
             onClick={() => setCurrentStep((s) => Math.min(3, s + 1))}
           >
-            Continue
+            {t('continue')}
           </Button>
         ) : (
           <Button
@@ -338,7 +337,7 @@ export function CreateBatchWizard() {
             isLoading={isSubmitting}
             onClick={() => void handleSubmit()}
           >
-            {isSubmitting ? submitStage || 'Starting...' : `Start scoring ${totalPairs} pairs`}
+            {isSubmitting ? submitStage || t('starting') : t('startScoring', { count: totalPairs })}
           </Button>
         )}
       </div>

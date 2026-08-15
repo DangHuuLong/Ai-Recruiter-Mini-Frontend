@@ -3,6 +3,7 @@
 import { DownloadIcon, RotateCcwIcon } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { DetailSection } from '@/components/common';
 import { EmptyState, LoadingState, showToast } from '@/components/feedback';
@@ -10,6 +11,7 @@ import {
   getEvaluationById,
   retryEvaluation,
 } from '@/features/evaluations/api/evaluation.api';
+import { ResultFeedbackForm } from '@/features/feedback/components/result-feedback-form';
 import type {
   Evaluation,
   EvaluationCriterionScore,
@@ -109,9 +111,15 @@ const SkillList = ({ skills, emptyLabel }: { skills: EvaluationSkill[]; emptyLab
   );
 };
 
-const CriterionBreakdown = ({ criteria }: { criteria: EvaluationCriterionScore[] }) => {
+const CriterionBreakdown = ({
+  criteria,
+  t,
+}: {
+  criteria: EvaluationCriterionScore[];
+  t: ReturnType<typeof useTranslations<'evaluations.detail'>>;
+}) => {
   if (criteria.length === 0) {
-    return <p className="text-sm text-on-surface-muted">No score breakdown available.</p>;
+    return <p className="text-sm text-on-surface-muted">{t('noScoreBreakdown')}</p>;
   }
 
   return (
@@ -126,7 +134,10 @@ const CriterionBreakdown = ({ criteria }: { criteria: EvaluationCriterionScore[]
               <div>
                 <p className="font-semibold text-on-surface">{formatLabel(criterion.criterion)}</p>
                 <p className="text-sm text-on-surface-muted">
-                  Weight {Math.round(criterion.weight * 100)}% · Contribution {contribution.toFixed(1)}
+                  {t('weightContribution', {
+                    weight: Math.round(criterion.weight * 100),
+                    contribution: contribution.toFixed(1),
+                  })}
                 </p>
               </div>
               <span className="text-lg font-bold text-primary">{percent}%</span>
@@ -149,16 +160,22 @@ const CriterionBreakdown = ({ criteria }: { criteria: EvaluationCriterionScore[]
   );
 };
 
-const InterviewQuestions = ({ questions }: { questions: EvaluationInterviewQuestion[] }) => {
+const InterviewQuestions = ({
+  questions,
+  t,
+}: {
+  questions: EvaluationInterviewQuestion[];
+  t: ReturnType<typeof useTranslations<'evaluations.detail'>>;
+}) => {
   if (questions.length === 0) {
-    return <p className="text-sm text-on-surface-muted">No interview questions generated.</p>;
+    return <p className="text-sm text-on-surface-muted">{t('noInterviewQuestions')}</p>;
   }
 
   return (
     <div className="space-y-3">
       {questions.map((question, index) => (
         <div key={question.id} className="rounded-xl border border-outline bg-surface-variant p-4">
-          <p className="text-sm font-semibold text-primary">Question {question.displayOrder ?? index + 1}</p>
+          <p className="text-sm font-semibold text-primary">{t('questionNumber', { number: question.displayOrder ?? index + 1 })}</p>
           <p className="mt-2 font-medium text-on-surface">{question.question}</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-on-surface-variant">
             {question.category ? <span className="rounded-full bg-surface-lowest px-2 py-1">{question.category}</span> : null}
@@ -173,6 +190,9 @@ const InterviewQuestions = ({ questions }: { questions: EvaluationInterviewQuest
 };
 
 export function EvaluationResultDetail({ evaluationId }: { evaluationId: string }) {
+  const t = useTranslations('evaluations.detail');
+  const tRoot = useTranslations('evaluations');
+  const tFeedback = useTranslations('feedback');
   const router = useRouter();
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -187,15 +207,16 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
         const data = await getEvaluationById(evaluationId);
         setEvaluation(data);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to load evaluation';
+        const message = error instanceof Error ? error.message : t('errorTitle');
         setErrorMessage(message);
-        showToast.error('Failed to load evaluation', { description: message });
+        showToast.error(t('errorTitle'), { description: message });
       } finally {
         setIsLoading(false);
       }
     };
 
     void loadEvaluation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evaluationId]);
 
   const matchedSkills = useMemo(() => {
@@ -219,10 +240,10 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
       setIsRetrying(true);
       const retried = await retryEvaluation(evaluation.id);
       setEvaluation(retried);
-      showToast.success('Evaluation retried successfully');
+      showToast.success(t('retrySuccess'));
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to retry evaluation';
-      showToast.error('Failed to retry evaluation', { description: message });
+      const message = error instanceof Error ? error.message : t('retryFailedFallback');
+      showToast.error(t('retryFailedTitle'), { description: message });
     } finally {
       setIsRetrying(false);
     }
@@ -231,8 +252,8 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
   if (isLoading) {
     return (
       <LoadingState
-        title="Loading evaluation result..."
-        description="Please wait while the evaluation result is being loaded."
+        title={t('loadingTitle')}
+        description={t('loadingDescription')}
       />
     );
   }
@@ -240,8 +261,8 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
   if (errorMessage || !evaluation) {
     return (
       <EmptyState
-        title="Evaluation not found"
-        description={errorMessage || 'Unable to load this evaluation.'}
+        title={t('notFoundTitle')}
+        description={errorMessage || t('notFoundFallback')}
       />
     );
   }
@@ -253,17 +274,17 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
             <ScorePill score={evaluation.overallScore} />
             <div>
-              <p className="text-sm font-medium text-primary">Evaluation result</p>
+              <p className="text-sm font-medium text-primary">{t('resultLabel')}</p>
               <h1 className="mt-2 text-2xl font-bold text-on-surface">
-                {evaluation.application?.candidate?.fullName || 'Candidate evaluation'}
+                {evaluation.application?.candidate?.fullName || t('candidateFallback')}
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant">
-                {evaluation.application?.jobDescription?.title || 'Job description'} · Status{' '}
+                {evaluation.application?.jobDescription?.title || t('jobDescriptionFallback')} · {t('statusLabel')}{' '}
                 <span className="font-semibold text-on-surface">{evaluation.status}</span>
               </p>
               <p className="mt-1 text-sm text-on-surface-muted">
-                Started {evaluation.startedAt ? formatDateTime(evaluation.startedAt) : 'Not recorded'} · Completed{' '}
-                {evaluation.completedAt ? formatDateTime(evaluation.completedAt) : 'Not recorded'}
+                {t('started', { date: evaluation.startedAt ? formatDateTime(evaluation.startedAt) : tRoot('notRecorded') })} ·{' '}
+                {t('completed', { date: evaluation.completedAt ? formatDateTime(evaluation.completedAt) : tRoot('notRecorded') })}
               </p>
             </div>
           </div>
@@ -275,7 +296,7 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
                 onClick={() => router.push(`/applications/${evaluation.applicationId}`)}
                 className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-outline px-4 text-sm font-semibold text-on-surface transition hover:bg-surface-variant"
               >
-                View application
+                {t('viewApplication')}
               </button>
             ) : null}
             {evaluation.status === 'FAILED' ? (
@@ -286,7 +307,7 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
                 className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <RotateCcwIcon className="size-4" />
-                {isRetrying ? 'Retrying...' : 'Retry evaluation'}
+                {isRetrying ? t('retrying') : t('retryEvaluation')}
               </button>
             ) : null}
           </div>
@@ -300,68 +321,68 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <DetailSection title="Summary">
+        <DetailSection title={t('summary')}>
           <p className="whitespace-pre-wrap text-sm leading-6 text-on-surface-variant">
-            {evaluation.summary || 'No summary available.'}
+            {evaluation.summary || t('noSummary')}
           </p>
         </DetailSection>
 
-        <DetailSection title="Skill gap summary">
+        <DetailSection title={t('skillGapSummary')}>
           <p className="whitespace-pre-wrap text-sm leading-6 text-on-surface-variant">
-            {evaluation.skillGapSummary || 'No skill gap summary available.'}
+            {evaluation.skillGapSummary || t('noSkillGapSummary')}
           </p>
         </DetailSection>
       </div>
 
-      <DetailSection title="Explanation">
+      <DetailSection title={t('explanation')}>
         <p className="whitespace-pre-wrap text-sm leading-6 text-on-surface-variant">
-          {evaluation.explanation || 'No explanation available.'}
+          {evaluation.explanation || t('noExplanation')}
         </p>
       </DetailSection>
 
-      <DetailSection title="Score breakdown" description="Per-criterion normalized score, weight, contribution, reason, and evidence.">
-        <CriterionBreakdown criteria={evaluation.criterionScores ?? []} />
+      <DetailSection title={t('scoreBreakdown')} description={t('scoreBreakdownDescription')}>
+        <CriterionBreakdown criteria={evaluation.criterionScores ?? []} t={t} />
       </DetailSection>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <DetailSection
-          title="Matched skills"
+          title={t('matchedSkills')}
           actions={
             <span className="rounded-full bg-success-container px-2.5 py-1 text-xs font-semibold text-success">
-              {matchedSkills.length} found
+              {t('found', { count: matchedSkills.length })}
             </span>
           }
         >
-          <SkillList skills={matchedSkills} emptyLabel="No matched skills available." />
+          <SkillList skills={matchedSkills} emptyLabel={t('noMatchedSkills')} />
         </DetailSection>
         <DetailSection
-          title="Missing skills"
+          title={t('missingSkills')}
           actions={
             <span className="rounded-full bg-error-container px-2.5 py-1 text-xs font-semibold text-error">
-              {missingSkills.length} absent
+              {t('absent', { count: missingSkills.length })}
             </span>
           }
         >
-          <SkillList skills={missingSkills} emptyLabel="No missing skills available." />
+          <SkillList skills={missingSkills} emptyLabel={t('noMissingSkills')} />
         </DetailSection>
       </div>
 
       {relatedSkills.length > 0 ? (
         <DetailSection
-          title="Related skills"
+          title={t('relatedSkills')}
           actions={
             <span className="rounded-full bg-warning-container px-2.5 py-1 text-xs font-semibold text-on-surface">
-              {relatedSkills.length} related
+              {t('related', { count: relatedSkills.length })}
             </span>
           }
         >
-          <SkillList skills={relatedSkills} emptyLabel="No related skills available." />
+          <SkillList skills={relatedSkills} emptyLabel={t('noRelatedSkills')} />
         </DetailSection>
       ) : null}
 
       <DetailSection
-        title="Evidence"
-        description="Raw evidence map returned by the scoring pipeline."
+        title={t('evidence')}
+        description={t('evidenceDescription')}
         actions={
           <button
             type="button"
@@ -379,7 +400,7 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
             className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-semibold text-primary transition-colors hover:bg-primary-container"
           >
             <DownloadIcon className="size-4" />
-            Export JSON
+            {t('exportJson')}
           </button>
         }
       >
@@ -388,8 +409,12 @@ export function EvaluationResultDetail({ evaluationId }: { evaluationId: string 
         </pre>
       </DetailSection>
 
-      <DetailSection title="Interview questions">
-        <InterviewQuestions questions={evaluation.interviewQuestionRows ?? []} />
+      <DetailSection title={t('interviewQuestions')}>
+        <InterviewQuestions questions={evaluation.interviewQuestionRows ?? []} t={t} />
+      </DetailSection>
+
+      <DetailSection title={tFeedback('title')}>
+        <ResultFeedbackForm reference={{ evaluationId: evaluation.id }} />
       </DetailSection>
     </div>
   );

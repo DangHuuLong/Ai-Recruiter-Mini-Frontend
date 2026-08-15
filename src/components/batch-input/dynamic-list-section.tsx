@@ -1,5 +1,6 @@
 import { PlusIcon, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 type DynamicListSectionProps<T> = {
   title: string;
@@ -18,6 +19,8 @@ export function DynamicListSection<T>({
   renderFields,
   addLabel,
 }: DynamicListSectionProps<T>) {
+  const t = useTranslations('common.batchInput');
+
   return (
     <div>
       <h3 className="text-sm font-bold text-on-surface">{title}</h3>
@@ -29,7 +32,7 @@ export function DynamicListSection<T>({
               type="button"
               onClick={() => onRemove(index)}
               className="absolute right-3 top-3 cursor-pointer rounded-full p-1 text-on-surface-muted transition-colors hover:bg-error-container hover:text-error"
-              aria-label="Remove entry"
+              aria-label={t('removeEntryGeneric')}
             >
               <XIcon className="size-4" />
             </button>

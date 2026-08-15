@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { LoadingState, showToast } from '@/components/feedback';
@@ -24,9 +25,9 @@ import {
   promoteScoringBatchItems,
 } from '@/features/batch-scoring/api/batch-scoring.api';
 import {
-  CRITERION_LABELS,
+  CRITERION_LABEL_KEYS,
   STATUS_CLASSES,
-  STATUS_LABELS,
+  STATUS_LABEL_KEYS,
   getScoreTier,
   type BatchMatrix,
   type BatchStatusResult,
@@ -45,6 +46,9 @@ type BatchDetailProps = {
 };
 
 export function BatchDetail({ batchId }: BatchDetailProps) {
+  const t = useTranslations('batchScoring.detail');
+  const tRoot = useTranslations('batchScoring');
+  const tCommon = useTranslations('common');
   const [status, setStatus] = useState<BatchStatusResult | null>(null);
   const [matrix, setMatrix] = useState<BatchMatrix | null>(null);
   const [skillGap, setSkillGap] = useState<SkillGapEntry[]>([]);
@@ -80,7 +84,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
         await loadMatrixAndSkillGap();
       }
     } catch (error) {
-      setErrorMessage(error instanceof ApiError ? error.message : 'Failed to load this batch');
+      setErrorMessage(error instanceof ApiError ? error.message : t('loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -124,12 +128,12 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
       const detail = await getScoringBatchCell(batchId, cell.resumeItemId, cell.jdItemId);
       setSelectedCell({
         ...detail,
-        candidateLabel: row?.candidateName ?? row?.fileName ?? 'Candidate',
-        jdLabel: column?.label ?? 'Job description',
+        candidateLabel: row?.candidateName ?? row?.fileName ?? tRoot('candidateFallback'),
+        jdLabel: column?.label ?? tRoot('jobDescriptionFallback'),
       });
     } catch (error) {
-      showToast.error('Failed to load cell detail', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      showToast.error(t('cellLoadFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('genericErrorFallback'),
       });
     } finally {
       setIsLoadingCell(false);
@@ -140,11 +144,11 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
     try {
       setIsCancelling(true);
       await cancelScoringBatch(batchId);
-      showToast.success('Batch cancelled');
+      showToast.success(t('cancelSuccess'));
       await load();
     } catch (error) {
-      showToast.error('Failed to cancel batch', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      showToast.error(t('cancelFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('genericErrorFallback'),
       });
     } finally {
       setIsCancelling(false);
@@ -156,8 +160,8 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
       setIsExporting(true);
       await downloadScoringBatchCsv(batchId, status?.name ?? null);
     } catch (error) {
-      showToast.error('Failed to export CSV', {
-        description: error instanceof Error ? error.message : 'Something went wrong.',
+      showToast.error(t('exportFailedTitle'), {
+        description: error instanceof Error ? error.message : t('genericErrorFallback'),
       });
     } finally {
       setIsExporting(false);
@@ -172,13 +176,13 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
       await promoteScoringBatchItems(batchId, [
         { resumeItemId: selectedCell.resumeItemId, jdItemId: selectedCell.jdItemId },
       ]);
-      showToast.success('Promoted to candidate pipeline', {
+      showToast.success(t('promoteSuccessTitle'), {
         description: `${selectedCell.candidateLabel} → ${selectedCell.jdLabel}`,
       });
       setSelectedCell(null);
     } catch (error) {
-      showToast.error('Failed to promote', {
-        description: error instanceof ApiError ? error.message : 'Something went wrong.',
+      showToast.error(t('promoteFailedTitle'), {
+        description: error instanceof ApiError ? error.message : t('genericErrorFallback'),
       });
     } finally {
       setIsPromoting(false);
@@ -186,13 +190,13 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
   };
 
   if (isLoading) {
-    return <LoadingState title="Loading batch..." description="Please wait while the batch is being loaded." />;
+    return <LoadingState title={t('loadingTitle')} description={t('loadingDescription')} />;
   }
 
   if (errorMessage || !status) {
     return (
       <div className="rounded-2xl border border-outline bg-surface-lowest p-10 text-center shadow-card">
-        <p className="text-sm font-semibold text-on-surface">{errorMessage ?? 'Batch not found'}</p>
+        <p className="text-sm font-semibold text-on-surface">{errorMessage ?? tRoot('batchNotFound')}</p>
       </div>
     );
   }
@@ -206,25 +210,29 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-on-surface-variant hover:text-on-surface"
       >
         <ArrowLeftIcon className="size-4" />
-        Back to batches
+        {t('backToBatches')}
       </Link>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-on-surface">{status.name || 'Untitled batch'}</h1>
+            <h1 className="text-2xl font-bold text-on-surface">{status.name || tRoot('untitledBatch')}</h1>
             <span
               className={cn(
                 'rounded-full px-2.5 py-1 text-xs font-semibold',
                 STATUS_CLASSES[status.status],
               )}
             >
-              {STATUS_LABELS[status.status]}
+              {tCommon(`statusLabels.${STATUS_LABEL_KEYS[status.status]}`)}
             </span>
           </div>
           <p className="mt-1 text-sm text-on-surface-variant">
-            {status.progress.totalCvCount} CVs × {status.progress.totalJdCount} JDs · {status.progress.completedPairCount}/
-            {status.progress.totalPairCount} pairs scored
+            {t('cvsAndJds', {
+              cvCount: status.progress.totalCvCount,
+              jdCount: status.progress.totalJdCount,
+              completed: status.progress.completedPairCount,
+              total: status.progress.totalPairCount,
+            })}
           </p>
         </div>
 
@@ -232,12 +240,12 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
           {status.status === 'COMPLETED' || status.status === 'COMPLETED_WITH_ERRORS' ? (
             <Button variant="secondary" className="w-auto gap-2 px-4" isLoading={isExporting} onClick={() => void handleExport()}>
               <DownloadIcon className="size-4" />
-              Export CSV
+              {t('exportCsv')}
             </Button>
           ) : null}
           {isInProgress ? (
             <Button variant="secondary" className="w-auto px-4" isLoading={isCancelling} onClick={() => void handleCancel()}>
-              Cancel batch
+              {t('cancelBatch')}
             </Button>
           ) : null}
         </div>
@@ -247,19 +255,19 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
         <div className="rounded-2xl border border-outline bg-surface-lowest p-8 text-center shadow-card">
           <LoaderCircleIcon className="mx-auto size-8 animate-spin text-primary" />
           <p className="mt-4 text-sm font-semibold text-on-surface">
-            {STATUS_LABELS[status.status]}...
+            {tCommon(`statusLabels.${STATUS_LABEL_KEYS[status.status]}`)}...
           </p>
           <div className="mx-auto mt-4 h-2 w-full max-w-sm overflow-hidden rounded-full bg-surface-variant">
             <div className="h-full rounded-full bg-primary" style={{ width: `${status.progress.percent}%` }} />
           </div>
           <p className="mt-2 text-xs text-on-surface-muted">
-            {status.progress.completedPairCount} / {status.progress.totalPairCount} pairs · {status.progress.percent}%
+            {status.progress.completedPairCount} / {status.progress.totalPairCount} · {status.progress.percent}%
           </p>
         </div>
       ) : status.status === 'FAILED' || status.status === 'CANCELLED' ? (
         <div className="rounded-2xl border border-outline bg-surface-lowest p-8 text-center shadow-card">
           <p className="text-sm font-semibold text-on-surface">
-            This batch {status.status === 'FAILED' ? 'failed to complete' : 'was cancelled'}.
+            {status.status === 'FAILED' ? t('failedToComplete') : t('wasCancelled')}
           </p>
         </div>
       ) : matrix ? (
@@ -269,14 +277,14 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
               <thead>
                 <tr>
                   <th className="sticky left-0 z-10 border-b border-r border-outline bg-surface-variant p-3 text-left font-semibold text-on-surface-variant">
-                    Candidate
+                    {t('candidateColumn')}
                   </th>
                   {matrix.columns.map((column) => (
                     <th
                       key={column.jdItemId}
                       className="border-b border-outline bg-surface-variant p-3 text-left font-semibold text-on-surface-variant"
                     >
-                      {column.label ?? 'Job description'}
+                      {column.label ?? tRoot('jobDescriptionFallback')}
                     </th>
                   ))}
                 </tr>
@@ -285,7 +293,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                 {matrix.rows.map((row) => (
                   <tr key={row.resumeItemId}>
                     <td className="sticky left-0 z-10 border-r border-outline bg-surface-lowest p-3 font-semibold text-on-surface">
-                      {row.candidateName ?? row.fileName ?? 'Candidate'}
+                      {row.candidateName ?? row.fileName ?? tRoot('candidateFallback')}
                     </td>
                     {matrix.columns.map((column) => {
                       const cell = matrix.cells.find(
@@ -299,21 +307,21 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                         <td key={column.jdItemId} className="border-b border-outline p-2">
                           {cell.status === 'FAILED' ? (
                             <div
-                              title={cell.error ?? 'Failed'}
+                              title={cell.error ?? t('failed')}
                               className="flex h-14 w-full items-center justify-center rounded-lg bg-error-container text-xs font-semibold text-error"
                             >
-                              Failed
+                              {t('failed')}
                             </div>
                           ) : cell.status === 'PENDING' || cell.status === 'PROCESSING' || !tier ? (
                             <div className="flex h-14 w-full items-center justify-center rounded-lg bg-surface-variant text-xs font-semibold text-on-surface-muted">
-                              Pending
+                              {t('pending')}
                             </div>
                           ) : (
                             <button
                               type="button"
                               onClick={() => void openCell(cell)}
                               disabled={isLoadingCell}
-                              title={tier.label}
+                              title={tCommon(`scoreTiers.${tier.tierKey}`)}
                               className={cn(
                                 'flex h-14 w-full cursor-pointer items-center justify-center rounded-lg text-base font-bold transition-opacity hover:opacity-75 disabled:cursor-wait',
                                 tier.containerClass,
@@ -334,10 +342,8 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
 
           {skillGap.length > 0 ? (
             <div className="rounded-2xl border border-outline bg-surface-lowest p-6 shadow-card">
-              <h2 className="text-base font-bold text-on-surface">Skill gap summary</h2>
-              <p className="mt-1 text-sm text-on-surface-variant">
-                Most frequently missing skills across this batch.
-              </p>
+              <h2 className="text-base font-bold text-on-surface">{t('skillGapSummary')}</h2>
+              <p className="mt-1 text-sm text-on-surface-variant">{t('skillGapDescription')}</p>
               <div className="mt-4 space-y-3">
                 {skillGap.slice(0, 10).map((entry) => {
                   const maxCount = skillGap[0]?.missingCount ?? 1;
@@ -345,7 +351,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                     <div key={entry.skillName}>
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-on-surface">{entry.skillName}</span>
-                        <span className="text-on-surface-muted">{entry.missingCount} candidates</span>
+                        <span className="text-on-surface-muted">{t('candidatesCount', { count: entry.missingCount })}</span>
                       </div>
                       <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-surface-variant">
                         <div
@@ -399,12 +405,12 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
               </div>
 
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-bold text-on-surface">Score breakdown</h3>
+                <h3 className="text-sm font-bold text-on-surface">{t('scoreBreakdown')}</h3>
                 {(selectedCell.criteria ?? []).map((criterion) => (
                   <div key={criterion.criterion}>
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium text-on-surface">
-                        {CRITERION_LABELS[criterion.criterion]}
+                        {tCommon(`criterionLabels.${CRITERION_LABEL_KEYS[criterion.criterion]}`)}
                       </span>
                       <span className="text-on-surface-muted">
                         {Math.round(criterion.scoreNormalized * 100)}
@@ -421,12 +427,12 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
               </div>
 
               <div className="mt-6">
-                <h3 className="text-sm font-bold text-on-surface">Skills</h3>
+                <h3 className="text-sm font-bold text-on-surface">{t('skills')}</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {(selectedCell.skills ?? []).map((skill) => (
                     <span
                       key={skill.skillName}
-                      title={`${skill.importance} importance${skill.evidence ? ` — ${skill.evidence}` : ''}`}
+                      title={`${t('importance', { level: skill.importance })}${skill.evidence ? ` — ${skill.evidence}` : ''}`}
                       className={cn(
                         'rounded-full px-2.5 py-1 text-xs font-semibold',
                         skill.type === 'MATCHED'
@@ -444,7 +450,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
 
               {(selectedCell.interviewQuestions ?? []).length > 0 ? (
                 <div className="mt-6">
-                  <h3 className="text-sm font-bold text-on-surface">Suggested interview questions</h3>
+                  <h3 className="text-sm font-bold text-on-surface">{t('suggestedQuestions')}</h3>
                   <ol className="mt-2 space-y-3">
                     {(selectedCell.interviewQuestions ?? []).map((item) => (
                       <li key={item.displayOrder} className="text-sm text-on-surface-variant">
@@ -454,7 +460,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
                             <p className="text-on-surface">{item.question}</p>
                             <p className="mt-0.5 text-xs text-on-surface-muted">
                               {item.category} · {item.difficulty}
-                              {item.linkedSkill ? ` · Related to ${item.linkedSkill}` : ''}
+                              {item.linkedSkill ? ` ${t('relatedTo', { skill: item.linkedSkill })}` : ''}
                             </p>
                           </div>
                         </div>
@@ -466,7 +472,7 @@ export function BatchDetail({ batchId }: BatchDetailProps) {
 
               <Button className="mt-6 gap-2" isLoading={isPromoting} onClick={() => void handlePromote()}>
                 <UserPlusIcon className="size-4" />
-                Promote to pipeline
+                {t('promoteToPipeline')}
               </Button>
             </motion.div>
           </>

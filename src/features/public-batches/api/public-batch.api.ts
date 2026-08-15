@@ -33,7 +33,7 @@ function setAnonSessionId(id: string) {
 // first request and echoed back on every response) identifies "who owns this batch" instead.
 // This is intentionally a separate minimal client rather than reusing apiClient, since it
 // manages this session header instead of an Authorization bearer token.
-async function publicRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
+export async function publicRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
   const baseUrl = envConfig.apiBaseUrl.replace(/\/$/, '');
   const sessionId = getAnonSessionId();
 

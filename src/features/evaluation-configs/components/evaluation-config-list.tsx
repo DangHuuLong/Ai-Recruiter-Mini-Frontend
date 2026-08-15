@@ -3,6 +3,7 @@
 import { PencilIcon, PlusIcon, StarIcon, Trash2Icon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import {
   ActionIconButton,
@@ -29,13 +30,14 @@ import { formatDate } from '@/lib/utils/format-date';
 const PAGE_SIZE = 10;
 
 function buildColumns(
+  t: ReturnType<typeof useTranslations<'evaluationConfigs'>>,
   jobDescriptionTitles: Record<string, string>,
   onDelete: (config: EvaluationConfig) => void,
 ): DataTableColumn<EvaluationConfig>[] {
   return [
     {
       key: 'name',
-      header: 'Config name',
+      header: t('list.columns.name'),
       sortKey: 'name',
       render: (config) => (
         <div>
@@ -48,16 +50,18 @@ function buildColumns(
     },
     {
       key: 'scope',
-      header: 'Scope',
+      header: t('list.columns.scope'),
       render: (config) => (
         <span className="rounded-full bg-surface-variant px-2.5 py-1 text-xs font-semibold text-on-surface-variant">
-          {config.jobDescriptionId ? (jobDescriptionTitles[config.jobDescriptionId] ?? 'Job description') : 'Organization default'}
+          {config.jobDescriptionId
+            ? (jobDescriptionTitles[config.jobDescriptionId] ?? t('list.scopeJobDescriptionFallback'))
+            : t('list.scopeOrganizationDefault')}
         </span>
       ),
     },
     {
       key: 'isDefault',
-      header: 'Default',
+      header: t('list.columns.default'),
       render: (config) =>
         config.isDefault ? (
           <StarIcon className="size-4 fill-warning text-warning" />
@@ -67,7 +71,7 @@ function buildColumns(
     },
     {
       key: 'updatedAt',
-      header: 'Last updated',
+      header: t('list.columns.lastUpdated'),
       sortKey: 'updatedAt',
       render: (config) => (
         <p className="whitespace-nowrap text-on-surface-variant">{formatDate(config.updatedAt)}</p>
@@ -75,18 +79,18 @@ function buildColumns(
     },
     {
       key: 'action',
-      header: 'Actions',
+      header: t('list.columns.actions'),
       className: 'text-right',
       render: (config) => (
         <div className="flex flex-wrap items-center justify-end gap-1">
           <ActionIconButton
             href={`${ROUTES.EVALUATION_CONFIGS}/${config.id}/edit`}
             icon={<PencilIcon className="size-4" />}
-            label="Edit"
+            label={t('list.actions.edit')}
           />
           <ActionIconButton
             icon={<Trash2Icon className="size-4" />}
-            label="Delete"
+            label={t('list.actions.delete')}
             variant="danger"
             onClick={() => onDelete(config)}
           />
@@ -97,6 +101,7 @@ function buildColumns(
 }
 
 export function EvaluationConfigList() {
+  const t = useTranslations('evaluationConfigs');
   const [configs, setConfigs] = useState<EvaluationConfig[]>([]);
   const [meta, setMeta] = useState<PaginationMeta>({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
   const [sort, setSort] = useState<DataTableSort | null>(null);
@@ -124,9 +129,9 @@ export function EvaluationConfigList() {
       setConfigs(response.data);
       setMeta(response.meta);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load evaluation configs';
+      const message = error instanceof Error ? error.message : t('list.errorFallback');
       setErrorMessage(message);
-      showToast.error('Failed to load evaluation configs', { description: message });
+      showToast.error(t('list.errorFallback'), { description: message });
     } finally {
       setIsLoading(false);
     }
@@ -158,12 +163,12 @@ export function EvaluationConfigList() {
     try {
       setIsDeleting(true);
       await deleteEvaluationConfig(configToDelete.id);
-      showToast.success('Config deleted', { description: configToDelete.name });
+      showToast.success(t('list.deleteSuccessTitle'), { description: configToDelete.name });
       setConfigToDelete(null);
       await loadConfigs();
     } catch (error) {
-      showToast.error('Failed to delete config', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting the config.',
+      showToast.error(t('list.deleteFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.deleteFailedFallback'),
       });
     } finally {
       setIsDeleting(false);
@@ -177,9 +182,9 @@ export function EvaluationConfigList() {
       const succeeded = results.filter((result) => result.success).length;
       const failed = results.length - succeeded;
       if (failed === 0) {
-        showToast.success(`${succeeded} config${succeeded === 1 ? '' : 's'} deleted successfully`);
+        showToast.success(t('list.bulkDeleteSuccess', { count: succeeded }));
       } else {
-        showToast.warning(`${succeeded} deleted, ${failed} failed`, {
+        showToast.warning(t('list.bulkDeletePartial', { succeeded, failed }), {
           description: results.find((result) => !result.success)?.error,
         });
       }
@@ -187,8 +192,8 @@ export function EvaluationConfigList() {
       setIsBulkConfirmOpen(false);
       await loadConfigs();
     } catch (error) {
-      showToast.error('Bulk delete failed', {
-        description: error instanceof Error ? error.message : 'Something went wrong while deleting configs.',
+      showToast.error(t('list.bulkDeleteFailedTitle'), {
+        description: error instanceof Error ? error.message : t('list.bulkDeleteFailedFallback'),
       });
     } finally {
       setIsBulkDeleting(false);
@@ -196,13 +201,13 @@ export function EvaluationConfigList() {
   };
 
   if (isLoading && configs.length === 0) {
-    return <LoadingState title="Loading evaluation configs..." description="Please wait while configs are being loaded." />;
+    return <LoadingState title={t('list.loadingTitle')} description={t('list.loadingDescription')} />;
   }
 
   if (errorMessage && configs.length === 0) {
     return (
       <EmptyState
-        title="Failed to load evaluation configs"
+        title={t('list.errorTitle')}
         description={errorMessage}
         action={
           <button
@@ -210,7 +215,7 @@ export function EvaluationConfigList() {
             onClick={() => void loadConfigs()}
             className="inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-on-primary shadow-sm transition hover:bg-primary-hover"
           >
-            Try again
+            {t('list.tryAgain')}
           </button>
         }
       />
@@ -221,17 +226,15 @@ export function EvaluationConfigList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-on-surface">Evaluation Configs</h1>
-          <p className="mt-1 text-sm text-on-surface-variant">
-            Custom scoring criteria weights for job descriptions or the whole organization.
-          </p>
+          <h1 className="text-2xl font-bold text-on-surface">{t('list.title')}</h1>
+          <p className="mt-1 text-sm text-on-surface-variant">{t('list.subtitle')}</p>
         </div>
         <Link
           href={ROUTES.EVALUATION_CONFIG_CREATE}
           className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-on-primary transition hover:bg-primary-hover"
         >
           <PlusIcon className="size-4" />
-          New config
+          {t('list.newConfig')}
         </Link>
       </div>
 
@@ -244,19 +247,19 @@ export function EvaluationConfigList() {
           className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-xl bg-error px-4 text-sm font-semibold text-on-primary transition hover:opacity-90"
         >
           <Trash2Icon className="size-4" />
-          Delete selected
+          {t('list.deleteSelected')}
         </button>
       </BulkActionBar>
 
       {configs.length === 0 ? (
         <EmptyState
-          title="No evaluation configs found"
-          description="Create the first custom scoring criteria config."
+          title={t('list.emptyTitle')}
+          description={t('list.emptyDescription')}
         />
       ) : (
         <DataTable
           data={configs}
-          columns={buildColumns(jobDescriptionTitles, setConfigToDelete)}
+          columns={buildColumns(t, jobDescriptionTitles, setConfigToDelete)}
           getRowKey={(config) => config.id}
           sort={sort}
           onSortChange={handleSortChange}
@@ -266,9 +269,9 @@ export function EvaluationConfigList() {
 
       <ConfirmDialog
         open={Boolean(configToDelete)}
-        title="Delete config?"
-        description="This action removes the evaluation config. Existing evaluations that used it keep their recorded scores."
-        confirmLabel="Delete config"
+        title={t('list.deleteConfirmTitle')}
+        description={t('list.deleteConfirmDescription')}
+        confirmLabel={t('list.deleteConfirmAction')}
         isLoading={isDeleting}
         onCancel={() => setConfigToDelete(null)}
         onConfirm={() => void handleDelete()}
@@ -276,9 +279,9 @@ export function EvaluationConfigList() {
 
       <ConfirmDialog
         open={isBulkConfirmOpen}
-        title={`Delete ${selectedIds.size} config${selectedIds.size === 1 ? '' : 's'}?`}
-        description="This action removes the selected evaluation configs. Existing evaluations that used them keep their recorded scores."
-        confirmLabel="Delete selected"
+        title={t('list.bulkDeleteConfirmTitle', { count: selectedIds.size })}
+        description={t('list.bulkDeleteConfirmDescription')}
+        confirmLabel={t('list.bulkDeleteConfirmAction')}
         isLoading={isBulkDeleting}
         onCancel={() => setIsBulkConfirmOpen(false)}
         onConfirm={() => void handleBulkDelete()}
