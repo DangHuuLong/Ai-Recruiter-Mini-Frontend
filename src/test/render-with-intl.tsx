@@ -10,10 +10,23 @@ export function renderWithIntl(
   messages: Record<string, unknown>,
   options?: RenderOptions,
 ) {
-  return render(
+  const result = render(
     <NextIntlClientProvider locale="en" messages={messages}>
       {ui}
     </NextIntlClientProvider>,
     options,
   );
+
+  return {
+    ...result,
+    // Overrides RTL's rerender so callers can pass the bare component again — re-wrapping
+    // in the provider here, since a raw rerender(ui) would otherwise drop the i18n context
+    // and any useTranslations() call in the new tree would throw.
+    rerender: (nextUi: ReactElement) =>
+      result.rerender(
+        <NextIntlClientProvider locale="en" messages={messages}>
+          {nextUi}
+        </NextIntlClientProvider>,
+      ),
+  };
 }
